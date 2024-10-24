@@ -74,12 +74,12 @@ func CoreRouteTableResource() *schema.Resource {
 						},
 
 						// Optional
-						"cidr_block": {
-							Type:       schema.TypeString,
-							Optional:   true,
-							Computed:   true,
-							Deprecated: tfresource.FieldDeprecatedForAnother("cidr_block", "destination"),
-						},
+						//"cidr_block": {
+						//	Type:       schema.TypeString,
+						//	Optional:   true,
+						//	Computed:   true,
+						//	Deprecated: tfresource.FieldDeprecatedForAnother("cidr_block", "destination"),
+						//},
 						"description": {
 							Type:     schema.TypeString,
 							Optional: true,
@@ -432,6 +432,8 @@ func RouteRuleToMap(obj oci_core.RouteRule) map[string]interface{} {
 
 	if obj.Description != nil {
 		result["description"] = string(*obj.Description)
+	} else {
+		result["description"] = ""
 	}
 
 	if obj.Destination != nil {
