@@ -188,6 +188,7 @@ Make sure the `output_path` is empty before running resource discovery
     * `load_balancer` - Discovers load balancer resources within the specified compartment
     * `log_analytics` - Discovers log_analytics resources within the specified compartment
     * `logging` - Discovers logging resources within the specified compartment
+    * `lustre_file_storage` - Discovers lustre_file_storage resources within the specified compartment
     * `management_agent` - Discovers management_agent resources within the specified compartment
     * `marketplace` - Discovers marketplace resources within the specified compartment
     * `media_services` - Discovers media_services resources within the specified compartment
@@ -208,7 +209,6 @@ Make sure the `output_path` is empty before running resource discovery
     * `opsi` - Discovers opsi resources within the specified compartment
     * `optimizer` - Discovers optimizer resources within the specified compartment
     * `os_management_hub` - Discovers os_management_hub resources within the specified compartment
-    * `osmanagement` - Discovers osmanagement resources within the specified compartment
     * `osp_gateway` - Discovers osp_gateway resources within the specified compartment
     * `psql` - Discovers psql resources within the specified compartment
     * `queue` - Discovers queue resources within the specified compartment
@@ -218,7 +218,6 @@ Make sure the `output_path` is empty before running resource discovery
     * `resourcemanager` - Discovers resourcemanager resources within the specified compartment
     * `sch` - Discovers sch resources within the specified compartment
     * `security_attribute` - Discovers security attribute resources across the entire tenancy
-    * `service_mesh` - Discovers service_mesh resources within the specified compartment
     * `stack_monitoring` - Discovers stack_monitoring resources within the specified compartment
     * `streaming` - Discovers streaming resources within the specified compartment
     * `tenantmanagercontrolplane` - Discovers tenantmanagercontrolplane resources within the specified compartment
@@ -554,9 +553,10 @@ core
 * oci\_core\_vtap
 * oci\_core\_compute\_cluster
 * oci\_core\_compute\_capacity\_report
-* oci\_core\_instance\_maintenance\_event
 * oci\_core\_compute\_capacity\_topology
 * oci\_core\_byoasn
+* oci\_core\_compute\_gpu\_memory\_cluster
+* oci\_core\_compute\_gpu\_memory\_fabric
 
 data_labeling_service
     
@@ -648,6 +648,8 @@ database
 * oci\_database\_execution\_window
 * oci\_database\_scheduled\_action
 * oci\_database\_exadata\_infrastructure\_configure\_exascale\_management
+* oci\_database\_autonomous\_container\_database\_snapshot\_standby
+* oci\_database\_autonomous\_container\_database\_add\_standby
 
 database_migration
     
@@ -704,6 +706,18 @@ datascience
 * oci\_datascience\_schedule
 * oci\_datascience\_model\_defined\_metadata\_artifact
 * oci\_datascience\_model\_custom\_metadata\_artifact
+* oci\_datascience\_ml\_application\_implementation
+* oci\_datascience\_ml\_application\_instance
+* oci\_datascience\_ml\_application
+
+dblm
+    
+* oci\_dblm\_vulnerability\_scan
+
+delegate_access_control
+    
+* oci\_delegate\_access\_control\_delegation\_subscription
+* oci\_delegate\_access\_control\_delegation\_control
 
 dblm
     
@@ -763,9 +777,6 @@ dns
 * oci\_dns\_steering\_policy\_attachment
 * oci\_dns\_tsig\_key
 * oci\_dns\_rrset
-* oci\_dns\_resolver
-* oci\_dns\_resolver\_endpoint
-* oci\_dns\_view
 
 em_warehouse
 
@@ -986,6 +997,10 @@ log_analytics
 * oci\_log\_analytics\_log\_analytics\_unprocessed\_data\_bucket\_management
 * oci\_log\_analytics\_log\_analytics\_resource\_categories\_management
 * oci\_log\_analytics\_namespace\_ingest\_time\_rule
+* oci\_log\_analytics\_namespace\_lookup
+* oci\_log\_analytics\_namespace\_lookups\_update\_data\_management
+* oci\_log\_analytics\_namespace\_lookups\_append\_data\_management
+* oci\_log\_analytics\_namespace\_storage\_archival\_config
 
 logging
     
@@ -993,6 +1008,10 @@ logging
 * oci\_logging\_log
 * oci\_logging\_log\_saved\_search
 * oci\_logging\_unified\_agent\_configuration
+
+lustre_file_storage
+    
+* oci\_lustre\_file\_storage\_lustre\_file\_system
 
 management_agent
     
@@ -1137,12 +1156,19 @@ os_management_hub
 * oci\_os\_management\_hub\_managed\_instance\_install\_windows\_updates\_management
 * oci\_os\_management\_hub\_managed\_instance\_attach\_profile\_management
 * oci\_os\_management\_hub\_managed\_instance\_detach\_profile\_management
+* oci\_os\_management\_hub\_managed\_instance\_reboot\_management
 * oci\_os\_management\_hub\_profile
+* oci\_os\_management\_hub\_profile\_attach\_lifecycle\_stage\_management
+* oci\_os\_management\_hub\_profile\_attach\_managed\_instance\_group\_management
+* oci\_os\_management\_hub\_profile\_attach\_management\_station\_management
+* oci\_os\_management\_hub\_profile\_attach\_software\_sources\_management
+* oci\_os\_management\_hub\_profile\_detach\_software\_sources\_management
 * oci\_os\_management\_hub\_scheduled\_job
 * oci\_os\_management\_hub\_lifecycle\_environment
 * oci\_os\_management\_hub\_lifecycle\_stage\_attach\_managed\_instances\_management
 * oci\_os\_management\_hub\_lifecycle\_stage\_detach\_managed\_instances\_management
 * oci\_os\_management\_hub\_lifecycle\_stage\_promote\_software\_source\_management
+* oci\_os\_management\_hub\_lifecycle\_stage\_reboot\_management
 * oci\_os\_management\_hub\_managed\_instance\_group
 * oci\_os\_management\_hub\_managed\_instance\_group\_attach\_managed\_instances\_management
 * oci\_os\_management\_hub\_managed\_instance\_group\_detach\_managed\_instances\_management
@@ -1153,20 +1179,21 @@ os_management_hub
 * oci\_os\_management\_hub\_managed\_instance\_group\_update\_all\_packages\_management
 * oci\_os\_management\_hub\_managed\_instance\_group\_manage\_module\_streams\_management
 * oci\_os\_management\_hub\_managed\_instance\_group\_install\_windows\_updates\_management
+* oci\_os\_management\_hub\_managed\_instance\_group\_reboot\_management
 * oci\_os\_management\_hub\_management\_station
 * oci\_os\_management\_hub\_management\_station\_refresh\_management
+* oci\_os\_management\_hub\_management\_station\_associate\_managed\_instances\_management
 * oci\_os\_management\_hub\_management\_station\_synchronize\_mirrors\_management
 * oci\_os\_management\_hub\_management\_station\_mirror\_synchronize\_management
 * oci\_os\_management\_hub\_software\_source
 * oci\_os\_management\_hub\_software\_source\_change\_availability\_management
 * oci\_os\_management\_hub\_software\_source\_add\_packages\_management
+* oci\_os\_management\_hub\_software\_source\_remove\_packages\_management
+* oci\_os\_management\_hub\_software\_source\_replace\_packages\_management
+* oci\_os\_management\_hub\_software\_source\_generate\_metadata\_management
+* oci\_os\_management\_hub\_software\_source\_manifest
 * oci\_os\_management\_hub\_event
-
-osmanagement
-    
-* oci\_osmanagement\_managed\_instance
-* oci\_osmanagement\_managed\_instance\_group
-* oci\_osmanagement\_software\_source
+* oci\_os\_management\_hub\_work\_request\_rerun\_management
 
 osp_gateway
     
@@ -1209,16 +1236,6 @@ security_attribute
     
 * oci\_security\_attribute\_security\_attribute\_namespace
 * oci\_security\_attribute\_security\_attribute
-
-service_mesh
-    
-* oci\_service\_mesh\_virtual\_service
-* oci\_service\_mesh\_access\_policy
-* oci\_service\_mesh\_mesh
-* oci\_service\_mesh\_ingress\_gateway\_route\_table
-* oci\_service\_mesh\_virtual\_service\_route\_table
-* oci\_service\_mesh\_virtual\_deployment
-* oci\_service\_mesh\_ingress\_gateway
 
 stack_monitoring
     

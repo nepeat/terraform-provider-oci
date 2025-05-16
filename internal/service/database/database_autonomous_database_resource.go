@@ -222,6 +222,11 @@ func DatabaseAutonomousDatabaseResource() *schema.Resource {
 					},
 				},
 			},
+			// Optional
+			"enable_delete_scheduled_operations": {
+				Type:     schema.TypeBool,
+				Optional: true,
+			},
 			"db_version": {
 				Type:             schema.TypeString,
 				Optional:         true,
@@ -518,16 +523,17 @@ func DatabaseAutonomousDatabaseResource() *schema.Resource {
 				},
 			},
 			"scheduled_operations": {
-				Type:     schema.TypeSet,
-				Set:      scheduledOperationsForSets,
-				Optional: true,
-				Computed: true,
+				Type:             schema.TypeSet,
+				Set:              scheduledOperationsForSets,
+				Optional:         true,
+				Computed:         true,
+				DiffSuppressFunc: tfresource.ScheduledOperationDbSuppressfunc,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						// Required
 						"day_of_week": {
 							Type:     schema.TypeList,
-							Required: true,
+							Optional: true,
 							MaxItems: 1,
 							MinItems: 1,
 							Elem: &schema.Resource{
@@ -1966,7 +1972,7 @@ func (s *DatabaseAutonomousDatabaseResourceCrud) Update() error {
 		request.DefinedTags = convertedDefinedTags
 	}
 
-	if displayName, ok := s.D.GetOkExists("display_name"); ok {
+	if displayName, ok := s.D.GetOkExists("display_name"); ok && s.D.HasChange("display_name") {
 		tmp := displayName.(string)
 		request.DisplayName = &tmp
 	}
@@ -2111,7 +2117,7 @@ func (s *DatabaseAutonomousDatabaseResourceCrud) Update() error {
 		request.PeerDbId = &tmp
 	}
 
-	if privateEndpointIp, ok := s.D.GetOkExists("private_endpoint_ip"); ok {
+	if privateEndpointIp, ok := s.D.GetOkExists("private_endpoint_ip"); ok && s.D.HasChange("private_endpoint_ip") {
 		tmp := privateEndpointIp.(string)
 		request.PrivateEndpointIp = &tmp
 	}
@@ -2151,6 +2157,12 @@ func (s *DatabaseAutonomousDatabaseResourceCrud) Update() error {
 		}
 		if len(tmp) != 0 || s.D.HasChange("scheduled_operations") {
 			request.ScheduledOperations = tmp
+		}
+	}
+	if enableDeleteScheduledOps, ok := s.D.GetOkExists("enable_delete_scheduled_operations"); ok && s.D.HasChange("enable_delete_scheduled_operations") {
+		_, scheduledOpsOk := s.D.GetOkExists("scheduled_operations")
+		if enableDeleteScheduledOps == true && scheduledOpsOk {
+			request.ScheduledOperations = []oci_database.ScheduledOperationDetails{}
 		}
 	}
 
@@ -4801,7 +4813,8 @@ func (s *DatabaseAutonomousDatabaseResourceCrud) populateTopLevelPolymorphicCrea
 			details.PrivateEndpointLabel = &tmp
 		}
 		if scheduledOperations, ok := s.D.GetOkExists("scheduled_operations"); ok {
-			interfaces := scheduledOperations.([]interface{})
+			set := scheduledOperations.(*schema.Set)
+			interfaces := set.List()
 			tmp := make([]oci_database.ScheduledOperationDetails, len(interfaces))
 			for i := range interfaces {
 				stateDataIndex := i
@@ -5914,7 +5927,8 @@ func (s *DatabaseAutonomousDatabaseResourceCrud) populateTopLevelPolymorphicCrea
 			}
 		}
 		if scheduledOperations, ok := s.D.GetOkExists("scheduled_operations"); ok {
-			interfaces := scheduledOperations.([]interface{})
+			set := scheduledOperations.(*schema.Set)
+			interfaces := set.List()
 			tmp := make([]oci_database.ScheduledOperationDetails, len(interfaces))
 			for i := range interfaces {
 				stateDataIndex := i

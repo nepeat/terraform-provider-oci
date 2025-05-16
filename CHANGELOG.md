@@ -1,3 +1,122 @@
+## 7.1.0 (May 14, 2025)
+
+### Added
+- Support for OpenSearch OBO metering for external customers
+- Support for bulk PDB enablement and monitoring in Database Management Service
+### Bug Fix
+- fix infinite loop for OSMH resource discovery
+
+## 7.0.0 (May 06, 2025)
+
+### Added
+- deprecated service mesh
+- deprecated OS Management Service
+- filter to ListSystemVersions api to get Latest Versions only
+- Support for Logging Analytics Ironwood Release
+- Support for new migration phase to current list
+
+## 6.37.0 (April 30, 2025)
+
+### Added
+- Support for adding custom pre check step in DR Plans
+- Support for OKE: Node Cycling Improvements
+- Support for HeatWave Service: Change DB System Deletion Policy AutomaticBackupRetention default to RETAIN.
+- provider support for Resource Scheduler enhancement feature
+### Bug Fix
+- move capacity_reservation_id update to the same request as shape update
+- TERRAFORM_ISSUE:NOSQL: Change on compartmentId of child table should be ignored
+
+## 6.36.0 (April 23, 2025)
+
+### Added
+- Support for iSCSI-3 Persistant Reservation for Block Volume
+- Support for public network access control.
+- Support for DBM: Database Life Cycle Management (Externally Registered Database Patching)
+### Bug Fix
+- core instance resource security_attributes documentation
+- Exacs dbHome, pdb, cvm bug fixes
+
+## 6.35.0 (April 16, 2025)
+
+### Added
+- Support for Add Cross-AD DR for GGS deployment in a multi-AD region
+- Security Attributes feature to Load Balancer Service
+### Bug Fix
+- Container Instance HTTP health check port field set to required
+- Fix for privateenpointip and displayName params in update
+- For for zpr provider updates
+
+## 6.34.0 (April 09, 2025)
+
+### Added
+- Support for New API header property to support Dry Run of Function Invocation
+- Support for Phase 2 - Add ZeroETL as a resource in Golden Gate Cloud Service
+- Support for Ekm-Xrr
+- Support for Connector Source/Targets with Private Endpoints
+- Support for VCNIP - IP Lifetime support and related feature
+- Support for ML Application Service
+- Support for Stack Monitoring:Telegraf and Collectd Resources Import
+- Support for New OCI Native Service - Lustre File Service (LFS)
+- ECPU Support for OPSI Warehouses
+### Bug Fix
+- BDS Bug Fixes
+Issue with Creating Autonomous Database Disaster Recovery Peer from Resource Manager.
+- Fix assignPublicIp mapping in core_instance_configuration_resource
+
+## 6.34.0 (April 09, 2025)
+
+### Added
+- Support for New API header property to support Dry Run of Function Invocation
+- Support for Phase 2 - Add ZeroETL as a resource in Golden Gate Cloud Service
+- Support for Ekm-Xrr
+- Support for Connector Source/Targets with Private Endpoints
+- Support for VCNIP - IP Lifetime support and related feature
+- Support for ML Application Service
+- Support for Stack Monitoring:Telegraf and Collectd Resources Import
+- Support for New OCI Native Service - Lustre File Service (LFS)
+- ECPU Support for OPSI Warehouses
+### Bug Fix
+- BDS Bug Fixes
+Issue with Creating Autonomous Database Disaster Recovery Peer from Resource Manager.
+- Fix assignPublicIp mapping in core_instance_configuration_resource
+
+## 6.33.0 (April 02, 2025)
+
+### Added
+- Support for ML Application Service
+- Support for Stack Monitoring:Telegraf and Collectd Resources Import
+- Support for New OCI Native Service - Lustre File Service (LFS)
+- ECPU Support for OPSI Warehouses
+### Bug Fix
+- BDS Bug Fixes
+- Issue with Creating Autonomous Database Disaster Recovery Peer from Resource Manager.
+- Fix assignPublicIp mapping in core_instance_configuration_resource
+
+## 6.32.0 (March 26, 2025)
+
+### Added
+- Support for Stack Monitoring to detect OCI compute launch and auto-enable host monitoring
+- Support for Spec Change to Fix Misspelled Property
+- Support for Host API - Host visibility improvements
+- Tag Support for Maintenance Windows in Stack Monitoring
+- Support for Stack Monitoring: Easy Onboarding Phase 2
+### Bug Fix
+- Database vmcluster update to include cloudautomationupdate only when changed
+- IdentityDomains fixes for App resource; Doc update for User, Group
+
+## 6.31.0 (March 18,2025)
+
+### Added
+- Support for Compute GPU Memory Cluster and Fabric in GPU Control Plane
+- Support for Add second Standby to AuDG deployments | ADB-D and ADB-C@C
+- Support for Add schedules to customer-initiated backups.
+- Add support for private and 3rd party software repositories and rebooting of instances to OS Management Hub
+- README.md of service examples with magic button
+
+### Bug Fix
+- OKE terraform provider bug fix: add data source for oidc discovery endpoint, fix update issue for oidc auth and update docs
+- Database resource changes to support external keystore for add standby and update database admin password
+
 ## 6.30.0 (March 11, 2025)
 
 ### Added

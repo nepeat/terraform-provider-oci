@@ -78,6 +78,7 @@ import (
 	tf_load_balancer "github.com/oracle/terraform-provider-oci/internal/service/load_balancer"
 	tf_log_analytics "github.com/oracle/terraform-provider-oci/internal/service/log_analytics"
 	tf_logging "github.com/oracle/terraform-provider-oci/internal/service/logging"
+	tf_lustre_file_storage "github.com/oracle/terraform-provider-oci/internal/service/lustre_file_storage"
 	tf_management_agent "github.com/oracle/terraform-provider-oci/internal/service/management_agent"
 	tf_management_dashboard "github.com/oracle/terraform-provider-oci/internal/service/management_dashboard"
 	tf_marketplace "github.com/oracle/terraform-provider-oci/internal/service/marketplace"
@@ -100,7 +101,6 @@ import (
 	tf_opsi "github.com/oracle/terraform-provider-oci/internal/service/opsi"
 	tf_optimizer "github.com/oracle/terraform-provider-oci/internal/service/optimizer"
 	tf_os_management_hub "github.com/oracle/terraform-provider-oci/internal/service/os_management_hub"
-	tf_osmanagement "github.com/oracle/terraform-provider-oci/internal/service/osmanagement"
 	tf_osp_gateway "github.com/oracle/terraform-provider-oci/internal/service/osp_gateway"
 	tf_osub_billing_schedule "github.com/oracle/terraform-provider-oci/internal/service/osub_billing_schedule"
 	tf_osub_organization_subscription "github.com/oracle/terraform-provider-oci/internal/service/osub_organization_subscription"
@@ -117,7 +117,6 @@ import (
 	tf_security_attribute "github.com/oracle/terraform-provider-oci/internal/service/security_attribute"
 	tf_service_catalog "github.com/oracle/terraform-provider-oci/internal/service/service_catalog"
 	tf_service_manager_proxy "github.com/oracle/terraform-provider-oci/internal/service/service_manager_proxy"
-	tf_service_mesh "github.com/oracle/terraform-provider-oci/internal/service/service_mesh"
 	tf_stack_monitoring "github.com/oracle/terraform-provider-oci/internal/service/stack_monitoring"
 	tf_streaming "github.com/oracle/terraform-provider-oci/internal/service/streaming"
 	tf_tenantmanagercontrolplane "github.com/oracle/terraform-provider-oci/internal/service/tenantmanagercontrolplane"
@@ -356,6 +355,9 @@ func init() {
 	if common.CheckForEnabledServices("logging") {
 		tf_logging.RegisterDatasource()
 	}
+	if common.CheckForEnabledServices("lustrefilestorage") {
+		tf_lustre_file_storage.RegisterDatasource()
+	}
 	if common.CheckForEnabledServices("managementagent") {
 		tf_management_agent.RegisterDatasource()
 	}
@@ -422,9 +424,6 @@ func init() {
 	if common.CheckForEnabledServices("osmanagementhub") {
 		tf_os_management_hub.RegisterDatasource()
 	}
-	if common.CheckForEnabledServices("osmanagement") {
-		tf_osmanagement.RegisterDatasource()
-	}
 	if common.CheckForEnabledServices("ospgateway") {
 		tf_osp_gateway.RegisterDatasource()
 	}
@@ -472,9 +471,6 @@ func init() {
 	}
 	if common.CheckForEnabledServices("servicemanagerproxy") {
 		tf_service_manager_proxy.RegisterDatasource()
-	}
-	if common.CheckForEnabledServices("servicemesh") {
-		tf_service_mesh.RegisterDatasource()
 	}
 	if common.CheckForEnabledServices("stackmonitoring") {
 		tf_stack_monitoring.RegisterDatasource()

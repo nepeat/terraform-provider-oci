@@ -529,7 +529,7 @@ func DbVersionDiffSuppress(key string, old string, new string, d *schema.Resourc
 	if old == "" || new == "" {
 		return false
 	}
-	if new == "18.0.0.0" || new == "19.0.0.0" {
+	if new == "18.0.0.0" || new == "19.0.0.0" || new == "23.0.0.0" {
 		oldVersion := strings.Split(old, ".")
 		newVersion := strings.Split(new, ".")
 		oldVersionNumber, err := strconv.Atoi(oldVersion[0])
@@ -1460,4 +1460,11 @@ func ValidateBoolInSlice(valid []bool) schema.SchemaValidateFunc {
 		es = append(es, fmt.Errorf("expected %s to be one of %v, got %t", k, valid, v))
 		return
 	}
+}
+func ScheduledOperationDbSuppressfunc(k string, old, new string, d *schema.ResourceData) bool {
+	enableSchduledOpDelete, _ := d.GetOkExists("enable_delete_scheduled_operations")
+	if enableSchduledOpDelete.(bool) {
+		return true
+	}
+	return false
 }
