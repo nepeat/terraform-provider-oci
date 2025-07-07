@@ -24,7 +24,7 @@ var (
 	acbDBName  = utils.RandomString(1, utils.CharsetWithoutDigits) + utils.RandomString(13, utils.Charset)
 	acbDBName2 = utils.RandomString(1, utils.CharsetWithoutDigits) + utils.RandomString(13, utils.Charset)
 
-	ExaccACDResourceConfig = ACDatabaseResourceDependencies +
+	ExaccACDResourceConfig = ACDECPUatabaseResourceDependencies +
 		acctest.GenerateResourceFromRepresentationMap("oci_database_autonomous_container_database", "test_autonomous_container_database", acctest.Optional, acctest.Update, ACDatabaseRepresentation)
 
 	ExaccACDRequiredOnlyResource = ExaccDatabaseAutonomousContainerDatabaseResourceFromAdsiDependencies +
@@ -60,7 +60,7 @@ var (
 		"maintenance_window_details":   acctest.RepresentationGroup{RepType: acctest.Optional, Group: DatabaseAutonomousContainerDatabaseMaintenanceWindowDetailsRepresentation},
 		"service_level_agreement_type": acctest.Representation{RepType: acctest.Optional, Create: `STANDARD`},
 		"db_name":                      acctest.Representation{RepType: acctest.Optional, Create: `DBNAME`},
-		"db_version":                   acctest.Representation{RepType: acctest.Required, Create: utils.GetEnvSettingWithDefault("exacc_acd_db_version", "19.24.0.1.0")},
+		"db_version":                   acctest.Representation{RepType: acctest.Required, Create: utils.GetEnvSettingWithDefault("exacc_acd_db_version", "19.26.0.1.0")},
 		"is_dst_file_update_enabled":   acctest.Representation{RepType: acctest.Optional, Create: `false`, Update: `true`},
 	}
 	ACDatabaseWithRABkpDesRepresentation = map[string]interface{}{
@@ -81,7 +81,7 @@ var (
 		"maintenance_window_details":   acctest.RepresentationGroup{RepType: acctest.Optional, Group: DatabaseAutonomousContainerDatabaseMaintenanceWindowDetailsRepresentation},
 		"service_level_agreement_type": acctest.Representation{RepType: acctest.Optional, Create: `STANDARD`},
 		"db_name":                      acctest.Representation{RepType: acctest.Optional, Create: `DBNAME`},
-		"db_version":                   acctest.Representation{RepType: acctest.Required, Create: utils.GetEnvSettingWithDefault("exacc_acd_db_version", "19.24.0.1.0")},
+		"db_version":                   acctest.Representation{RepType: acctest.Required, Create: utils.GetEnvSettingWithDefault("exacc_acd_db_version", "19.25.0.1.0")},
 		"is_dst_file_update_enabled":   acctest.Representation{RepType: acctest.Optional, Create: `false`, Update: `true`},
 	}
 
@@ -100,7 +100,7 @@ var (
 		"maintenance_window_details":   acctest.RepresentationGroup{RepType: acctest.Optional, Group: DatabaseAutonomousContainerDatabaseMaintenanceWindowDetailsRepresentation},
 		"service_level_agreement_type": acctest.Representation{RepType: acctest.Optional, Create: `STANDARD`},
 		"db_name":                      acctest.Representation{RepType: acctest.Optional, Create: `DBNAME`},
-		"db_version":                   acctest.Representation{RepType: acctest.Required, Create: utils.GetEnvSettingWithDefault("exacc_acd_db_version", "19.24.0.1.0")},
+		"db_version":                   acctest.Representation{RepType: acctest.Required, Create: utils.GetEnvSettingWithDefault("exacc_acd_db_version", "19.25.0.1.0")},
 		"is_dst_file_update_enabled":   acctest.Representation{RepType: acctest.Optional, Create: `false`, Update: `true`},
 	}
 
@@ -204,7 +204,7 @@ var (
 		acctest.GenerateResourceFromRepresentationMap("oci_database_backup_destination", "ra_backup_destination", acctest.Optional, acctest.Create, DatabaseBackupDestinationRepresentation)
 
 	ExaccACDWithDGUpdateBkpDesRepresentation = map[string]interface{}{
-		"db_version":                   acctest.Representation{RepType: acctest.Required, Create: utils.GetEnvSettingWithDefault("acd_db_version", "19.24.0.1.0")},
+		"db_version":                   acctest.Representation{RepType: acctest.Required, Create: utils.GetEnvSettingWithDefault("acd_db_version", "19.25.0.1.0")},
 		"display_name":                 acctest.Representation{RepType: acctest.Required, Create: `ACD-DG-TF-TEST`},
 		"patch_model":                  acctest.Representation{RepType: acctest.Required, Create: `RELEASE_UPDATES`, Update: `RELEASE_UPDATE_REVISIONS`},
 		"autonomous_vm_cluster_id":     acctest.Representation{RepType: acctest.Required, Create: `${oci_database_autonomous_vm_cluster.test_autonomous_vm_cluster.id}`},
@@ -228,6 +228,7 @@ var (
 			//"switchover_trigger": acctest.Representation{RepType: acctest.Required, Create: `1`},
 		}))
 	StandbyACDRepresentation = map[string]interface{}{
+		"depends_on":                 acctest.Representation{RepType: acctest.Required, Create: []string{"oci_database_autonomous_container_database.exacc_test_autonomous_container_database"}},
 		"autonomous_vm_cluster_id":   acctest.Representation{RepType: acctest.Optional, Create: `${oci_database_autonomous_vm_cluster.peer_autonomous_vm_cluster.id}`},
 		"compartment_id":             acctest.Representation{RepType: acctest.Optional, Create: `${var.compartment_id}`},
 		"display_name":               acctest.Representation{RepType: acctest.Optional, Create: `PEER-ACD-DG`},
@@ -313,6 +314,7 @@ func TestDatabaseExaccAutonomousContainerDatabaseFromAdsi_basic(t *testing.T) {
 				resource.TestCheckResourceAttrSet(resourceName, "database_software_image_id"),
 				resource.TestCheckResourceAttr(resourceName, "db_name", "DBNAME2"),
 				resource.TestCheckResourceAttr(resourceName, "is_dst_file_update_enabled", "false"),
+				resource.TestCheckResourceAttr(resourceName, "system_tags.%", "0"),
 
 				func(s *terraform.State) (err error) {
 					resId, err = acctest.FromInstanceState(s, resourceName, "id")
@@ -364,6 +366,7 @@ func TestDatabaseExaccAutonomousContainerDatabaseFromAdsi_basic(t *testing.T) {
 				resource.TestCheckResourceAttrSet(resourceName, "database_software_image_id"),
 				resource.TestCheckResourceAttr(resourceName, "db_name", "DBNAME2"),
 				resource.TestCheckResourceAttr(resourceName, "is_dst_file_update_enabled", "true"),
+				resource.TestCheckResourceAttr(resourceName, "system_tags.%", "0"),
 
 				func(s *terraform.State) (err error) {
 					resId2, err = acctest.FromInstanceState(s, resourceName, "id")
@@ -434,6 +437,7 @@ func TestDatabaseAutonomousContainerDatabaseFromAdsi_basic(t *testing.T) {
 				resource.TestCheckResourceAttrSet(resourceName, "database_software_image_id"),
 				resource.TestCheckResourceAttr(resourceName, "db_name", "DBNAME3"),
 				resource.TestCheckResourceAttr(resourceName, "is_dst_file_update_enabled", "false"),
+				resource.TestCheckResourceAttr(resourceName, "system_tags.%", "0"),
 
 				func(s *terraform.State) (err error) {
 					resId, err = acctest.FromInstanceState(s, resourceName, "id")
@@ -477,6 +481,7 @@ func TestDatabaseAutonomousContainerDatabaseFromAdsi_basic(t *testing.T) {
 				resource.TestCheckResourceAttrSet(resourceName, "database_software_image_id"),
 				resource.TestCheckResourceAttr(resourceName, "db_name", "DBNAME3"),
 				resource.TestCheckResourceAttr(resourceName, "is_dst_file_update_enabled", "true"),
+				resource.TestCheckResourceAttr(resourceName, "system_tags.%", "0"),
 
 				func(s *terraform.State) (err error) {
 					resId2, err = acctest.FromInstanceState(s, resourceName, "id")
@@ -543,6 +548,10 @@ func TestDatabaseExaccAutonomousContainerDatabase_BackupDestinationUpdate_DG(t *
 					resource.TestCheckResourceAttrSet(datasourceName, "autonomous_container_database_dataguard_associations.0.time_created"),
 				),
 			},
+			// NEW STEP: Refresh state
+			{
+				RefreshState: true, // reload state
+			},
 			{ // import the standby ACD
 				Config: config +
 					acctest.GenerateDataSourceFromRepresentationMap("oci_database_autonomous_container_database_dataguard_associations", "test", acctest.Optional, acctest.Create, DatabaseExaccAutonomousContainerDatabaseDataguardAssociationDataSourceRepresentation) +
@@ -553,7 +562,7 @@ func TestDatabaseExaccAutonomousContainerDatabase_BackupDestinationUpdate_DG(t *
 							"lifecycle": acctest.RepresentationGroup{RepType: acctest.Required, Group: ignoreDataguardChangesWithMRRep},
 						})),
 				ImportState:        true,
-				ImportStateIdFunc:  getStandbyAcdOcid("data.oci_database_autonomous_container_database_dataguard_associations.test"),
+				ImportStateIdFunc:  getStandbyAcdOcidOldDG("data.oci_database_autonomous_container_database_dataguard_associations.test"),
 				ImportStatePersist: true,
 				ResourceName:       standbyResourceName,
 			},
@@ -631,6 +640,7 @@ func TestDatabaseExaccAutonomousContainerDatabase_BackupDestinationUpdate(t *tes
 				resource.TestCheckResourceAttrSet(resourceName, "db_version"),
 				resource.TestCheckResourceAttr(resourceName, "db_name", "DBNAME"),
 				resource.TestCheckResourceAttr(resourceName, "is_dst_file_update_enabled", "false"),
+				resource.TestCheckResourceAttr(resourceName, "system_tags.%", "0"),
 
 				func(s *terraform.State) (err error) {
 					resId, err = acctest.FromInstanceState(s, resourceName, "id")
@@ -686,6 +696,7 @@ func TestDatabaseExaccAutonomousContainerDatabase_BackupDestinationUpdate(t *tes
 				resource.TestCheckResourceAttrSet(resourceName, "db_version"),
 				resource.TestCheckResourceAttr(resourceName, "db_name", "DBNAME"),
 				resource.TestCheckResourceAttr(resourceName, "is_dst_file_update_enabled", "true"),
+				resource.TestCheckResourceAttr(resourceName, "system_tags.%", "0"),
 
 				func(s *terraform.State) (err error) {
 					resId2, err = acctest.FromInstanceState(s, resourceName, "id")
@@ -772,6 +783,7 @@ func TestDatabaseExaccAutonomousContainerDatabase_basic(t *testing.T) {
 				resource.TestCheckResourceAttrSet(resourceName, "db_version"),
 				resource.TestCheckResourceAttr(resourceName, "db_name", "DBNAME"),
 				resource.TestCheckResourceAttr(resourceName, "is_dst_file_update_enabled", "false"),
+				resource.TestCheckResourceAttr(resourceName, "system_tags.%", "0"),
 
 				func(s *terraform.State) (err error) {
 					resId, err = acctest.FromInstanceState(s, resourceName, "id")
@@ -825,6 +837,7 @@ func TestDatabaseExaccAutonomousContainerDatabase_basic(t *testing.T) {
 				resource.TestCheckResourceAttrSet(resourceName, "db_version"),
 				resource.TestCheckResourceAttr(resourceName, "db_name", "DBNAME"),
 				resource.TestCheckResourceAttr(resourceName, "is_dst_file_update_enabled", "true"),
+				resource.TestCheckResourceAttr(resourceName, "system_tags.%", "0"),
 
 				func(s *terraform.State) (err error) {
 					resId2, err = acctest.FromInstanceState(s, resourceName, "id")
@@ -881,6 +894,7 @@ func TestDatabaseExaccAutonomousContainerDatabase_basic(t *testing.T) {
 				resource.TestCheckResourceAttr(datasourceName, "autonomous_container_databases.0.vm_failover_reservation", "25"),
 				resource.TestCheckResourceAttrSet(datasourceName, "autonomous_container_databases.0.db_version"),
 				resource.TestCheckResourceAttr(datasourceName, "autonomous_container_databases.0.maintenance_window.0.patching_mode", "NONROLLING"),
+				resource.TestCheckResourceAttr(resourceName, "autonomous_container_databases.0.system_tags.%", "0"),
 			),
 		},
 		// verify singular datasource

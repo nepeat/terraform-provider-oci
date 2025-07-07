@@ -44,6 +44,9 @@ type DbSystemSnapshot struct {
 	// User-provided data about the DB System.
 	Description *string `mandatory:"false" json:"description"`
 
+	// Network Security Group OCIDs used for the VNIC attachment.
+	NsgIds []string `mandatory:"false" json:"nsgIds"`
+
 	// The Availability Domain where the primary DB System should be located.
 	AvailabilityDomain *string `mandatory:"false" json:"availabilityDomain"`
 
@@ -85,6 +88,8 @@ type DbSystemSnapshot struct {
 	// The network port on which X Plugin listens for TCP/IP connections. This is the X Plugin equivalent of port.
 	PortX *int `mandatory:"false" json:"portX"`
 
+	Rest *RestDetails `mandatory:"false" json:"rest"`
+
 	// Specifies if the DB System is highly available.
 	IsHighlyAvailable *bool `mandatory:"false" json:"isHighlyAvailable"`
 
@@ -107,6 +112,8 @@ type DbSystemSnapshot struct {
 	DatabaseManagement DatabaseManagementStatusEnum `mandatory:"false" json:"databaseManagement,omitempty"`
 
 	SecureConnections *SecureConnectionDetails `mandatory:"false" json:"secureConnections"`
+
+	EncryptData *EncryptDataDetails `mandatory:"false" json:"encryptData"`
 
 	// The region identifier of the region where the DB system exists.
 	// For more information, please see Regions and Availability Domains (https://docs.oracle.com/en-us/iaas/Content/General/Concepts/regions.htm).

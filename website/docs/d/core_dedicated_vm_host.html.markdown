@@ -33,7 +33,15 @@ The following arguments are supported:
 The following attributes are exported:
 
 * `availability_domain` - The availability domain the dedicated virtual machine host is running in.  Example: `Uocm:PHX-AD-1` 
+* `capacity_bins` - A list of total and remaining CPU & memory per capacity bucket. 
+	* `capacity_index` - Zero-based index for the corresponding capacity bucket. 
+	* `remaining_memory_in_gbs` - The remaining memory of the capacity bucket, in GBs. 
+	* `remaining_ocpus` - The available OCPUs of the capacity bucket. 
+	* `supported_shapes` - List of VMI shapes supported on each capacity bucket. 
+	* `total_memory_in_gbs` - The total memory of the capacity bucket, in GBs. 
+	* `total_ocpus` - The total OCPUs of the capacity bucket. 
 * `compartment_id` - The OCID of the compartment that contains the dedicated virtual machine host.
+* `compute_bare_metal_host_id` - The compute bare metal host OCID of the dedicated virtual machine host. 
 * `dedicated_vm_host_shape` - The dedicated virtual machine host shape. The shape determines the number of CPUs and other resources available for VMs. 
 * `defined_tags` - Defined tags for this resource. Each key is predefined and scoped to a namespace. For more information, see [Resource Tags](https://docs.cloud.oracle.com/iaas/Content/General/Concepts/resourcetags.htm).  Example: `{"Operations.CostCenter": "42"}` 
 * `display_name` - A user-friendly name. Does not have to be unique, and it's changeable. Avoid entering confidential information. 
@@ -46,6 +54,9 @@ The following attributes are exported:
 	Example: `FAULT-DOMAIN-1` 
 * `freeform_tags` - Free-form tags for this resource. Each tag is a simple key-value pair with no predefined name, type, or namespace. For more information, see [Resource Tags](https://docs.cloud.oracle.com/iaas/Content/General/Concepts/resourcetags.htm).  Example: `{"Department": "Finance"}` 
 * `id` - The [OCID](https://docs.cloud.oracle.com/iaas/Content/General/Concepts/identifiers.htm) of the dedicated VM host. 
+* `placement_constraint_details` - Generic placement details field which is overloaded with bare metal host id or host group id based on the resource we are targeting to launch. 
+	* `compute_bare_metal_host_id` - The OCID of the compute bare metal host.
+	* `type` - Determines the type of targeted launch.
 * `remaining_memory_in_gbs` - The current available memory of the dedicated VM host, in GBs. 
 * `remaining_ocpus` - The current available OCPUs of the dedicated VM host. 
 * `state` - The current state of the dedicated VM host. 

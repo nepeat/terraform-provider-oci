@@ -69,6 +69,11 @@ func LoadBalancerLoadBalancerResource() *schema.Resource {
 				Computed: true,
 				ForceNew: true,
 			},
+			"ipv6subnet_cidr": {
+				Type:     schema.TypeString,
+				Optional: true,
+				Computed: true,
+			},
 			"is_delete_protection_enabled": {
 				Type:     schema.TypeBool,
 				Optional: true,
@@ -323,6 +328,11 @@ func (s *LoadBalancerLoadBalancerResourceCrud) Create() error {
 
 	if ipMode, ok := s.D.GetOkExists("ip_mode"); ok {
 		request.IpMode = oci_load_balancer.CreateLoadBalancerDetailsIpModeEnum(ipMode.(string))
+	}
+
+	if ipv6SubnetCidr, ok := s.D.GetOkExists("ipv6subnet_cidr"); ok {
+		tmp := ipv6SubnetCidr.(string)
+		request.Ipv6SubnetCidr = &tmp
 	}
 
 	if isDeleteProtectionEnabled, ok := s.D.GetOkExists("is_delete_protection_enabled"); ok {
@@ -622,10 +632,10 @@ func (s *LoadBalancerLoadBalancerResourceCrud) SetData() error {
 	for _, ad := range s.Res.IpAddresses {
 		if ad.IpAddress != nil {
 			ipAddresses = append(ipAddresses, *ad.IpAddress)
-		}
-		tmp := *ad.IpAddress
-		if !isIPV4(tmp) {
-			ipMode = "IPV6"
+			tmp := *ad.IpAddress
+			if !isIPV4(tmp) {
+				ipMode = "IPV6"
+			}
 		}
 	}
 	s.D.Set("ip_mode", ipMode)

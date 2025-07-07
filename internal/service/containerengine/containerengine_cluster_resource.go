@@ -184,7 +184,6 @@ func ContainerengineClusterResource() *schema.Resource {
 							Type:     schema.TypeList,
 							Optional: true,
 							Computed: true,
-							ForceNew: true,
 							MaxItems: 1,
 							MinItems: 1,
 							Elem: &schema.Resource{
@@ -196,13 +195,11 @@ func ContainerengineClusterResource() *schema.Resource {
 										Type:     schema.TypeBool,
 										Optional: true,
 										Computed: true,
-										ForceNew: true,
 									},
 									"is_tiller_enabled": {
 										Type:     schema.TypeBool,
 										Optional: true,
 										Computed: true,
-										ForceNew: true,
 									},
 
 									// Computed
@@ -556,6 +553,10 @@ func ContainerengineClusterResource() *schema.Resource {
 				},
 			},
 			"open_id_connect_discovery_endpoint": {
+				Type:     schema.TypeString,
+				Computed: true,
+			},
+			"open_id_connect_discovery_key": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
@@ -1181,6 +1182,10 @@ func (s *ContainerengineClusterResourceCrud) SetData() error {
 
 	if s.Res.OpenIdConnectDiscoveryEndpoint != nil {
 		s.D.Set("open_id_connect_discovery_endpoint", *s.Res.OpenIdConnectDiscoveryEndpoint)
+	}
+
+	if s.Res.OpenIdConnectDiscoveryKey != nil {
+		s.D.Set("open_id_connect_discovery_key", *s.Res.OpenIdConnectDiscoveryKey)
 	}
 
 	if s.Res.Options != nil {

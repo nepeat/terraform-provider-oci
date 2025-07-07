@@ -91,6 +91,7 @@ resource "oci_core_instance" "test_instance" {
 	}
 	cluster_placement_group_id = oci_identity_group.test_group.id
 	compute_cluster_id = oci_core_compute_cluster.test_compute_cluster.id
+	compute_host_group_id = oci_core_compute_host_group.test_compute_host_group.id
 	create_vnic_details {
 
 		#Optional
@@ -171,6 +172,14 @@ resource "oci_core_instance" "test_instance" {
 		license_type = var.instance_licensing_configs_license_type
 	}
 	metadata = var.instance_metadata
+	placement_constraint_details {
+		#Required
+		type = var.instance_placement_constraint_details_type
+
+		#Optional
+		compute_bare_metal_host_id = oci_core_compute_bare_metal_host.test_compute_bare_metal_host.id
+		compute_host_group_id = oci_identity_group.test_group.id
+	}
 	platform_config {
 		#Required
 		type = var.instance_platform_config_type
@@ -275,6 +284,7 @@ The following arguments are supported:
 * `cluster_placement_group_id` - (Optional) The OCID of the cluster placement group of the instance.
 * `compartment_id` - (Required) (Updatable) The OCID of the compartment.
 * `compute_cluster_id` - (Optional) The [OCID](https://docs.cloud.oracle.com/iaas/Content/General/Concepts/identifiers.htm) of the [compute cluster](https://docs.cloud.oracle.com/iaas/Content/Compute/Tasks/compute-clusters.htm) that the instance will be created in. 
+* `compute_host_group_id` - (Optional) The OCID of the compute host group attached to the host where the bare metal instance will be launched.
 * `create_vnic_details` - (Optional) (Updatable) Contains properties for a VNIC. You use this object when creating the primary VNIC during instance launch or when creating a secondary VNIC. For more information about VNICs, see [Virtual Network Interface Cards (VNICs)](https://docs.cloud.oracle.com/iaas/Content/Network/Tasks/managingVNICs.htm). 
 	* `assign_ipv6ip` - (Optional) Whether to allocate an IPv6 address at instance and VNIC creation from an IPv6 enabled subnet. Default: False. When provided you may optionally provide an IPv6 prefix (`ipv6SubnetCidr`) of your choice to assign the IPv6 address from. If `ipv6SubnetCidr` is not provided then an IPv6 prefix is chosen for you. 
 	* `assign_private_dns_record` - (Optional) Whether the VNIC should be assigned a DNS record. If set to false, there will be no DNS record registration for the VNIC. If set to true, the DNS record will be registered. The default value is true.
@@ -446,10 +456,13 @@ The following arguments are supported:
 
 	You'll get back a response that includes all the instance information; only the metadata information; or the metadata information for the specified key name, respectively.
 
-	The combined size of the `metadata` and `extendedMetadata` objects can be a maximum of 32,000 bytes.
-	
-	**Note:** Both the 'user_data' and 'ssh_authorized_keys' fields cannot be changed after an instance has launched. Any request which updates, removes, or adds either of these fields will be rejected. You must provide the same values for 'user_data' and 'ssh_authorized_keys' that already exist on the instance.
-* `platform_config` - (Optional) (Updatable only for VM's) The platform configuration requested for the instance.
+	The combined size of the `metadata` and `extendedMetadata` objects can be a maximum of 32,000 bytes. 
+* `placement_constraint_details` - (Optional) Generic placement details field which is overloaded with bare metal host id or host group id based on the resource we are targeting to launch. 
+	* `compute_bare_metal_host_id` - (Required when type=COMPUTE_BARE_METAL_HOST) The OCID of the compute bare metal host.
+	* `compute_host_group_id` - (Required when type=HOST_GROUP) The OCID of the compute host group.
+	* `type` - (Required) Determines the type of targeted launch.
+* `platform_config` - (Optional) (Updatable) The platform configuration requested for the instance.
+
 
 	If you provide the parameter, the instance is created with the platform configuration that you specify. For any values that you omit, the instance uses the default configuration values for the `shape` that you specify. If you don't provide the parameter, the default values for the `shape` are used.
 
@@ -559,6 +572,7 @@ The following attributes are exported:
 * `boot_volume_id` - The OCID of the attached boot volume. If the `source_type` is `bootVolume`, this will be the same OCID as the `source_id`.
 * `capacity_reservation_id` - The OCID of the compute capacity reservation this instance is launched under. When this field contains an empty string or is null, the instance is not currently in a capacity reservation. For more information, see [Capacity Reservations](https://docs.cloud.oracle.com/iaas/Content/Compute/Tasks/reserve-capacity.htm#default).
 * `compartment_id` - The OCID of the compartment that contains the instance.
+* `compute_host_group_id` - The [OCID](https://docs.cloud.oracle.com/iaas/Content/General/Concepts/identifiers.htm) for the Customer-unique host group 
 * `dedicated_vm_host_id` - The OCID of the dedicated virtual machine host that the instance is placed on. 
 * `defined_tags` - Defined tags for this resource. Each key is predefined and scoped to a namespace. For more information, see [Resource Tags](https://docs.cloud.oracle.com/iaas/Content/General/Concepts/resourcetags.htm).  Example: `{"Operations.CostCenter": "42"}` 
 * `display_name` - A user-friendly name. Does not have to be unique, and it's changeable. Avoid entering confidential information. 
@@ -626,7 +640,10 @@ The following attributes are exported:
 	* `os_version` - The Operating System version of the license config.
 	* `type` - Operating System type of the Configuration.
 * `metadata` - Custom metadata that you provide.
-
+* `placement_constraint_details` - Generic placement details field which is overloaded with bare metal host id or host group id based on the resource we are targeting to launch. 
+	* `compute_bare_metal_host_id` - The OCID of the compute bare metal host.
+	* `compute_host_group_id` - The OCID of the compute host group.
+	* `type` - Determines the type of targeted launch.
 * `platform_config` - The platform configuration for the instance. 
 	* `are_virtual_instructions_enabled` - Whether virtualization instructions are available. For example, Secure Virtual Machine for AMD shapes or VT-x for Intel shapes. 
 	* `config_map` - Instance Platform Configuration Configuration Map for flexible setting input. 

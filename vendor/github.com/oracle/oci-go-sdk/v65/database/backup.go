@@ -49,7 +49,8 @@ type Backup struct {
 	// The current state of the backup.
 	LifecycleState BackupLifecycleStateEnum `mandatory:"false" json:"lifecycleState,omitempty"`
 
-	// The Oracle Database edition of the DB system from which the database backup was taken.
+	// The Oracle Database Edition that applies to all the databases on the DB system.
+	// Exadata DB systems and 2-node RAC DB systems require ENTERPRISE_EDITION_EXTREME_PERFORMANCE.
 	DatabaseEdition BackupDatabaseEditionEnum `mandatory:"false" json:"databaseEdition,omitempty"`
 
 	// The size of the database in gigabytes at the time the backup was taken.
@@ -349,6 +350,7 @@ const (
 	BackupDatabaseEditionEnterpriseEdition                   BackupDatabaseEditionEnum = "ENTERPRISE_EDITION"
 	BackupDatabaseEditionEnterpriseEditionHighPerformance    BackupDatabaseEditionEnum = "ENTERPRISE_EDITION_HIGH_PERFORMANCE"
 	BackupDatabaseEditionEnterpriseEditionExtremePerformance BackupDatabaseEditionEnum = "ENTERPRISE_EDITION_EXTREME_PERFORMANCE"
+	BackupDatabaseEditionEnterpriseEditionDeveloper          BackupDatabaseEditionEnum = "ENTERPRISE_EDITION_DEVELOPER"
 )
 
 var mappingBackupDatabaseEditionEnum = map[string]BackupDatabaseEditionEnum{
@@ -356,6 +358,7 @@ var mappingBackupDatabaseEditionEnum = map[string]BackupDatabaseEditionEnum{
 	"ENTERPRISE_EDITION":                     BackupDatabaseEditionEnterpriseEdition,
 	"ENTERPRISE_EDITION_HIGH_PERFORMANCE":    BackupDatabaseEditionEnterpriseEditionHighPerformance,
 	"ENTERPRISE_EDITION_EXTREME_PERFORMANCE": BackupDatabaseEditionEnterpriseEditionExtremePerformance,
+	"ENTERPRISE_EDITION_DEVELOPER":           BackupDatabaseEditionEnterpriseEditionDeveloper,
 }
 
 var mappingBackupDatabaseEditionEnumLowerCase = map[string]BackupDatabaseEditionEnum{
@@ -363,6 +366,7 @@ var mappingBackupDatabaseEditionEnumLowerCase = map[string]BackupDatabaseEdition
 	"enterprise_edition":                     BackupDatabaseEditionEnterpriseEdition,
 	"enterprise_edition_high_performance":    BackupDatabaseEditionEnterpriseEditionHighPerformance,
 	"enterprise_edition_extreme_performance": BackupDatabaseEditionEnterpriseEditionExtremePerformance,
+	"enterprise_edition_developer":           BackupDatabaseEditionEnterpriseEditionDeveloper,
 }
 
 // GetBackupDatabaseEditionEnumValues Enumerates the set of values for BackupDatabaseEditionEnum
@@ -381,6 +385,7 @@ func GetBackupDatabaseEditionEnumStringValues() []string {
 		"ENTERPRISE_EDITION",
 		"ENTERPRISE_EDITION_HIGH_PERFORMANCE",
 		"ENTERPRISE_EDITION_EXTREME_PERFORMANCE",
+		"ENTERPRISE_EDITION_DEVELOPER",
 	}
 }
 
@@ -397,16 +402,19 @@ type BackupBackupDestinationTypeEnum string
 const (
 	BackupBackupDestinationTypeObjectStore BackupBackupDestinationTypeEnum = "OBJECT_STORE"
 	BackupBackupDestinationTypeDbrs        BackupBackupDestinationTypeEnum = "DBRS"
+	BackupBackupDestinationTypeAwsS3       BackupBackupDestinationTypeEnum = "AWS_S3"
 )
 
 var mappingBackupBackupDestinationTypeEnum = map[string]BackupBackupDestinationTypeEnum{
 	"OBJECT_STORE": BackupBackupDestinationTypeObjectStore,
 	"DBRS":         BackupBackupDestinationTypeDbrs,
+	"AWS_S3":       BackupBackupDestinationTypeAwsS3,
 }
 
 var mappingBackupBackupDestinationTypeEnumLowerCase = map[string]BackupBackupDestinationTypeEnum{
 	"object_store": BackupBackupDestinationTypeObjectStore,
 	"dbrs":         BackupBackupDestinationTypeDbrs,
+	"aws_s3":       BackupBackupDestinationTypeAwsS3,
 }
 
 // GetBackupBackupDestinationTypeEnumValues Enumerates the set of values for BackupBackupDestinationTypeEnum
@@ -423,6 +431,7 @@ func GetBackupBackupDestinationTypeEnumStringValues() []string {
 	return []string{
 		"OBJECT_STORE",
 		"DBRS",
+		"AWS_S3",
 	}
 }
 

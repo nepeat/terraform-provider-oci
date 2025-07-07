@@ -150,6 +150,11 @@ func MysqlMysqlDbSystemResource() *schema.Resource {
 							Optional: true,
 							Computed: true,
 						},
+						"soft_delete": {
+							Type:     schema.TypeString,
+							Optional: true,
+							Computed: true,
+						},
 						"window_start_time": {
 							Type:     schema.TypeString,
 							Optional: true,
@@ -287,6 +292,31 @@ func MysqlMysqlDbSystemResource() *schema.Resource {
 				Optional: true,
 				Computed: true,
 			},
+			"encrypt_data": {
+				Type:     schema.TypeList,
+				Optional: true,
+				Computed: true,
+				MaxItems: 1,
+				MinItems: 1,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						// Required
+						"key_generation_type": {
+							Type:     schema.TypeString,
+							Required: true,
+						},
+
+						// Optional
+						"key_id": {
+							Type:     schema.TypeString,
+							Optional: true,
+							Computed: true,
+						},
+
+						// Computed
+					},
+				},
+			},
 			"fault_domain": {
 				Type:     schema.TypeString,
 				Optional: true,
@@ -347,6 +377,15 @@ func MysqlMysqlDbSystemResource() *schema.Resource {
 				ForceNew:         true,
 				DiffSuppressFunc: tfresource.MySqlVersionDiffSuppress,
 			},
+			"nsg_ids": {
+				Type:     schema.TypeSet,
+				Optional: true,
+				Computed: true,
+				Set:      tfresource.LiteralTypeHashCodeForSets,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+			},
 			"port": {
 				Type:     schema.TypeInt,
 				Optional: true,
@@ -390,6 +429,31 @@ func MysqlMysqlDbSystemResource() *schema.Resource {
 						},
 						"read_endpoint_ip_address": {
 							Type:     schema.TypeString,
+							Optional: true,
+							Computed: true,
+						},
+
+						// Computed
+					},
+				},
+			},
+			"rest": {
+				Type:     schema.TypeList,
+				Optional: true,
+				Computed: true,
+				MaxItems: 1,
+				MinItems: 1,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						// Required
+						"configuration": {
+							Type:     schema.TypeString,
+							Required: true,
+						},
+
+						// Optional
+						"port": {
+							Type:     schema.TypeInt,
 							Optional: true,
 							Computed: true,
 						},
@@ -1102,6 +1166,17 @@ func (s *MysqlMysqlDbSystemResourceCrud) Create() error {
 		request.DisplayName = &tmp
 	}
 
+	if encryptData, ok := s.D.GetOkExists("encrypt_data"); ok {
+		if tmpList := encryptData.([]interface{}); len(tmpList) > 0 {
+			fieldKeyFormat := fmt.Sprintf("%s.%d.%%s", "encrypt_data", 0)
+			tmp, err := s.mapToEncryptDataDetails(fieldKeyFormat)
+			if err != nil {
+				return err
+			}
+			request.EncryptData = &tmp
+		}
+	}
+
 	if faultDomain, ok := s.D.GetOkExists("fault_domain"); ok {
 		tmp := faultDomain.(string)
 		request.FaultDomain = &tmp
@@ -1142,6 +1217,20 @@ func (s *MysqlMysqlDbSystemResourceCrud) Create() error {
 		request.MysqlVersion = &tmp
 	}
 
+	if nsgIds, ok := s.D.GetOkExists("nsg_ids"); ok {
+		set := nsgIds.(*schema.Set)
+		interfaces := set.List()
+		tmp := make([]string, len(interfaces))
+		for i := range interfaces {
+			if interfaces[i] != nil {
+				tmp[i] = interfaces[i].(string)
+			}
+		}
+		if len(tmp) != 0 || s.D.HasChange("nsg_ids") {
+			request.NsgIds = tmp
+		}
+	}
+
 	if port, ok := s.D.GetOkExists("port"); ok {
 		tmp := port.(int)
 		request.Port = &tmp
@@ -1160,6 +1249,17 @@ func (s *MysqlMysqlDbSystemResourceCrud) Create() error {
 				return err
 			}
 			request.ReadEndpoint = &tmp
+		}
+	}
+
+	if rest, ok := s.D.GetOkExists("rest"); ok {
+		if tmpList := rest.([]interface{}); len(tmpList) > 0 {
+			fieldKeyFormat := fmt.Sprintf("%s.%d.%%s", "rest", 0)
+			tmp, err := s.mapToCreateRestDetails(fieldKeyFormat)
+			if err != nil {
+				return err
+			}
+			request.Rest = &tmp
 		}
 	}
 
@@ -1327,6 +1427,17 @@ func (s *MysqlMysqlDbSystemResourceCrud) Update() error {
 		request.DisplayName = &tmp
 	}
 
+	if encryptData, ok := s.D.GetOkExists("encrypt_data"); ok && s.D.HasChange("encrypt_data") {
+		if tmpList := encryptData.([]interface{}); len(tmpList) > 0 {
+			fieldKeyFormat := fmt.Sprintf("%s.%d.%%s", "encrypt_data", 0)
+			tmp, err := s.mapToEncryptDataDetails(fieldKeyFormat)
+			if err != nil {
+				return err
+			}
+			request.EncryptData = &tmp
+		}
+	}
+
 	if freeformTags, ok := s.D.GetOkExists("freeform_tags"); ok && s.D.HasChange("freeform_tags") {
 		request.FreeformTags = tfresource.ObjectMapToStringMap(freeformTags.(map[string]interface{}))
 	}
@@ -1352,6 +1463,20 @@ func (s *MysqlMysqlDbSystemResourceCrud) Update() error {
 		}
 	}
 
+	if nsgIds, ok := s.D.GetOkExists("nsg_ids"); ok {
+		set := nsgIds.(*schema.Set)
+		interfaces := set.List()
+		tmp := make([]string, len(interfaces))
+		for i := range interfaces {
+			if interfaces[i] != nil {
+				tmp[i] = interfaces[i].(string)
+			}
+		}
+		if s.D.HasChange("nsg_ids") {
+			request.NsgIds = tmp
+		}
+	}
+
 	if readEndpoint, ok := s.D.GetOkExists("read_endpoint"); ok && s.D.HasChange("read_endpoint") {
 		if tmpList := readEndpoint.([]interface{}); len(tmpList) > 0 {
 			fieldKeyFormat := fmt.Sprintf("%s.%d.%%s", "read_endpoint", 0)
@@ -1360,6 +1485,17 @@ func (s *MysqlMysqlDbSystemResourceCrud) Update() error {
 				return err
 			}
 			request.ReadEndpoint = &tmp
+		}
+	}
+
+	if rest, ok := s.D.GetOkExists("rest"); ok && s.D.HasChange("rest") {
+		if tmpList := rest.([]interface{}); len(tmpList) > 0 {
+			fieldKeyFormat := fmt.Sprintf("%s.%d.%%s", "rest", 0)
+			tmp, err := s.mapToUpdateRestDetails(fieldKeyFormat)
+			if err != nil {
+				return err
+			}
+			request.Rest = &tmp
 		}
 	}
 
@@ -1474,6 +1610,12 @@ func (s *MysqlMysqlDbSystemResourceCrud) SetData() error {
 		s.D.Set("display_name", *s.Res.DisplayName)
 	}
 
+	if s.Res.EncryptData != nil {
+		s.D.Set("encrypt_data", []interface{}{EncryptDataDetailsToMap(s.Res.EncryptData)})
+	} else {
+		s.D.Set("encrypt_data", nil)
+	}
+
 	endpoints := []interface{}{}
 	for _, item := range s.Res.Endpoints {
 		endpoints = append(endpoints, DbSystemEndpointToMap(item))
@@ -1522,6 +1664,12 @@ func (s *MysqlMysqlDbSystemResourceCrud) SetData() error {
 		s.D.Set("mysql_version", *s.Res.MysqlVersion)
 	}
 
+	nsgIds := []interface{}{}
+	for _, item := range s.Res.NsgIds {
+		nsgIds = append(nsgIds, item)
+	}
+	s.D.Set("nsg_ids", schema.NewSet(tfresource.LiteralTypeHashCodeForSets, nsgIds))
+
 	if s.Res.PointInTimeRecoveryDetails != nil {
 		s.D.Set("point_in_time_recovery_details", []interface{}{PointInTimeRecoveryDetailsToMap(s.Res.PointInTimeRecoveryDetails)})
 	} else {
@@ -1540,6 +1688,12 @@ func (s *MysqlMysqlDbSystemResourceCrud) SetData() error {
 		s.D.Set("read_endpoint", []interface{}{ReadEndpointDetailsToMap(s.Res.ReadEndpoint)})
 	} else {
 		s.D.Set("read_endpoint", nil)
+	}
+
+	if s.Res.Rest != nil {
+		s.D.Set("rest", []interface{}{RestDetailsToMap(s.Res.Rest)})
+	} else {
+		s.D.Set("rest", nil)
 	}
 
 	if s.Res.SecureConnections != nil {
@@ -1957,6 +2111,10 @@ func (s *MysqlMysqlDbSystemResourceCrud) mapToCreateBackupPolicyDetails(fieldKey
 		result.RetentionInDays = &tmp
 	}
 
+	if softDelete, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "soft_delete")); ok {
+		result.SoftDelete = oci_mysql.SoftDeleteEnum(softDelete.(string))
+	}
+
 	if windowStartTime, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "window_start_time")); ok {
 		tmp := windowStartTime.(string)
 		result.WindowStartTime = &tmp
@@ -2237,6 +2395,48 @@ func ReadEndpointDetailsToMap(obj *oci_mysql.ReadEndpointDetails) map[string]int
 	return result
 }
 
+func (s *MysqlMysqlDbSystemResourceCrud) mapToCreateRestDetails(fieldKeyFormat string) (oci_mysql.CreateRestDetails, error) {
+	result := oci_mysql.CreateRestDetails{}
+
+	if configuration, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "configuration")); ok {
+		result.Configuration = oci_mysql.RestConfigurationTypeEnum(configuration.(string))
+	}
+
+	if port, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "port")); ok {
+		tmp := port.(int)
+		result.Port = &tmp
+	}
+
+	return result, nil
+}
+
+func (s *MysqlMysqlDbSystemResourceCrud) mapToUpdateRestDetails(fieldKeyFormat string) (oci_mysql.UpdateRestDetails, error) {
+	result := oci_mysql.UpdateRestDetails{}
+
+	if configuration, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "configuration")); ok {
+		result.Configuration = oci_mysql.RestConfigurationTypeEnum(configuration.(string))
+	}
+
+	if port, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "port")); ok {
+		tmp := port.(int)
+		result.Port = &tmp
+	}
+
+	return result, nil
+}
+
+func RestDetailsToMap(obj *oci_mysql.RestDetails) map[string]interface{} {
+	result := map[string]interface{}{}
+
+	result["configuration"] = string(obj.Configuration)
+
+	if obj.Port != nil {
+		result["port"] = int(*obj.Port)
+	}
+
+	return result
+}
+
 func (s *MysqlMysqlDbSystemResourceCrud) mapToCustomerContact(fieldKeyFormat string) (oci_mysql.CustomerContact, error) {
 	result := oci_mysql.CustomerContact{}
 
@@ -2267,6 +2467,33 @@ func DbSystemPlacementToMap(obj *oci_mysql.DbSystemPlacement) map[string]interfa
 
 	if obj.FaultDomain != nil {
 		result["fault_domain"] = string(*obj.FaultDomain)
+	}
+
+	return result
+}
+
+func (s *MysqlMysqlDbSystemResourceCrud) mapToEncryptDataDetails(fieldKeyFormat string) (oci_mysql.EncryptDataDetails, error) {
+	result := oci_mysql.EncryptDataDetails{}
+
+	if keyGenerationType, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "key_generation_type")); ok {
+		result.KeyGenerationType = oci_mysql.KeyGenerationTypeEnum(keyGenerationType.(string))
+	}
+
+	if keyId, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "key_id")); ok {
+		tmp := keyId.(string)
+		result.KeyId = &tmp
+	}
+
+	return result, nil
+}
+
+func EncryptDataDetailsToMap(obj *oci_mysql.EncryptDataDetails) map[string]interface{} {
+	result := map[string]interface{}{}
+
+	result["key_generation_type"] = string(obj.KeyGenerationType)
+
+	if obj.KeyId != nil {
+		result["key_id"] = string(*obj.KeyId)
 	}
 
 	return result
@@ -2385,6 +2612,10 @@ func (s *MysqlMysqlDbSystemResourceCrud) mapToUpdateBackupPolicyDetails(fieldKey
 	if retentionInDays, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "retention_in_days")); ok {
 		tmp := retentionInDays.(int)
 		result.RetentionInDays = &tmp
+	}
+
+	if softDelete, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "soft_delete")); ok {
+		result.SoftDelete = oci_mysql.SoftDeleteEnum(softDelete.(string))
 	}
 
 	if windowStartTime, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "window_start_time")); ok {

@@ -94,6 +94,12 @@ func (s *MysqlReplicaDataSourceCrud) SetData() error {
 		s.D.Set("display_name", *s.Res.DisplayName)
 	}
 
+	if s.Res.EncryptData != nil {
+		s.D.Set("encrypt_data", []interface{}{EncryptDataDetailsToMap(s.Res.EncryptData)})
+	} else {
+		s.D.Set("encrypt_data", nil)
+	}
+
 	if s.Res.FaultDomain != nil {
 		s.D.Set("fault_domain", *s.Res.FaultDomain)
 	}
@@ -117,6 +123,8 @@ func (s *MysqlReplicaDataSourceCrud) SetData() error {
 		s.D.Set("mysql_version", *s.Res.MysqlVersion)
 	}
 
+	s.D.Set("nsg_ids", s.Res.NsgIds)
+
 	if s.Res.Port != nil {
 		s.D.Set("port", *s.Res.Port)
 	}
@@ -126,7 +134,7 @@ func (s *MysqlReplicaDataSourceCrud) SetData() error {
 	}
 
 	if s.Res.ReplicaOverrides != nil {
-		s.D.Set("replica_overrides", []interface{}{ReplicaOverridesToMap(s.Res.ReplicaOverrides)})
+		s.D.Set("replica_overrides", []interface{}{ReplicaOverridesToMap(s.Res.ReplicaOverrides, true)})
 	} else {
 		s.D.Set("replica_overrides", nil)
 	}

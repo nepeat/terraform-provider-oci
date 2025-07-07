@@ -27,6 +27,9 @@ type UpdateDbSystemDetails struct {
 	// The OCID of the subnet the DB System is associated with.
 	SubnetId *string `mandatory:"false" json:"subnetId"`
 
+	// Network Security Group OCIDs used for the VNIC attachment.
+	NsgIds []string `mandatory:"false" json:"nsgIds"`
+
 	// The database mode indicating the types of statements that will be allowed to run in the DB system.
 	// This mode will apply only to statements run by user connections. Replicated write statements will continue
 	// to be allowed regardless of the DatabaseMode.
@@ -40,6 +43,8 @@ type UpdateDbSystemDetails struct {
 	//    RESTRICTED will correspond to setting the MySQL system variable
 	//    offline_mode (https://dev.mysql.com/doc/en/server-system-variables.html#sysvar_offline_mode) to ON.
 	AccessMode DbSystemAccessModeEnum `mandatory:"false" json:"accessMode,omitempty"`
+
+	Rest *UpdateRestDetails `mandatory:"false" json:"rest"`
 
 	// Specifies if the DB System is highly available.
 	// Set to true to enable high availability. Two secondary MySQL instances are created and placed in the unused
@@ -138,6 +143,8 @@ type UpdateDbSystemDetails struct {
 	DatabaseManagement DatabaseManagementStatusEnum `mandatory:"false" json:"databaseManagement,omitempty"`
 
 	SecureConnections *SecureConnectionDetails `mandatory:"false" json:"secureConnections"`
+
+	EncryptData *EncryptDataDetails `mandatory:"false" json:"encryptData"`
 
 	// The list of customer email addresses that receive information from Oracle about the specified OCI DB System resource.
 	// Oracle uses these email addresses to send notifications about planned and unplanned software maintenance updates, information about system hardware, and other information needed by administrators.

@@ -724,6 +724,69 @@ func CommonTestVariables() string {
 	`
 }
 
+func BaseDBCommonTestVariables() string {
+	return fmt.Sprintf(`
+variable "tenancy_ocid" {
+default = "%s"
+}
+
+variable "compartment_ocid" {
+default = "%s"
+}
+
+variable "compartment_id" {
+default = "%s"
+}
+
+variable "region" {
+default = "%s"
+}
+
+variable "ssh_public_key" {
+default = "%s"
+}
+
+variable "kms_key_id" {
+default = "%s"
+}
+
+variable "kms_key_version_id" {
+default = "%s"
+}
+
+variable "vault_id" {
+default = "%s"
+}
+
+variable "ssl_secret_id" {
+default = "%s"
+}
+
+variable "admin_password" {
+default = "%s"
+}
+
+variable "tag_namespace_name" {
+default = "%s"
+}`,
+		getEnvSettingWithBlankDefaultVar("tenancy_ocid"),
+		getEnvSettingWithBlankDefaultVar("compartment_ocid"),
+		getEnvSettingWithBlankDefaultVar("compartment_ocid"),
+		getEnvSettingWithBlankDefaultVar("region"),
+		getEnvSettingWithBlankDefaultVar("ssh_public_key"),
+		getEnvSettingWithBlankDefaultVar("kms_key_id"),
+		getEnvSettingWithBlankDefaultVar("kms_key_version_id"),
+		getEnvSettingWithBlankDefaultVar("vault_id"),
+		getEnvSettingWithDefaultVar("ssl_secret_id", "test_secret_id"),
+		getEnvSettingWithBlankDefaultVar("admin_password"),
+		getEnvSettingWithDefaultVar("tag_namespace_name", "tfTagNamespace"),
+	)
+}
+
+func BaseDBProviderTestConfig() string {
+	return BaseDBCommonTestVariables()
+}
+
 func GetTestClients(data *schema.ResourceData) *tf_client.OracleClients {
 	r := &schema.Resource{
 		Schema: tf_provider.SchemaMap(),

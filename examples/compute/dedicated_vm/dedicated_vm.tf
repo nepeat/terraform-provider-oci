@@ -1,23 +1,19 @@
 // Copyright (c) 2017, 2024, Oracle and/or its affiliates. All rights reserved.
 // Licensed under the Mozilla Public License v2.0
 
-variable "tenancy_ocid" {
-}
+variable "tenancy_ocid" {}
 
-variable "user_ocid" {
-}
+variable "user_ocid" {}
 
-variable "fingerprint" {
-}
+variable "fingerprint" {}
 
-variable "private_key_path" {
-}
+variable "private_key_path" {}
 
-variable "region" {
-}
+variable "region" {}
 
-variable "compartment_ocid" {
-}
+variable "compartment_ocid" {}
+
+variable subnet_id {}
 
 variable "instance_image_ocid" {
   type = map(string)
@@ -25,19 +21,39 @@ variable "instance_image_ocid" {
   default = {
     # See https://docs.us-phoenix-1.oraclecloud.com/images/
     # Oracle-provided image "Oracle-Linux-7.5-2018.10.16-0"
-    us-phoenix-1   = "ocid1.image.oc1.phx.aaaaaaaaoqj42sokaoh42l76wsyhn3k2beuntrh5maj3gmgmzeyr55zzrwwa"
-    us-ashburn-1   = "ocid1.image.oc1.iad.aaaaaaaageeenzyuxgia726xur4ztaoxbxyjlxogdhreu3ngfj2gji3bayda"
-    eu-frankfurt-1 = "ocid1.image.oc1.eu-frankfurt-1.aaaaaaaaitzn6tdyjer7jl34h2ujz74jwy5nkbukbh55ekp6oyzwrtfa4zma"
-    uk-london-1    = "ocid1.image.oc1.uk-london-1.aaaaaaaa32voyikkkzfxyo4xbdmadc2dmvorfxxgdhpnk6dw64fa3l4jh7wa"
   }
 }
 
+locals {
+  # For resource "oci_core_dedicated_vm_host" "test_dedicated_vm_host"
+  dvh_shape        = "DVH.DenseIO.E4.128"
+  dvh_display_name = "TestDedicatedVmHost"
+
+  # For resource "oci_core_instance" "test_instance"
+  vmi_display_name                    = "TestInstance"
+  vmi_shape                           = "VM.DenseIO.E4.Flex"
+  instance_shape_config_memory_in_gbs = "128"
+  instance_shape_config_ocpus         = "8"
+  instance_shape_config_nvmes         = "1"
+
+  # For data "oci_core_dedicated_vm_hosts" "test_dedicated_vm_hosts"
+  dvh_lifecycle_state                              = "ACTIVE"
+  remaining_memory_in_gbs_greater_than_or_equal_to = "512.0"
+  remaining_ocpus_greater_than_or_equal_to         = "32.0"
+
+  # For data "oci_core_subnet" "test_subnet"
+  subnet_id = var.subnet_id
+}
+
 provider "oci" {
-  tenancy_ocid     = var.tenancy_ocid
-  user_ocid        = var.user_ocid
-  fingerprint      = var.fingerprint
-  private_key_path = var.private_key_path
-  region           = var.region
+  auth                = "SecurityToken"
+  config_file_profile = ""
+  tenancy_ocid        = var.tenancy_ocid
+  user_ocid           = var.user_ocid
+  fingerprint         = var.fingerprint
+  private_key_path    = var.private_key_path
+  region              = var.region
+  # version             = "7.1.0"
 }
 
 data "oci_identity_availability_domain" "ad" {
@@ -49,31 +65,46 @@ resource "oci_core_dedicated_vm_host" "test_dedicated_vm_host" {
   #Required
   availability_domain     = data.oci_identity_availability_domain.ad.name
   compartment_id          = var.compartment_ocid
-  dedicated_vm_host_shape = "DVH.Standard2.52"
+  dedicated_vm_host_shape = local.dvh_shape
 
   #Optional
-  #  defined_tags = {
-  #   "${oci_identity_tag_namespace.tag-namespace1.name}.${oci_identity_tag.tag1.name}" = "value"
-  #  }
-  #freeform_tags = var.dedicated_vm_host_freeform_tags
-  display_name = "TestDedicatedVmHost"
+  display_name = local.dvh_display_name
+
+  timeouts {
+    create = "60m"
+  }
 }
 
 # instance using dedicated vm host
 resource "oci_core_instance" "test_instance" {
+  # Required
   availability_domain = data.oci_identity_availability_domain.ad.name
   compartment_id      = var.compartment_ocid
-  display_name        = "TestInstance"
-  shape               = "VM.Standard2.1"
+  shape               = local.vmi_shape
+
+  # Optional but required for DVH Testing
+  dedicated_vm_host_id = oci_core_dedicated_vm_host.test_dedicated_vm_host.id
+
+  # Optional
+  display_name = local.vmi_display_name
+  shape_config {
+    memory_in_gbs = local.instance_shape_config_memory_in_gbs
+    ocpus         = local.instance_shape_config_ocpus
+    nvmes         = local.instance_shape_config_nvmes
+  }
+  instance_options {
+    are_legacy_imds_endpoints_disabled = true
+  }
+  availability_config {
+    recovery_action = "RESTORE_INSTANCE"
+  }
 
   create_vnic_details {
-    subnet_id        = oci_core_subnet.test_subnet.id
+    subnet_id        = data.oci_core_subnet.test_subnet.id
     display_name     = "Primaryvnic"
     assign_public_ip = true
     hostname_label   = "TestInstanceLabel"
   }
-
-  dedicated_vm_host_id = oci_core_dedicated_vm_host.test_dedicated_vm_host.id
 
   source_details {
     source_type = "image"
@@ -81,7 +112,7 @@ resource "oci_core_instance" "test_instance" {
     # Apply this to set the size of the boot volume that's created for this instance.
     # Otherwise, the default boot volume size of the image is used.
     # This should only be specified when source_type is set to "image".
-    #boot_volume_size_in_gbs = "60"
+    # boot_volume_size_in_gbs = "60"
   }
 
   timeouts {
@@ -89,23 +120,8 @@ resource "oci_core_instance" "test_instance" {
   }
 }
 
-resource "oci_core_vcn" "test_vcn" {
-  cidr_block     = "10.1.0.0/16"
-  compartment_id = var.compartment_ocid
-  display_name   = "TestVcn"
-  dns_label      = "testvcn"
-}
-
-resource "oci_core_subnet" "test_subnet" {
-  availability_domain = data.oci_identity_availability_domain.ad.name
-  cidr_block          = "10.1.20.0/24"
-  display_name        = "TestSubnet"
-  dns_label           = "testsubnet"
-  security_list_ids   = [oci_core_vcn.test_vcn.default_security_list_id]
-  compartment_id      = var.compartment_ocid
-  vcn_id              = oci_core_vcn.test_vcn.id
-  route_table_id      = oci_core_vcn.test_vcn.default_route_table_id
-  dhcp_options_id     = oci_core_vcn.test_vcn.default_dhcp_options_id
+data "oci_core_subnet" "test_subnet" {
+  subnet_id = local.subnet_id
 }
 
 data "oci_core_dedicated_vm_hosts" "test_dedicated_vm_hosts" {
@@ -113,10 +129,12 @@ data "oci_core_dedicated_vm_hosts" "test_dedicated_vm_hosts" {
   compartment_id = var.compartment_ocid
 
   #Optional
-  availability_domain = data.oci_identity_availability_domain.ad.name
-  display_name        = "TestDedicatedVmHost"
-  instance_shape_name = "VM.Standard2.1"
-  state               = "ACTIVE"
+  availability_domain                              = data.oci_identity_availability_domain.ad.name
+  display_name                                     = local.dvh_display_name
+  instance_shape_name                              = local.vmi_shape
+  remaining_memory_in_gbs_greater_than_or_equal_to = local.remaining_memory_in_gbs_greater_than_or_equal_to
+  remaining_ocpus_greater_than_or_equal_to         = local.remaining_ocpus_greater_than_or_equal_to
+  state                                            = local.dvh_lifecycle_state
 }
 
 data "oci_core_dedicated_vm_host_instance_shapes" "test_dedicated_vm_host_instance_shapes" {
@@ -125,7 +143,7 @@ data "oci_core_dedicated_vm_host_instance_shapes" "test_dedicated_vm_host_instan
 
   #Optional
   availability_domain     = data.oci_identity_availability_domain.ad.name
-  dedicated_vm_host_shape = "DVH.Standard2.52"
+  dedicated_vm_host_shape = local.dvh_shape
 }
 
 data "oci_core_dedicated_vm_host_shapes" "test_dedicated_vm_host_shapes" {
@@ -134,34 +152,27 @@ data "oci_core_dedicated_vm_host_shapes" "test_dedicated_vm_host_shapes" {
 
   #Optional
   availability_domain = data.oci_identity_availability_domain.ad.name
-  instance_shape_name = "VM.Standard2.1"
+  instance_shape_name = local.vmi_shape
 }
 
-data "oci_core_dedicated_vm_hosts_instances" "test_dedicated_vm_hosts_instances" {
-  #Required
-  compartment_id       = var.compartment_ocid
+data "oci_core_dedicated_vm_host" "test_oci_core_dedicated_vm_host" {
   dedicated_vm_host_id = oci_core_dedicated_vm_host.test_dedicated_vm_host.id
-
-  #Optional
-  availability_domain = data.oci_identity_availability_domain.ad.name
-  depends_on          = [oci_core_instance.test_instance]
 }
 
-#output the dedidcated vm host ids
-output "dedicated_hos_idst" {
+#output the dedicated vm host ids
+output "dedicated_host_ids" {
   value = [data.oci_core_dedicated_vm_hosts.test_dedicated_vm_hosts.id]
 }
 
-#output the dedidcated vm host ids
+#output the dedicated vm host ids
 output "dedicated_host_shapes" {
   value = [data.oci_core_dedicated_vm_host_shapes.test_dedicated_vm_host_shapes.dedicated_vm_host_shapes]
-}
-
-output "dedicated_vm_host_instances" {
-  value = [data.oci_core_dedicated_vm_hosts_instances.test_dedicated_vm_hosts_instances.dedicated_vm_host_instances]
 }
 
 output "dedicated_vm_host_instance_shapes" {
   value = [data.oci_core_dedicated_vm_host_instance_shapes.test_dedicated_vm_host_instance_shapes.dedicated_vm_host_instance_shapes]
 }
 
+output "dedicated_vm_host_data" {
+  value = [data.oci_core_dedicated_vm_host.test_oci_core_dedicated_vm_host.*]
+}

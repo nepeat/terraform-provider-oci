@@ -47,6 +47,10 @@ type ExternalPluggableDatabaseSummary struct {
 	// For more information, see Resource Tags (https://docs.oracle.com/iaas/Content/General/Concepts/resourcetags.htm).
 	DefinedTags map[string]map[string]interface{} `mandatory:"false" json:"definedTags"`
 
+	// System tags for this resource. Each key is predefined and scoped to a namespace.
+	// For more information, see Resource Tags (https://docs.oracle.com/iaas/Content/General/Concepts/resourcetags.htm).
+	SystemTags map[string]map[string]interface{} `mandatory:"false" json:"systemTags"`
+
 	// Additional information about the current lifecycle state.
 	LifecycleDetails *string `mandatory:"false" json:"lifecycleDetails"`
 
@@ -59,7 +63,8 @@ type ExternalPluggableDatabaseSummary struct {
 	// The Oracle Database version.
 	DatabaseVersion *string `mandatory:"false" json:"databaseVersion"`
 
-	// The Oracle Database edition.
+	// The Oracle Database Edition that applies to all the databases on the DB system.
+	// Exadata DB systems and 2-node RAC DB systems require ENTERPRISE_EDITION_EXTREME_PERFORMANCE.
 	DatabaseEdition ExternalPluggableDatabaseSummaryDatabaseEditionEnum `mandatory:"false" json:"databaseEdition,omitempty"`
 
 	// The time zone of the external database.
@@ -186,6 +191,7 @@ const (
 	ExternalPluggableDatabaseSummaryDatabaseEditionEnterpriseEdition                   ExternalPluggableDatabaseSummaryDatabaseEditionEnum = "ENTERPRISE_EDITION"
 	ExternalPluggableDatabaseSummaryDatabaseEditionEnterpriseEditionHighPerformance    ExternalPluggableDatabaseSummaryDatabaseEditionEnum = "ENTERPRISE_EDITION_HIGH_PERFORMANCE"
 	ExternalPluggableDatabaseSummaryDatabaseEditionEnterpriseEditionExtremePerformance ExternalPluggableDatabaseSummaryDatabaseEditionEnum = "ENTERPRISE_EDITION_EXTREME_PERFORMANCE"
+	ExternalPluggableDatabaseSummaryDatabaseEditionEnterpriseEditionDeveloper          ExternalPluggableDatabaseSummaryDatabaseEditionEnum = "ENTERPRISE_EDITION_DEVELOPER"
 )
 
 var mappingExternalPluggableDatabaseSummaryDatabaseEditionEnum = map[string]ExternalPluggableDatabaseSummaryDatabaseEditionEnum{
@@ -193,6 +199,7 @@ var mappingExternalPluggableDatabaseSummaryDatabaseEditionEnum = map[string]Exte
 	"ENTERPRISE_EDITION":                     ExternalPluggableDatabaseSummaryDatabaseEditionEnterpriseEdition,
 	"ENTERPRISE_EDITION_HIGH_PERFORMANCE":    ExternalPluggableDatabaseSummaryDatabaseEditionEnterpriseEditionHighPerformance,
 	"ENTERPRISE_EDITION_EXTREME_PERFORMANCE": ExternalPluggableDatabaseSummaryDatabaseEditionEnterpriseEditionExtremePerformance,
+	"ENTERPRISE_EDITION_DEVELOPER":           ExternalPluggableDatabaseSummaryDatabaseEditionEnterpriseEditionDeveloper,
 }
 
 var mappingExternalPluggableDatabaseSummaryDatabaseEditionEnumLowerCase = map[string]ExternalPluggableDatabaseSummaryDatabaseEditionEnum{
@@ -200,6 +207,7 @@ var mappingExternalPluggableDatabaseSummaryDatabaseEditionEnumLowerCase = map[st
 	"enterprise_edition":                     ExternalPluggableDatabaseSummaryDatabaseEditionEnterpriseEdition,
 	"enterprise_edition_high_performance":    ExternalPluggableDatabaseSummaryDatabaseEditionEnterpriseEditionHighPerformance,
 	"enterprise_edition_extreme_performance": ExternalPluggableDatabaseSummaryDatabaseEditionEnterpriseEditionExtremePerformance,
+	"enterprise_edition_developer":           ExternalPluggableDatabaseSummaryDatabaseEditionEnterpriseEditionDeveloper,
 }
 
 // GetExternalPluggableDatabaseSummaryDatabaseEditionEnumValues Enumerates the set of values for ExternalPluggableDatabaseSummaryDatabaseEditionEnum
@@ -218,6 +226,7 @@ func GetExternalPluggableDatabaseSummaryDatabaseEditionEnumStringValues() []stri
 		"ENTERPRISE_EDITION",
 		"ENTERPRISE_EDITION_HIGH_PERFORMANCE",
 		"ENTERPRISE_EDITION_EXTREME_PERFORMANCE",
+		"ENTERPRISE_EDITION_DEVELOPER",
 	}
 }
 

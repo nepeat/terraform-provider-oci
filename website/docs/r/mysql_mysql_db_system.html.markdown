@@ -45,6 +45,7 @@ resource "oci_mysql_mysql_db_system" "test_mysql_db_system" {
 			is_enabled = var.mysql_db_system_backup_policy_pitr_policy_is_enabled
 		}
 		retention_in_days = var.mysql_db_system_backup_policy_retention_in_days
+		soft_delete = var.mysql_db_system_backup_policy_soft_delete
 		window_start_time = var.mysql_db_system_backup_policy_window_start_time
 	}
 	configuration_id = oci_audit_configuration.test_configuration.id
@@ -72,6 +73,13 @@ resource "oci_mysql_mysql_db_system" "test_mysql_db_system" {
 	}
 	description = var.mysql_db_system_description
 	display_name = var.mysql_db_system_display_name
+	encrypt_data {
+		#Required
+		key_generation_type = var.mysql_db_system_encrypt_data_key_generation_type
+
+		#Optional
+		key_id = oci_kms_key.test_key.id
+	}
 	fault_domain = var.mysql_db_system_fault_domain
 	freeform_tags = {"bar-key"= "value"}
 	hostname_label = var.mysql_db_system_hostname_label
@@ -81,6 +89,7 @@ resource "oci_mysql_mysql_db_system" "test_mysql_db_system" {
 		#Required
 		window_start_time = var.mysql_db_system_maintenance_window_start_time
 	}
+	nsg_ids = var.mysql_db_system_nsg_ids
 	port = var.mysql_db_system_port
 	port_x = var.mysql_db_system_port_x
 	read_endpoint {
@@ -90,6 +99,13 @@ resource "oci_mysql_mysql_db_system" "test_mysql_db_system" {
 		is_enabled = var.mysql_db_system_read_endpoint_is_enabled
 		read_endpoint_hostname_label = var.mysql_db_system_read_endpoint_read_endpoint_hostname_label
 		read_endpoint_ip_address = var.mysql_db_system_read_endpoint_read_endpoint_ip_address
+	}
+	rest {
+		#Required
+		configuration = var.mysql_db_system_rest_configuration
+
+		#Optional
+		port = var.mysql_db_system_rest_port
 	}
 	secure_connections {
 		#Required
@@ -145,6 +161,7 @@ The following arguments are supported:
 	* `pitr_policy` - (Optional) (Updatable) The PITR policy for the DB System.
 		* `is_enabled` - (Required) (Updatable) Specifies if PITR is enabled or disabled.
 	* `retention_in_days` - (Optional) (Updatable) Number of days to retain an automatic backup.
+	* `soft_delete` - (Optional) (Updatable) Retains the backup to be deleted due to the retention policy in DELETE SCHEDULED state for 7 days before permanently deleting it. 
 	* `window_start_time` - (Optional) (Updatable) The start of a 30-minute window of time in which daily, automated backups occur.
 
 		This should be in the format of the "Time" portion of an RFC3339-formatted timestamp. Any second or sub-second time data will be truncated to zero.
@@ -174,6 +191,9 @@ The following arguments are supported:
 	* `is_delete_protected` - (Optional) (Updatable) Specifies whether the DB System can be deleted. Set to true to prevent deletion, false (default) to allow. 
 * `description` - (Optional) (Updatable) User-provided data about the DB System.
 * `display_name` - (Optional) (Updatable) The user-friendly name for the DB System. It does not have to be unique.
+* `encrypt_data` - (Optional) (Updatable) Encrypt data details. 
+	* `key_generation_type` - (Required) (Updatable) Select whether to use Oracle-managed key (SYSTEM) or your own key (BYOK).
+	* `key_id` - (Optional) (Updatable) The OCID of the key to use.
 * `fault_domain` - (Optional) The fault domain on which to deploy the Read/Write endpoint. This defines the preferred primary instance.
 
 	In a failover scenario, the Read/Write endpoint is redirected to one of the other fault domains and the MySQL instance in that domain is promoted to the primary instance. This redirection does not affect the IP address of the DB System in any way.
@@ -200,6 +220,7 @@ The following arguments are supported:
 
 		If you set the read replica maintenance window to "" or if not specified, the read replica is set same as the DB system maintenance window. 
 * `mysql_version` - (Optional) The specific MySQL version identifier.
+* `nsg_ids` - (Optional) (Updatable) Network Security Group OCIDs used for the VNIC attachment.
 * `port` - (Optional) The port for primary endpoint of the DB System to listen on.
 * `port_x` - (Optional) The TCP network port on which X Plugin listens for connections. This is the X Plugin equivalent of port. 
 * `read_endpoint` - (Optional) (Updatable) Details required to create a Read Endpoint. 
@@ -211,6 +232,9 @@ The following arguments are supported:
 
 		Must be unique across all VNICs in the subnet and comply with RFC 952 and RFC 1123. 
 	* `read_endpoint_ip_address` - (Optional) (Updatable) The IP address the DB System read endpoint is configured to listen on. A private IP address of your choice to assign to the read endpoint of the DB System. Must be an available IP address within the subnet's CIDR. If you don't specify a value, Oracle automatically assigns a private IP address from the subnet. This should be a "dotted-quad" style IPv4 address. 
+* `rest` - (Optional) (Updatable) Details required to configure REST while creating a DB System. 
+	* `configuration` - (Required) (Updatable) Select how REST is configured across the DB System instances.
+	* `port` - (Optional) (Updatable) The port for REST to listen on. Supported port numbers are 443 and from 1024 to 65535.
 * `secure_connections` - (Optional) (Updatable) Secure connection configuration details. 
 	* `certificate_generation_type` - (Required) (Updatable) Select whether to use MySQL Database Service-managed certificate (SYSTEM) or your own certificate (BYOC). 
 	* `certificate_id` - (Optional) (Updatable) The OCID of the certificate to use.
@@ -263,6 +287,7 @@ The following attributes are exported:
 	* `pitr_policy` - The PITR policy for the DB System.
 		* `is_enabled` - Specifies if PITR is enabled or disabled.
 	* `retention_in_days` - The number of days automated backups are retained. 
+	* `soft_delete` - Retains the backup to be deleted due to the retention policy in DELETE SCHEDULED state for 7 days before permanently deleting it. 
 	* `window_start_time` - The start of a 30-minute window of time in which daily, automated backups occur.
 
 		This should be in the format of the "Time" portion of an RFC3339-formatted timestamp. Any second or sub-second time data will be truncated to zero.
@@ -346,6 +371,9 @@ The following attributes are exported:
 	* `is_delete_protected` - Specifies whether the DB System can be deleted. Set to true to prevent deletion, false (default) to allow. 
 * `description` - User-provided data about the DB System.
 * `display_name` - The user-friendly name for the DB System. It does not have to be unique.
+* `encrypt_data` - Encrypt data details. 
+	* `key_generation_type` - Select whether to use Oracle-managed key (SYSTEM) or your own key (BYOK).
+	* `key_id` - The OCID of the key to use.
 * `endpoints` - The network endpoints available for this DB System. 
 	* `hostname` - The network address of the DB System.
 	* `ip_address` - The IP address the DB System is configured to listen on.
@@ -386,6 +414,7 @@ The following attributes are exported:
 
 		If you set the read replica maintenance window to "" or if not specified, the read replica is set same as the DB system maintenance window. 
 * `mysql_version` - Name of the MySQL Version in use for the DB System.
+* `nsg_ids` - Network Security Group OCIDs used for the VNIC attachment.
 * `point_in_time_recovery_details` - Point-in-time Recovery details like earliest and latest recovery time point for the DB System. 
 	* `time_earliest_recovery_point` - Earliest recovery time point for the DB System, as described by [RFC 3339](https://tools.ietf.org/rfc/rfc3339). 
 	* `time_latest_recovery_point` - Latest recovery time point for the DB System, as described by [RFC 3339](https://tools.ietf.org/rfc/rfc3339). 
@@ -400,6 +429,9 @@ The following attributes are exported:
 
 		Must be unique across all VNICs in the subnet and comply with RFC 952 and RFC 1123. 
 	* `read_endpoint_ip_address` - The IP address the DB System read endpoint is configured to listen on. A private IP address of your choice to assign to the read endpoint of the DB System. Must be an available IP address within the subnet's CIDR. If you don't specify a value, Oracle automatically assigns a private IP address from the subnet. This should be a "dotted-quad" style IPv4 address. 
+* `rest` - REST configuration details. 
+	* `configuration` - Select how REST is configured across the DB System instances.
+	* `port` - The port for REST to listen on. Supported port numbers are 443 and from 1024 to 65535.
 * `secure_connections` - Secure connection configuration details. 
 	* `certificate_generation_type` - Select whether to use MySQL Database Service-managed certificate (SYSTEM) or your own certificate (BYOC). 
 	* `certificate_id` - The OCID of the certificate to use.

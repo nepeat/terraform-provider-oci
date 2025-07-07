@@ -42,6 +42,8 @@ resource "oci_database_database" "test_database" {
 				#Optional
 				dbrs_policy_id = oci_identity_policy.test_policy.id
 				id = var.database_database_db_backup_config_backup_destination_details_id
+				is_remote = var.database_database_db_backup_config_backup_destination_details_is_remote
+				remote_region = var.database_database_db_backup_config_backup_destination_details_remote_region
 				type = var.database_database_db_backup_config_backup_destination_details_type
 			}
 			recovery_window_in_days = var.database_database_db_backup_config_recovery_window_in_days
@@ -53,8 +55,11 @@ resource "oci_database_database" "test_database" {
 		defined_tags = var.database_database_defined_tags
 		encryption_key_location_details {
 			#Required
-			hsm_password = var.database_database_encryption_key_location_details_hsm_password
 			provider_type = var.database_database_encryption_key_location_details_provider_type
+
+			#Optional
+			azure_encryption_key_id = oci_kms_key.test_key.id
+			hsm_password = var.database_database_encryption_key_location_details_hsm_password
 		}
 		freeform_tags = var.database_database_freeform_tags
 		key_store_id = oci_database_key_store.test_key_store.id
@@ -70,8 +75,11 @@ resource "oci_database_database" "test_database" {
 		source_tde_wallet_password = var.database_database_source_tde_wallet_password
 		source_encryption_key_location_details {
 			#Required
-			hsm_password = var.database_database_source_encryption_key_location_details_hsm_password
 			provider_type = var.database_database_source_encryption_key_location_details_provider_type
+
+			#Optional
+			azure_encryption_key_id = oci_kms_key.test_key.id
+			hsm_password = var.database_database_source_encryption_key_location_details_hsm_password
 		}
 		tde_wallet_password = var.database_database_tde_wallet_password
 		transport_type = var.database_database_transport_type
@@ -113,6 +121,10 @@ The following arguments are supported:
 		* `backup_destination_details` - (Applicable when source=NONE) Backup destination details.
 			* `dbrs_policy_id` - (Applicable when source=NONE) The [OCID](https://docs.cloud.oracle.com/iaas/Content/General/Concepts/identifiers.htm) of the DBRS policy used for backup.
 			* `id` - (Applicable when source=NONE) The [OCID](https://docs.cloud.oracle.com/iaas/Content/General/Concepts/identifiers.htm) of the backup destination.
+			* `is_remote` - (Applicable when source=NONE) Indicates whether the backup destination is cross-region or local region.
+			* `remote_region` - (Applicable when source=NONE) The name of the remote region where the remote automatic incremental backups will be stored.
+
+				For information about valid region names, see [Regions and Availability Domains](https://docs.cloud.oracle.com/iaas/Content/General/Concepts/regions.htm). 
 			* `type` - (Required when source=NONE) Type of the database backup destination.
 		* `recovery_window_in_days` - (Applicable when source=NONE) (Updatable) Number of days between the current and the earliest point of recoverability covered by automatic backups. This value applies to automatic backups only. After a new automatic backup has been created, Oracle removes old automatic backups that are created before the window. When the value is updated, it is applied to all existing automatic backups. 
 		* `run_immediate_full_backup` - (Applicable when source=NONE) If set to true, configures automatic full backups in the local region (the region of the DB system) for the first backup run immediately.
@@ -123,8 +135,9 @@ The following arguments are supported:
 		The database workload type. 
 	* `defined_tags` - (Applicable when source=NONE) (Updatable) Defined tags for this resource. Each key is predefined and scoped to a namespace. For more information, see [Resource Tags](https://docs.cloud.oracle.com/iaas/Content/General/Concepts/resourcetags.htm). 
 	* `encryption_key_location_details` - (Applicable when source=NONE) Types of providers supported for managing database encryption keys
-		* `hsm_password` - (Required) Provide the HSM password as you would in RDBMS for External HSM.
-		* `provider_type` - (Required) Use 'EXTERNAL' for creating a new database or migrate database key with External HSM.
+		* `azure_encryption_key_id` - (Required when provider_type=AZURE) Provide the key OCID of a registered Azure key.
+		* `hsm_password` - (Required when provider_type=EXTERNAL) Provide the HSM password as you would in RDBMS for External HSM.
+		* `provider_type` - (Required) Use 'EXTERNAL' for creating a new database or migrating a database key to an External HSM. Use 'AZURE' for creating a new database or migrating a database key to Azure. 
 	* `freeform_tags` - (Applicable when source=NONE) (Updatable) Free-form tags for this resource. Each tag is a simple key-value pair with no predefined name, type, or namespace. For more information, see [Resource Tags](https://docs.cloud.oracle.com/iaas/Content/General/Concepts/resourcetags.htm).  Example: `{"Department": "Finance"}` 
 	* `freeform_tags` - (Applicable when source=NONE) (Updatable) Free-form tags for this resource. Each tag is a simple key-value pair with no predefined name, type, or namespace. For more information, see [Resource Tags](https://docs.cloud.oracle.com/iaas/Content/General/Concepts/resourcetags.htm).  Example: `{"Department": "Finance"}`
 	* `key_store_id` - (Applicable when source=NONE) The [OCID](https://docs.cloud.oracle.com/iaas/Content/General/Concepts/identifiers.htm) of the key store of Oracle Vault.
@@ -136,10 +149,11 @@ The following arguments are supported:
 	* `pluggable_databases` - (Applicable when source=DB_BACKUP) The list of pluggable databases that needs to be restored into new database.
 	* `protection_mode` - (Required when source=DATAGUARD) The protection mode of this Data Guard. For more information, see [Oracle Data Guard Protection Modes](http://docs.oracle.com/database/122/SBYDB/oracle-data-guard-protection-modes.htm#SBYDB02000) in the Oracle Data Guard documentation. 
 	* `sid_prefix` - (Optional) Specifies a prefix for the `Oracle SID` of the database to be created. 
-	* `source_encryption_key_location_details` - (Applicable when source=DB_BACKUP) Types of providers supported for managing database encryption keys
-		* `hsm_password` - (Required) Provide the HSM password as you would in RDBMS for External HSM.
-		* `provider_type` - (Required) Use 'EXTERNAL' for creating a new database or migrate database key with External HSM.
 	* `source_database_id` - (Required when source=DATAGUARD) The [OCID](https://docs.cloud.oracle.com/iaas/Content/General/Concepts/identifiers.htm) of the source database.
+	* `source_encryption_key_location_details` - (Applicable when source=DATAGUARD | DB_BACKUP) Types of providers supported for managing database encryption keys
+		* `azure_encryption_key_id` - (Required when provider_type=AZURE) Provide the key OCID of a registered Azure key.
+		* `hsm_password` - (Required when provider_type=EXTERNAL) Provide the HSM password as you would in RDBMS for External HSM.
+		* `provider_type` - (Required) Use 'EXTERNAL' for creating a new database or migrating a database key to an External HSM. Use 'AZURE' for creating a new database or migrating a database key to Azure.
 	* `source_tde_wallet_password` - (Required when source=DATAGUARD) The TDE wallet password of the source database specified by 'sourceDatabaseId'.
 	* `tde_wallet_password` - (Applicable when source=NONE) The optional password to open the TDE wallet. The password must be at least nine characters and contain at least two uppercase, two lowercase, two numeric, and two special characters. The special characters must be _, \#, or -.
 	* `vault_id` - (Applicable when source=NONE) The [OCID](https://docs.cloud.oracle.com/iaas/Content/General/Concepts/identifiers.htm) of the Oracle Cloud Infrastructure [vault](https://docs.cloud.oracle.com/iaas/Content/KeyManagement/Concepts/keyoverview.htm#concepts). This parameter and `secretId` are required for Customer Managed Keys.
@@ -209,6 +223,12 @@ The following attributes are exported:
 	* `backup_destination_details` - Backup destination details.
 		* `dbrs_policy_id` - The [OCID](https://docs.cloud.oracle.com/iaas/Content/General/Concepts/identifiers.htm) of the DBRS policy used for backup.
 		* `id` - The [OCID](https://docs.cloud.oracle.com/iaas/Content/General/Concepts/identifiers.htm) of the backup destination.
+		* `is_remote` - Indicates whether the backup destination is cross-region or local region.
+		* `remote_region` - The name of the remote region where the remote automatic incremental backups will be stored.
+
+			For information about valid region names, see [Regions and Availability Domains](https://docs.cloud.oracle.com/iaas/Content/General/Concepts/regions.htm). 
+        * `vpc_password` - For a RECOVERY_APPLIANCE backup destination, the password for the VPC user that is used to access the Recovery Appliance.
+		* `vpc_user` - For a RECOVERY_APPLIANCE backup destination, the Virtual Private Catalog (VPC) user that is used to access the Recovery Appliance.
 		* `type` - Type of the database backup destination.
 	* `recovery_window_in_days` - Number of days between the current and the earliest point of recoverability covered by automatic backups. This value applies to automatic backups only. After a new automatic backup has been created, Oracle removes old automatic backups that are created before the window. When the value is updated, it is applied to all existing automatic backups. 
 	* `run_immediate_full_backup` - If set to true, configures automatic full backups in the local region (the region of the DB system) for the first backup run immediately.
@@ -221,8 +241,9 @@ The following attributes are exported:
 	The database workload type. 
 * `defined_tags` - Defined tags for this resource. Each key is predefined and scoped to a namespace. For more information, see [Resource Tags](https://docs.cloud.oracle.com/iaas/Content/General/Concepts/resourcetags.htm). 
 * `encryption_key_location_details` - Types of providers supported for managing database encryption keys
+	* `azure_encryption_key_id` - Provide the key OCID of a registered Azure key.
 	* `hsm_password` - Provide the HSM password as you would in RDBMS for External HSM.
-	* `provider_type` - Use 'EXTERNAL' for creating a new database or migrate database key with External HSM.
+	* `provider_type` - Use 'EXTERNAL' for creating a new database or migrating a database key to an External HSM. Use 'AZURE' for creating a new database or migrating a database key to Azure. 
 * `freeform_tags` - Free-form tags for this resource. Each tag is a simple key-value pair with no predefined name, type, or namespace. For more information, see [Resource Tags](https://docs.cloud.oracle.com/iaas/Content/General/Concepts/resourcetags.htm).  Example: `{"Department": "Finance"}` 
 * `id` - The [OCID](https://docs.cloud.oracle.com/iaas/Content/General/Concepts/identifiers.htm) of the database.
 * `is_cdb` - True if the database is a container database.
@@ -239,6 +260,7 @@ The following attributes are exported:
 * `sid_prefix` - Specifies a prefix for the `Oracle SID` of the database to be created. 
 * `source_database_point_in_time_recovery_timestamp` - Point in time recovery timeStamp of the source database at which cloned database system is cloned from the source database system, as described in [RFC 3339](https://tools.ietf.org/rfc/rfc3339)
 * `state` - The current state of the database.
+* `system_tags` - System tags for this resource. Each key is predefined and scoped to a namespace. For more information, see [Resource Tags](https://docs.cloud.oracle.com/iaas/Content/General/Concepts/resourcetags.htm). 
 * `time_created` - The date and time the database was created.
 * `vault_id` - The [OCID](https://docs.cloud.oracle.com/iaas/Content/General/Concepts/identifiers.htm) of the Oracle Cloud Infrastructure [vault](https://docs.cloud.oracle.com/iaas/Content/KeyManagement/Concepts/keyoverview.htm#concepts). This parameter and `secretId` are required for Customer Managed Keys.
 * `vm_cluster_id` - The [OCID](https://docs.cloud.oracle.com/iaas/Content/General/Concepts/identifiers.htm) of the VM cluster.

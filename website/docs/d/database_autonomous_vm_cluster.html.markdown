@@ -69,7 +69,7 @@ The following attributes are exported:
 	* `preference` - The maintenance window scheduling preference.
 	* `weeks_of_month` - Weeks during the month when maintenance should be performed. Weeks start on the 1st, 8th, 15th, and 22nd days of the month, and have a duration of 7 days. Weeks start and end based on calendar dates, not days of the week. For example, to allow maintenance during the 2nd week of the month (from the 8th day to the 14th day of the month), use the value 2. Maintenance cannot be scheduled for the fifth week of months that contain more than 28 days. Note that this parameter works in conjunction with the  daysOfWeek and hoursOfDay parameters to allow you to specify specific days of the week and hours that maintenance will be performed. 
 * `max_acds_lowest_scaled_value` - The lowest value to which maximum number of ACDs can be scaled down.
-* `memory_per_oracle_compute_unit_in_gbs` - The amount of memory (in GBs) to be enabled per OCPU or ECPU.  
+* `memory_per_oracle_compute_unit_in_gbs` - The amount of memory (in GBs) to be enabled per OCPU or ECPU. 
 * `memory_size_in_gbs` - The memory allocated in GBs.
 * `next_maintenance_run_id` - The [OCID](https://docs.cloud.oracle.com/iaas/Content/General/Concepts/identifiers.htm) of the next maintenance run.
 * `node_count` - The number of nodes in the Autonomous VM Cluster. 
@@ -84,6 +84,7 @@ The following attributes are exported:
 * `scan_listener_port_non_tls` - The SCAN Listener Non TLS port number. Default value is 1521.
 * `scan_listener_port_tls` - The SCAN Listener TLS port number. Default value is 2484.
 * `state` - The current state of the Autonomous VM cluster.
+* `system_tags` - System tags for this resource. Each key is predefined and scoped to a namespace. For more information, see [Resource Tags](https://docs.cloud.oracle.com/iaas/Content/General/Concepts/resourcetags.htm). 
 * `time_created` - The date and time that the Autonomous VM cluster was created.
 * `time_database_ssl_certificate_expires` - The date and time of Database SSL certificate expiration.
 * `time_ords_certificate_expires` - The date and time of ORDS certificate expiration.

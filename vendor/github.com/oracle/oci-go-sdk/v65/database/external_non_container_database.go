@@ -42,6 +42,10 @@ type ExternalNonContainerDatabase struct {
 	// For more information, see Resource Tags (https://docs.oracle.com/iaas/Content/General/Concepts/resourcetags.htm).
 	DefinedTags map[string]map[string]interface{} `mandatory:"false" json:"definedTags"`
 
+	// System tags for this resource. Each key is predefined and scoped to a namespace.
+	// For more information, see Resource Tags (https://docs.oracle.com/iaas/Content/General/Concepts/resourcetags.htm).
+	SystemTags map[string]map[string]interface{} `mandatory:"false" json:"systemTags"`
+
 	// Additional information about the current lifecycle state.
 	LifecycleDetails *string `mandatory:"false" json:"lifecycleDetails"`
 
@@ -54,7 +58,8 @@ type ExternalNonContainerDatabase struct {
 	// The Oracle Database version.
 	DatabaseVersion *string `mandatory:"false" json:"databaseVersion"`
 
-	// The Oracle Database edition.
+	// The Oracle Database Edition that applies to all the databases on the DB system.
+	// Exadata DB systems and 2-node RAC DB systems require ENTERPRISE_EDITION_EXTREME_PERFORMANCE.
 	DatabaseEdition ExternalNonContainerDatabaseDatabaseEditionEnum `mandatory:"false" json:"databaseEdition,omitempty"`
 
 	// The time zone of the external database.
@@ -177,6 +182,7 @@ const (
 	ExternalNonContainerDatabaseDatabaseEditionEnterpriseEdition                   ExternalNonContainerDatabaseDatabaseEditionEnum = "ENTERPRISE_EDITION"
 	ExternalNonContainerDatabaseDatabaseEditionEnterpriseEditionHighPerformance    ExternalNonContainerDatabaseDatabaseEditionEnum = "ENTERPRISE_EDITION_HIGH_PERFORMANCE"
 	ExternalNonContainerDatabaseDatabaseEditionEnterpriseEditionExtremePerformance ExternalNonContainerDatabaseDatabaseEditionEnum = "ENTERPRISE_EDITION_EXTREME_PERFORMANCE"
+	ExternalNonContainerDatabaseDatabaseEditionEnterpriseEditionDeveloper          ExternalNonContainerDatabaseDatabaseEditionEnum = "ENTERPRISE_EDITION_DEVELOPER"
 )
 
 var mappingExternalNonContainerDatabaseDatabaseEditionEnum = map[string]ExternalNonContainerDatabaseDatabaseEditionEnum{
@@ -184,6 +190,7 @@ var mappingExternalNonContainerDatabaseDatabaseEditionEnum = map[string]External
 	"ENTERPRISE_EDITION":                     ExternalNonContainerDatabaseDatabaseEditionEnterpriseEdition,
 	"ENTERPRISE_EDITION_HIGH_PERFORMANCE":    ExternalNonContainerDatabaseDatabaseEditionEnterpriseEditionHighPerformance,
 	"ENTERPRISE_EDITION_EXTREME_PERFORMANCE": ExternalNonContainerDatabaseDatabaseEditionEnterpriseEditionExtremePerformance,
+	"ENTERPRISE_EDITION_DEVELOPER":           ExternalNonContainerDatabaseDatabaseEditionEnterpriseEditionDeveloper,
 }
 
 var mappingExternalNonContainerDatabaseDatabaseEditionEnumLowerCase = map[string]ExternalNonContainerDatabaseDatabaseEditionEnum{
@@ -191,6 +198,7 @@ var mappingExternalNonContainerDatabaseDatabaseEditionEnumLowerCase = map[string
 	"enterprise_edition":                     ExternalNonContainerDatabaseDatabaseEditionEnterpriseEdition,
 	"enterprise_edition_high_performance":    ExternalNonContainerDatabaseDatabaseEditionEnterpriseEditionHighPerformance,
 	"enterprise_edition_extreme_performance": ExternalNonContainerDatabaseDatabaseEditionEnterpriseEditionExtremePerformance,
+	"enterprise_edition_developer":           ExternalNonContainerDatabaseDatabaseEditionEnterpriseEditionDeveloper,
 }
 
 // GetExternalNonContainerDatabaseDatabaseEditionEnumValues Enumerates the set of values for ExternalNonContainerDatabaseDatabaseEditionEnum
@@ -209,6 +217,7 @@ func GetExternalNonContainerDatabaseDatabaseEditionEnumStringValues() []string {
 		"ENTERPRISE_EDITION",
 		"ENTERPRISE_EDITION_HIGH_PERFORMANCE",
 		"ENTERPRISE_EDITION_EXTREME_PERFORMANCE",
+		"ENTERPRISE_EDITION_DEVELOPER",
 	}
 }
 

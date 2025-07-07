@@ -346,10 +346,10 @@ data "oci_database_vm_clusters" "test_vm_clusters" {
   exadata_infrastructure_id = oci_database_exadata_infrastructure.test_exadata_infrastructure.id
 }
 
-resource "local_file" "test_vm_cluster_network_downloaded_config_file" {
-  content  = data.oci_database_vm_cluster_network_download_config_file.test_vm_cluster_network_download_config_file.content
-  filename = "${path.module}/vm_cluster_config.txt"
-}
+# resource "local_file" "test_vm_cluster_network_downloaded_config_file" {
+#   content  = data.oci_database_vm_cluster_network_download_config_file.test_vm_cluster_network_download_config_file.content
+#   filename = "${path.module}/vm_cluster_config.txt"
+# }
 
 
 resource "oci_database_exadata_infrastructure_configure_exascale_management" "test_exadata_infrastructure_configure_exascale_management" {
@@ -483,4 +483,17 @@ resource "oci_database_vm_cluster" "test_exascale_vm_cluster" {
 
 variable "exadata_infrastructure_configure_exascale_management_total_storage_in_gbs" {
   default = 4096
+}
+
+data "oci_database_backup_destinations" "test_database_backup_destinations" {
+  #Required
+  compartment_id = var.compartment_ocid
+
+  #Optional
+  type = "NFS"
+}
+
+data "oci_database_backup_destination" "test_database_backup_destination" {
+  #Required
+  id = oci_database_backup_destination.test_backup_destination_nfs.id
 }

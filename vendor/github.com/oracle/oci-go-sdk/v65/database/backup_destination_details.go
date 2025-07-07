@@ -35,6 +35,14 @@ type BackupDestinationDetails struct {
 
 	// The OCID (https://docs.oracle.com/iaas/Content/General/Concepts/identifiers.htm) of the DBRS policy used for backup.
 	DbrsPolicyId *string `mandatory:"false" json:"dbrsPolicyId"`
+
+	// Indicates whether the backup destination is cross-region or local region.
+	IsRemote *bool `mandatory:"false" json:"isRemote"`
+
+	// The name of the remote region where the remote automatic incremental backups will be stored.
+	// For information about valid region names, see
+	// Regions and Availability Domains (https://docs.oracle.com/iaas/Content/General/Concepts/regions.htm).
+	RemoteRegion *string `mandatory:"false" json:"remoteRegion"`
 }
 
 func (m BackupDestinationDetails) String() string {
@@ -66,6 +74,7 @@ const (
 	BackupDestinationDetailsTypeObjectStore       BackupDestinationDetailsTypeEnum = "OBJECT_STORE"
 	BackupDestinationDetailsTypeLocal             BackupDestinationDetailsTypeEnum = "LOCAL"
 	BackupDestinationDetailsTypeDbrs              BackupDestinationDetailsTypeEnum = "DBRS"
+	BackupDestinationDetailsTypeAwsS3             BackupDestinationDetailsTypeEnum = "AWS_S3"
 )
 
 var mappingBackupDestinationDetailsTypeEnum = map[string]BackupDestinationDetailsTypeEnum{
@@ -74,6 +83,7 @@ var mappingBackupDestinationDetailsTypeEnum = map[string]BackupDestinationDetail
 	"OBJECT_STORE":       BackupDestinationDetailsTypeObjectStore,
 	"LOCAL":              BackupDestinationDetailsTypeLocal,
 	"DBRS":               BackupDestinationDetailsTypeDbrs,
+	"AWS_S3":             BackupDestinationDetailsTypeAwsS3,
 }
 
 var mappingBackupDestinationDetailsTypeEnumLowerCase = map[string]BackupDestinationDetailsTypeEnum{
@@ -82,6 +92,7 @@ var mappingBackupDestinationDetailsTypeEnumLowerCase = map[string]BackupDestinat
 	"object_store":       BackupDestinationDetailsTypeObjectStore,
 	"local":              BackupDestinationDetailsTypeLocal,
 	"dbrs":               BackupDestinationDetailsTypeDbrs,
+	"aws_s3":             BackupDestinationDetailsTypeAwsS3,
 }
 
 // GetBackupDestinationDetailsTypeEnumValues Enumerates the set of values for BackupDestinationDetailsTypeEnum
@@ -101,6 +112,7 @@ func GetBackupDestinationDetailsTypeEnumStringValues() []string {
 		"OBJECT_STORE",
 		"LOCAL",
 		"DBRS",
+		"AWS_S3",
 	}
 }
 

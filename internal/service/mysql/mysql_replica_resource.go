@@ -87,6 +87,15 @@ func MysqlReplicaResource() *schema.Resource {
 							Optional: true,
 							Computed: true,
 						},
+						"nsg_ids": {
+							Type:     schema.TypeSet,
+							Optional: true,
+							Computed: true,
+							Set:      tfresource.LiteralTypeHashCodeForSets,
+							Elem: &schema.Schema{
+								Type: schema.TypeString,
+							},
+						},
 						"shape_name": {
 							Type:     schema.TypeString,
 							Optional: true,
@@ -111,6 +120,27 @@ func MysqlReplicaResource() *schema.Resource {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
+			"encrypt_data": {
+				Type:     schema.TypeList,
+				Computed: true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						// Required
+
+						// Optional
+
+						// Computed
+						"key_generation_type": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"key_id": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+					},
+				},
+			},
 			"fault_domain": {
 				Type:     schema.TypeString,
 				Computed: true,
@@ -126,6 +156,14 @@ func MysqlReplicaResource() *schema.Resource {
 			"mysql_version": {
 				Type:     schema.TypeString,
 				Computed: true,
+			},
+			"nsg_ids": {
+				Type:     schema.TypeSet,
+				Computed: true,
+				Set:      tfresource.LiteralTypeHashCodeForSets,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
 			},
 			"port": {
 				Type:     schema.TypeInt,
@@ -223,6 +261,7 @@ func (s *MysqlReplicaResourceCrud) ID() string {
 func (s *MysqlReplicaResourceCrud) CreatedPending() []string {
 	return []string{
 		string(oci_mysql.ReplicaLifecycleStateCreating),
+		string(oci_mysql.ReplicaLifecycleStateUpdating),
 	}
 }
 
@@ -427,6 +466,12 @@ func (s *MysqlReplicaResourceCrud) SetData() error {
 		s.D.Set("display_name", *s.Res.DisplayName)
 	}
 
+	if s.Res.EncryptData != nil {
+		s.D.Set("encrypt_data", []interface{}{EncryptDataDetailsToMap(s.Res.EncryptData)})
+	} else {
+		s.D.Set("encrypt_data", nil)
+	}
+
 	if s.Res.FaultDomain != nil {
 		s.D.Set("fault_domain", *s.Res.FaultDomain)
 	}
@@ -450,6 +495,12 @@ func (s *MysqlReplicaResourceCrud) SetData() error {
 		s.D.Set("mysql_version", *s.Res.MysqlVersion)
 	}
 
+	nsgIds := []interface{}{}
+	for _, item := range s.Res.NsgIds {
+		nsgIds = append(nsgIds, item)
+	}
+	s.D.Set("nsg_ids", schema.NewSet(tfresource.LiteralTypeHashCodeForSets, nsgIds))
+
 	if s.Res.Port != nil {
 		s.D.Set("port", *s.Res.Port)
 	}
@@ -459,7 +510,7 @@ func (s *MysqlReplicaResourceCrud) SetData() error {
 	}
 
 	if s.Res.ReplicaOverrides != nil {
-		s.D.Set("replica_overrides", []interface{}{ReplicaOverridesToMap(s.Res.ReplicaOverrides)})
+		s.D.Set("replica_overrides", []interface{}{ReplicaOverridesToMap(s.Res.ReplicaOverrides, false)})
 	} else {
 		s.D.Set("replica_overrides", nil)
 	}
@@ -502,6 +553,20 @@ func (s *MysqlReplicaResourceCrud) mapToReplicaOverrides(fieldKeyFormat string) 
 		result.MysqlVersion = &tmp
 	}
 
+	if nsgIds, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "nsg_ids")); ok {
+		set := nsgIds.(*schema.Set)
+		interfaces := set.List()
+		tmp := make([]string, len(interfaces))
+		for i := range interfaces {
+			if interfaces[i] != nil {
+				tmp[i] = interfaces[i].(string)
+			}
+		}
+		if s.D.HasChange(fmt.Sprintf(fieldKeyFormat, "nsg_ids")) {
+			result.NsgIds = tmp
+		}
+	}
+
 	shapeNameField := fmt.Sprintf(fieldKeyFormat, "shape_name")
 	if shapeName, ok := s.D.GetOkExists(shapeNameField); ok && s.D.HasChange(shapeNameField) {
 		tmp := shapeName.(string)
@@ -511,7 +576,7 @@ func (s *MysqlReplicaResourceCrud) mapToReplicaOverrides(fieldKeyFormat string) 
 	return result, nil
 }
 
-func ReplicaOverridesToMap(obj *oci_mysql.ReplicaOverrides) map[string]interface{} {
+func ReplicaOverridesToMap(obj *oci_mysql.ReplicaOverrides, datasource bool) map[string]interface{} {
 	result := map[string]interface{}{}
 
 	if obj.ConfigurationId != nil {
@@ -520,6 +585,16 @@ func ReplicaOverridesToMap(obj *oci_mysql.ReplicaOverrides) map[string]interface
 
 	if obj.MysqlVersion != nil {
 		result["mysql_version"] = string(*obj.MysqlVersion)
+	}
+
+	nsgIds := []interface{}{}
+	for _, item := range obj.NsgIds {
+		nsgIds = append(nsgIds, item)
+	}
+	if datasource {
+		result["nsg_ids"] = nsgIds
+	} else {
+		result["nsg_ids"] = schema.NewSet(tfresource.LiteralTypeHashCodeForSets, nsgIds)
 	}
 
 	if obj.ShapeName != nil {

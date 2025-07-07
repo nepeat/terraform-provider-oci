@@ -70,8 +70,18 @@ func (s *CoreDedicatedVmHostDataSourceCrud) SetData() error {
 		s.D.Set("availability_domain", *s.Res.AvailabilityDomain)
 	}
 
+	capacityBins := []interface{}{}
+	for _, item := range s.Res.CapacityBins {
+		capacityBins = append(capacityBins, CapacityBinToMap(item))
+	}
+	s.D.Set("capacity_bins", capacityBins)
+
 	if s.Res.CompartmentId != nil {
 		s.D.Set("compartment_id", *s.Res.CompartmentId)
+	}
+
+	if s.Res.ComputeBareMetalHostId != nil {
+		s.D.Set("compute_bare_metal_host_id", *s.Res.ComputeBareMetalHostId)
 	}
 
 	if s.Res.DedicatedVmHostShape != nil {
@@ -91,6 +101,16 @@ func (s *CoreDedicatedVmHostDataSourceCrud) SetData() error {
 	}
 
 	s.D.Set("freeform_tags", s.Res.FreeformTags)
+
+	if s.Res.PlacementConstraintDetails != nil {
+		placementConstraintDetailsArray := []interface{}{}
+		if placementConstraintDetailsMap := PlacementConstraintDetailsToMap(&s.Res.PlacementConstraintDetails); placementConstraintDetailsMap != nil {
+			placementConstraintDetailsArray = append(placementConstraintDetailsArray, placementConstraintDetailsMap)
+		}
+		s.D.Set("placement_constraint_details", placementConstraintDetailsArray)
+	} else {
+		s.D.Set("placement_constraint_details", nil)
+	}
 
 	if s.Res.RemainingMemoryInGBs != nil {
 		s.D.Set("remaining_memory_in_gbs", *s.Res.RemainingMemoryInGBs)

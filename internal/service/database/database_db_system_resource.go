@@ -162,6 +162,18 @@ func DatabaseDbSystemResource() *schema.Resource {
 																Computed: true,
 																ForceNew: true,
 															},
+															"is_remote": {
+																Type:     schema.TypeBool,
+																Optional: true,
+																Computed: true,
+																ForceNew: true,
+															},
+															"remote_region": {
+																Type:     schema.TypeString,
+																Optional: true,
+																Computed: true,
+																ForceNew: true,
+															},
 															"type": {
 																Type:     schema.TypeString,
 																Optional: true,
@@ -965,6 +977,11 @@ func DatabaseDbSystemResource() *schema.Resource {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
+			"system_tags": {
+				Type:     schema.TypeMap,
+				Computed: true,
+				Elem:     schema.TypeString,
+			},
 			"time_created": {
 				Type:     schema.TypeString,
 				Computed: true,
@@ -1512,6 +1529,8 @@ func (s *DatabaseDbSystemResourceCrud) SetData() error {
 		s.D.Set("subnet_id", *s.Res.SubnetId)
 	}
 
+	s.D.Set("system_tags", tfresource.SystemTagsToMap(s.Res.SystemTags))
+
 	if s.Res.TimeCreated != nil {
 		s.D.Set("time_created", s.Res.TimeCreated.String())
 	}
@@ -1546,6 +1565,21 @@ func (s *DatabaseDbSystemResourceCrud) mapToBackupDestinationDetails(fieldKeyFor
 	if id, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "id")); ok {
 		tmp := id.(string)
 		result.Id = &tmp
+	}
+
+	if internetProxy, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "internet_proxy")); ok {
+		tmp := internetProxy.(string)
+		result.InternetProxy = &tmp
+	}
+
+	if isRemote, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "is_remote")); ok {
+		tmp := isRemote.(bool)
+		result.IsRemote = &tmp
+	}
+
+	if remoteRegion, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "remote_region")); ok {
+		tmp := remoteRegion.(string)
+		result.RemoteRegion = &tmp
 	}
 
 	if type_, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "type")); ok {

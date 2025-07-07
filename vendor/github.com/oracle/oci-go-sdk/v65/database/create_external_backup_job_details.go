@@ -45,8 +45,8 @@ type CreateExternalBackupJobDetails struct {
 	// The mode (single instance or RAC) of the database being backed up.
 	DatabaseMode CreateExternalBackupJobDetailsDatabaseModeEnum `mandatory:"true" json:"databaseMode"`
 
-	// The Oracle Database edition to use for creating a database from this standalone backup.
-	// Note that 2-node RAC DB systems require Enterprise Edition - Extreme Performance.
+	// The Oracle Database Edition that applies to all the databases on the DB system.
+	// Exadata DB systems and 2-node RAC DB systems require ENTERPRISE_EDITION_EXTREME_PERFORMANCE.
 	DatabaseEdition CreateExternalBackupJobDetailsDatabaseEditionEnum `mandatory:"true" json:"databaseEdition"`
 
 	// The `DB_UNIQUE_NAME` of the Oracle Database being backed up.
@@ -129,6 +129,7 @@ const (
 	CreateExternalBackupJobDetailsDatabaseEditionEnterpriseEdition                   CreateExternalBackupJobDetailsDatabaseEditionEnum = "ENTERPRISE_EDITION"
 	CreateExternalBackupJobDetailsDatabaseEditionEnterpriseEditionHighPerformance    CreateExternalBackupJobDetailsDatabaseEditionEnum = "ENTERPRISE_EDITION_HIGH_PERFORMANCE"
 	CreateExternalBackupJobDetailsDatabaseEditionEnterpriseEditionExtremePerformance CreateExternalBackupJobDetailsDatabaseEditionEnum = "ENTERPRISE_EDITION_EXTREME_PERFORMANCE"
+	CreateExternalBackupJobDetailsDatabaseEditionEnterpriseEditionDeveloper          CreateExternalBackupJobDetailsDatabaseEditionEnum = "ENTERPRISE_EDITION_DEVELOPER"
 )
 
 var mappingCreateExternalBackupJobDetailsDatabaseEditionEnum = map[string]CreateExternalBackupJobDetailsDatabaseEditionEnum{
@@ -136,6 +137,7 @@ var mappingCreateExternalBackupJobDetailsDatabaseEditionEnum = map[string]Create
 	"ENTERPRISE_EDITION":                     CreateExternalBackupJobDetailsDatabaseEditionEnterpriseEdition,
 	"ENTERPRISE_EDITION_HIGH_PERFORMANCE":    CreateExternalBackupJobDetailsDatabaseEditionEnterpriseEditionHighPerformance,
 	"ENTERPRISE_EDITION_EXTREME_PERFORMANCE": CreateExternalBackupJobDetailsDatabaseEditionEnterpriseEditionExtremePerformance,
+	"ENTERPRISE_EDITION_DEVELOPER":           CreateExternalBackupJobDetailsDatabaseEditionEnterpriseEditionDeveloper,
 }
 
 var mappingCreateExternalBackupJobDetailsDatabaseEditionEnumLowerCase = map[string]CreateExternalBackupJobDetailsDatabaseEditionEnum{
@@ -143,6 +145,7 @@ var mappingCreateExternalBackupJobDetailsDatabaseEditionEnumLowerCase = map[stri
 	"enterprise_edition":                     CreateExternalBackupJobDetailsDatabaseEditionEnterpriseEdition,
 	"enterprise_edition_high_performance":    CreateExternalBackupJobDetailsDatabaseEditionEnterpriseEditionHighPerformance,
 	"enterprise_edition_extreme_performance": CreateExternalBackupJobDetailsDatabaseEditionEnterpriseEditionExtremePerformance,
+	"enterprise_edition_developer":           CreateExternalBackupJobDetailsDatabaseEditionEnterpriseEditionDeveloper,
 }
 
 // GetCreateExternalBackupJobDetailsDatabaseEditionEnumValues Enumerates the set of values for CreateExternalBackupJobDetailsDatabaseEditionEnum
@@ -161,6 +164,7 @@ func GetCreateExternalBackupJobDetailsDatabaseEditionEnumStringValues() []string
 		"ENTERPRISE_EDITION",
 		"ENTERPRISE_EDITION_HIGH_PERFORMANCE",
 		"ENTERPRISE_EDITION_EXTREME_PERFORMANCE",
+		"ENTERPRISE_EDITION_DEVELOPER",
 	}
 }
 

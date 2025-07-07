@@ -49,6 +49,13 @@ type BackupSummary struct {
 	// A user-supplied description of the backup.
 	Description *string `mandatory:"false" json:"description"`
 
+	// Retains the backup to be deleted due to the retention policy in DELETE SCHEDULED
+	// state for 7 days before permanently deleting it.
+	SoftDelete SoftDeleteEnum `mandatory:"false" json:"softDelete,omitempty"`
+
+	// Additional information about the current lifecycleState.
+	LifecycleDetails *string `mandatory:"false" json:"lifecycleDetails"`
+
 	// Size of the data volume in GiBs.
 	DataStorageSizeInGBs *int `mandatory:"false" json:"dataStorageSizeInGBs"`
 
@@ -86,6 +93,8 @@ type BackupSummary struct {
 	TimeCopyCreated *common.SDKTime `mandatory:"false" json:"timeCopyCreated"`
 
 	DbSystemSnapshotSummary *DbSystemSnapshotSummary `mandatory:"false" json:"dbSystemSnapshotSummary"`
+
+	EncryptData *EncryptDataDetails `mandatory:"false" json:"encryptData"`
 }
 
 func (m BackupSummary) String() string {
@@ -107,6 +116,9 @@ func (m BackupSummary) ValidateEnumValue() (bool, error) {
 		errMessage = append(errMessage, fmt.Sprintf("unsupported enum value for CreationType: %s. Supported values are: %s.", m.CreationType, strings.Join(GetBackupCreationTypeEnumStringValues(), ",")))
 	}
 
+	if _, ok := GetMappingSoftDeleteEnum(string(m.SoftDelete)); !ok && m.SoftDelete != "" {
+		errMessage = append(errMessage, fmt.Sprintf("unsupported enum value for SoftDelete: %s. Supported values are: %s.", m.SoftDelete, strings.Join(GetSoftDeleteEnumStringValues(), ",")))
+	}
 	if len(errMessage) > 0 {
 		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
 	}

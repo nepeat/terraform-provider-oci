@@ -1,3 +1,128 @@
+## 7.8.0 (July 03, 2025)
+
+### Added
+- Support for [Elastic Pool Support for Child Tenancies] Terraform Support in Prod Region ADB-S: Elastic Pool Support for Child Tenancies
+- Support for PKCS11 Library Integration for Azure key store | ExaDB-D
+- Support for Support for customer-initiated collection of diagnostic information
+- Support for AWS for ADBD
+- Support for HeatWave Service: Bring Your Own Key (BYOK)
+- Support for all DBaaS Verticals to onboard to System Tags| DBAAS Platform
+- Support for MultiCloud Data Plane Integration for Database services dbmulticloud changes
+### Bug Fix
+- Corrected Cloud Database Management Integration Test and added Example Test
+
+## 7.7.0 (June 25, 2025)
+
+### Added
+- Support for BYoIPv6 support on LBaaS (API ONLY Release)
+- Log Analytics EntityTypes CRUD operations support
+- Demand Signal and Internal Demand signal tests - DEXREQ-7202
+- Support for AWS_S3 in database provision
+- Support for Exadata Fleet Update 23ai upgrade fleet support (GI/DB for ExaCS and ExaCC)
+- Support for CMEK for Oracle NoSQL Hosted Environments
+- Support for Integrate native Redis Service authentication with OCI IAM/Identity
+### Bug Fix
+- Updated Schema to include vpc password
+- Fix the nsgIds not working in create DataFlow SQLEndpoint request
+
+## 7.6.0 (June 18, 2025)
+
+### Added
+- Support for OCI Cache - RBAC/ACL Support
+- capacityBins & computeBareMetalHostId fields in GET DVH API response
+- Support for Privileged API Access Control for Oracle Database Services
+- Support for WebLogic Management Service
+
+## 7.5.0 (June 11, 2025)
+
+### Bug Fix
+- Updating the Type of should_include_oidc_config_file to Bool
+, Check if the IP address in Nil before dereferencing it to avoid Nil pointer causing terraform to crash
+- Fixing broken Integration & Example tests for DbSystem Patch Resource
+
+## 7.4.0 (June 04, 2025)
+
+### Added
+- Support for Release 7 Connections
+- Support for HostGroups - Compute Control Plane
+- Support for Fleet Application Management Service 2.0
+- Support for Release 7 Connections
+- Support for HostGroups - Compute Control Plane
+- Support for Fleet Application Management Service 2.0
+- Support for Standby: DMS online migration using snapshot standby
+- Support for Release 7 Connections
+- Support for Terraform integration for HeatWave Service: Soft delete backup HeatWave Service: Soft delete backup
+- Support for HostGroups - Compute Control Plane
+- Support for Fleet Application Management Service 2.0
+- Support for Cross Region Backup Copy Support | ADB-D and ADB-C@C
+Support for MySQL MEM APIs
+- Release for v7.3.0
+- Increasing parallel writes for Resource Discovery
+- Commented out unused enum states
+- increase devops deployment default timeouts to two hours
+- Support for NewDev_BaseDB
+- Support for BDS 3.0.30 Release - Feature Enhancements
+- Support for Carbon Emissions Analysis:Power based Calculation
+removed patch files
+- Support for Predictable OIDC Discovery
+- Targeted Launch support to Launch Instance API
+- Support for HeatWave Service: REST
+- Support for Nat Rules for Network Firewall
+- Support for ADM vulnerability-audit warnings
+- Support for APM - Synthetics - content type Playwright scripts
+### Bug Fix
+Updatable addon list
+- Bootstrap Execution triggering during all updates
+
+## 7.3.0 (May 28, 2025)
+
+### Added
+- Increase devops deployment default timeouts to two hours
+- Support for NewDev_BaseDB
+- Support for BDS 3.0.30 Release - Feature Enhancements
+- Support for Carbon Emissions Analysis:Power based Calculation
+removed patch files
+- Support for Predictable OIDC Discovery
+- Targeted Launch support to Launch Instance API
+- Support for HeatWave Service: REST
+- Support for Nat Rules for Network Firewall
+- Support for ADM vulnerability-audit warnings
+- Support for APM - Synthetics - content type Playwright scripts
+### Bug Fix
+- Bootstrap Execution triggering during all updates
+
+## 7.2.0 (May 20, 2025)
+
+### Added
+- Support for Autonomous Recovery Service - Long Term Archive Feature
+- MySQL HeatWave Service: Network Security Group (NSG)
+- README.md of service examples with magic button
+- README.md of service examples with magic button
+- Release for v7.1.0
+- Support for OpenSearch OBO metering for external customers
+- Support for bulk PDB enablement and monitoring in Database Management Service
+### Bug Fix
+- fixed oci_adm_knowledge_bases data source docs to reflect the implementation
+- Remove computed parameter from target_ids UA/SA unset Baseline APIs in Data Safe
+- Format
+- fix infinite loop for OSMH resource discovery
+
+## 7.2.0 (May 20, 2025)
+
+### Added
+- Support for Autonomous Recovery Service - Long Term Archive Feature
+- MySQL HeatWave Service: Network Security Group (NSG)
+- README.md of service examples with magic button
+- README.md of service examples with magic button
+- Release for v7.1.0
+- Support for OpenSearch OBO metering for external customers
+- Support for bulk PDB enablement and monitoring in Database Management Service
+### Bug Fix
+- fixed oci_adm_knowledge_bases data source docs to reflect the implementation
+- Remove computed parameter from target_ids UA/SA unset Baseline APIs in Data Safe
+- Format
+- fix infinite loop for OSMH resource discovery
+
 ## 7.1.0 (May 14, 2025)
 
 ### Added

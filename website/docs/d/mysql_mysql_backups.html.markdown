@@ -25,6 +25,7 @@ data "oci_mysql_mysql_backups" "test_mysql_backups" {
 	creation_type = var.mysql_backup_creation_type
 	db_system_id = oci_mysql_mysql_db_system.test_db_system.id
 	display_name = var.mysql_backup_display_name
+	soft_delete = var.mysql_backup_soft_delete
 	state = var.mysql_backup_state
 }
 ```
@@ -38,6 +39,7 @@ The following arguments are supported:
 * `creation_type` - (Optional) Backup creationType
 * `db_system_id` - (Optional) The DB System [OCID](https://docs.cloud.oracle.com/iaas/Content/General/Concepts/identifiers.htm).
 * `display_name` - (Optional) A filter to return only the resource matching the given display name exactly.
+* `soft_delete` - (Optional) Backup Soft Delete
 * `state` - (Optional) Backup Lifecycle State
 
 
@@ -82,6 +84,7 @@ The following attributes are exported:
 		* `pitr_policy` - The PITR policy for the DB System.
 			* `is_enabled` - Specifies if PITR is enabled or disabled.
 		* `retention_in_days` - The number of days automated backups are retained. 
+		* `soft_delete` - Retains the backup to be deleted due to the retention policy in DELETE SCHEDULED state for 7 days before permanently deleting it. 
 		* `window_start_time` - The start of a 30-minute window of time in which daily, automated backups occur.
 
 			This should be in the format of the "Time" portion of an RFC3339-formatted timestamp. Any second or sub-second time data will be truncated to zero.
@@ -118,6 +121,9 @@ The following attributes are exported:
 		* `is_delete_protected` - Specifies whether the DB System can be deleted. Set to true to prevent deletion, false (default) to allow. 
 	* `description` - User-provided data about the DB System.
 	* `display_name` - The user-friendly name for the DB System. It does not have to be unique.
+	* `encrypt_data` - Encrypt data details. 
+		* `key_generation_type` - Select whether to use Oracle-managed key (SYSTEM) or your own key (BYOK).
+		* `key_id` - The OCID of the key to use.
 	* `endpoints` - The network endpoints available for this DB System. 
 		* `hostname` - The network address of the DB System.
 		* `ip_address` - The IP address the DB System is configured to listen on.
@@ -145,6 +151,7 @@ The following attributes are exported:
 
 			If you set the read replica maintenance window to "" or if not specified, the read replica is set same as the DB system maintenance window. 
 	* `mysql_version` - Name of the MySQL Version in use for the DB System.
+	* `nsg_ids` - Network Security Group OCIDs used for the VNIC attachment.
 	* `port` - The port for primary endpoint of the DB System to listen on.
 	* `port_x` - The network port on which X Plugin listens for TCP/IP connections. This is the X Plugin equivalent of port. 
 	* `read_endpoint` - The read endpoint of a DB System. 
@@ -156,7 +163,10 @@ The following attributes are exported:
 
 			Must be unique across all VNICs in the subnet and comply with RFC 952 and RFC 1123. 
 		* `read_endpoint_ip_address` - The IP address the DB System read endpoint is configured to listen on. A private IP address of your choice to assign to the read endpoint of the DB System. Must be an available IP address within the subnet's CIDR. If you don't specify a value, Oracle automatically assigns a private IP address from the subnet. This should be a "dotted-quad" style IPv4 address. 
-	* `region` - The region identifier of the region where the DB system exists. For more information, please see [Regions and Availability Domains](https://docs.oracle.com/en-us/iaas/Content/General/Concepts/regions.htm).
+	* `region` - The region identifier of the region where the DB system exists. For more information, please see [Regions and Availability Domains](https://docs.oracle.com/en-us/iaas/Content/General/Concepts/regions.htm). 
+	* `rest` - REST configuration details. 
+		* `configuration` - Select how REST is configured across the DB System instances.
+		* `port` - The port for REST to listen on. Supported port numbers are 443 and from 1024 to 65535.
 	* `secure_connections` - Secure connection configuration details. 
 		* `certificate_generation_type` - Select whether to use MySQL Database Service-managed certificate (SYSTEM) or your own certificate (BYOC). 
 		* `certificate_id` - The OCID of the certificate to use.
@@ -165,6 +175,9 @@ The following attributes are exported:
 * `defined_tags` - Defined tags for this resource. Each key is predefined and scoped to a namespace. Example: `{"foo-namespace.bar-key": "value"}` 
 * `description` - A user-supplied description for the backup.
 * `display_name` - A user-supplied display name for the backup.
+* `encrypt_data` - Encrypt data details. 
+	* `key_generation_type` - Select whether to use Oracle-managed key (SYSTEM) or your own key (BYOK).
+	* `key_id` - The OCID of the key to use.
 * `freeform_tags` - Simple key-value pair that is applied without any predefined name, type or scope. Exists for cross-compatibility only. Example: `{"bar-key": "value"}` 
 * `id` - OCID of the backup itself
 * `immediate_source_backup_id` - The OCID of the immediate source DB system backup from which this DB system backup was copied. 
@@ -173,6 +186,7 @@ The following attributes are exported:
 * `original_source_backup_id` - The OCID of the original source DB system backup from which this DB system backup was copied. 
 * `retention_in_days` - Number of days to retain this backup.
 * `shape_name` - The shape of the DB System instance used for backup.
+* `soft_delete` - Retains the backup to be deleted due to the retention policy in DELETE SCHEDULED state for 7 days before permanently deleting it. 
 * `state` - The state of the backup.
 * `system_tags` - Usage of system tag keys. These predefined keys are scoped to namespaces. Example: `{"orcl-cloud.free-tier-retained": "true"}` 
 * `time_copy_created` - The date and time the DB system backup copy was created, as described by [RFC 3339](https://tools.ietf.org/rfc/rfc3339). 

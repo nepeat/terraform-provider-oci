@@ -10,7 +10,7 @@ description: |-
 # Data Source: oci_database_db_nodes
 This data source provides the list of Db Nodes in Oracle Cloud Infrastructure Database service.
 
-Lists the database nodes in the specified compartment. A database node is a server running database software. In addition to the other required parameters, either '--db-system-id' or '--vm-cluster-id' also must be provided, depending on the service being accessed.
+Lists the database nodes in the specified DB system and compartment. In addition to the other required parameters, either '--db-system-id' or '--vm-cluster-id' also must be provided, depending on the service being accessed.
 
 
 ## Example Usage
@@ -80,6 +80,7 @@ The following attributes are exported:
 * `memory_size_in_gbs` - The allocated memory in GBs on the Db node.
 * `software_storage_size_in_gb` - The size (in GB) of the block storage volume allocation for the DB system. This attribute applies only for virtual machine DB systems. 
 * `state` - The current state of the database node.
+* `system_tags` - System tags for this resource. Each key is predefined and scoped to a namespace. For more information, see [Resource Tags](https://docs.cloud.oracle.com/iaas/Content/General/Concepts/resourcetags.htm). 
 * `time_created` - The date and time that the database node was created.
 * `time_maintenance_window_end` - End date and time of maintenance window.
 * `time_maintenance_window_start` - Start date and time of maintenance window.

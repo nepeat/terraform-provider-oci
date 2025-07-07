@@ -162,6 +162,10 @@ func (s *CoreInstancesDataSourceCrud) SetData() error {
 			instance["cluster_placement_group_id"] = *r.ClusterPlacementGroupId
 		}
 
+		if r.ComputeHostGroupId != nil {
+			instance["compute_host_group_id"] = *r.ComputeHostGroupId
+		}
+
 		if r.DedicatedVmHostId != nil {
 			instance["dedicated_vm_host_id"] = *r.DedicatedVmHostId
 		}
@@ -226,6 +230,16 @@ func (s *CoreInstancesDataSourceCrud) SetData() error {
 
 		if r.Metadata != nil {
 			instance["metadata"] = r.Metadata
+		}
+
+		if r.PlacementConstraintDetails != nil {
+			placementConstraintDetailsArray := []interface{}{}
+			if placementConstraintDetailsMap := PlacementConstraintDetailsToMap(&r.PlacementConstraintDetails); placementConstraintDetailsMap != nil {
+				placementConstraintDetailsArray = append(placementConstraintDetailsArray, placementConstraintDetailsMap)
+			}
+			instance["placement_constraint_details"] = placementConstraintDetailsArray
+		} else {
+			instance["placement_constraint_details"] = nil
 		}
 
 		if r.PlatformConfig != nil {

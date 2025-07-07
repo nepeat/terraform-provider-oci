@@ -150,13 +150,36 @@ func DatabaseDatabaseResource() *schema.Resource {
 													Optional: true,
 													Computed: true,
 												},
-												"type": {
+												"is_remote": {
+													Type:     schema.TypeBool,
+													Optional: true,
+													Computed: true,
+													ForceNew: true,
+												},
+												"remote_region": {
 													Type:     schema.TypeString,
 													Optional: true,
+													Computed: true,
+													ForceNew: true,
+												},
+												"type": {
+													Type:             schema.TypeString,
+													Optional:         true,
+													DiffSuppressFunc: tfresource.EqualIgnoreCaseSuppressDiff,
+													ValidateFunc: validation.StringInSlice([]string{
+														string(oci_database.BackupBackupDestinationTypeAwsS3),
+														string(oci_database.BackupBackupDestinationTypeDbrs),
+														string(oci_database.BackupBackupDestinationTypeObjectStore),
+													}, true),
 												},
 												"vpc_user": {
 													Type:     schema.TypeString,
 													Optional: true,
+												},
+												"vpc_password": {
+													Type:      schema.TypeString,
+													Optional:  true,
+													Sensitive: true,
 												},
 												// Computed
 											},
@@ -211,21 +234,27 @@ func DatabaseDatabaseResource() *schema.Resource {
 							Elem: &schema.Resource{
 								Schema: map[string]*schema.Schema{
 									// Required
-									"hsm_password": {
-										Type:      schema.TypeString,
-										Required:  true,
-										Sensitive: true,
-									},
 									"provider_type": {
 										Type:             schema.TypeString,
 										Required:         true,
 										DiffSuppressFunc: tfresource.EqualIgnoreCaseSuppressDiff,
 										ValidateFunc: validation.StringInSlice([]string{
+											"AZURE",
 											"EXTERNAL",
 										}, true),
 									},
 
 									// Optional
+									"azure_encryption_key_id": {
+										Type:     schema.TypeString,
+										Optional: true,
+										Computed: true,
+									},
+									"hsm_password": {
+										Type:      schema.TypeString,
+										Optional:  true,
+										Sensitive: true,
+									},
 
 									// Computed
 								},
@@ -305,6 +334,7 @@ func DatabaseDatabaseResource() *schema.Resource {
 										Required:         true,
 										DiffSuppressFunc: tfresource.EqualIgnoreCaseSuppressDiff,
 										ValidateFunc: validation.StringInSlice([]string{
+											"AZURE",
 											"EXTERNAL",
 										}, true),
 									},
@@ -571,13 +601,25 @@ func DatabaseDatabaseResource() *schema.Resource {
 										Type:     schema.TypeString,
 										Computed: true,
 									},
+									"is_remote": {
+										Type:     schema.TypeBool,
+										Computed: true,
+									},
+									"remote_region": {
+										Type:     schema.TypeString,
+										Computed: true,
+									},
 									"type": {
 										Type:     schema.TypeString,
 										Computed: true,
 									},
 									"vpc_user": {
 										Type:     schema.TypeString,
-										Optional: true,
+										Computed: true,
+									},
+									"vpc_password": {
+										Type:     schema.TypeString,
+										Computed: true,
 									},
 								},
 							},
@@ -667,6 +709,11 @@ func DatabaseDatabaseResource() *schema.Resource {
 			"state": {
 				Type:     schema.TypeString,
 				Computed: true,
+			},
+			"system_tags": {
+				Type:     schema.TypeMap,
+				Computed: true,
+				Elem:     schema.TypeString,
 			},
 			"time_created": {
 				Type:     schema.TypeString,
@@ -954,6 +1001,8 @@ func (s *DatabaseDatabaseResourceCrud) SetData() error {
 
 	s.D.Set("state", s.Res.LifecycleState)
 
+	s.D.Set("system_tags", tfresource.SystemTagsToMap(s.Res.SystemTags))
+
 	if s.Res.TimeCreated != nil {
 		s.D.Set("time_created", s.Res.TimeCreated.String())
 	}
@@ -1041,6 +1090,21 @@ func (s *DatabaseDatabaseResourceCrud) mapToBackupDestinationDetails(fieldKeyFor
 		result.Id = &tmp
 	}
 
+	if internetProxy, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "internet_proxy")); ok {
+		tmp := internetProxy.(string)
+		result.InternetProxy = &tmp
+	}
+
+	if isRemote, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "is_remote")); ok {
+		tmp := isRemote.(bool)
+		result.IsRemote = &tmp
+	}
+
+	if remoteRegion, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "remote_region")); ok {
+		tmp := remoteRegion.(string)
+		result.RemoteRegion = &tmp
+	}
+
 	if type_, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "type")); ok {
 		result.Type = oci_database.BackupDestinationDetailsTypeEnum(type_.(string))
 	}
@@ -1088,6 +1152,78 @@ func (s *DatabaseDatabaseResourceCrud) mapToUpdateBackupDestinationDetails(field
 	return result, nil
 }
 
+func (s *DatabaseDatabaseResourceCrud) DatabaseBackupConfigToMap(obj *oci_database.DbBackupConfig) map[string]interface{} {
+	result := map[string]interface{}{}
+
+	if obj.AutoBackupEnabled != nil {
+		result["auto_backup_enabled"] = bool(*obj.AutoBackupEnabled)
+	}
+
+	if obj.AutoBackupWindow != "" {
+		result["auto_backup_window"] = string(obj.AutoBackupWindow)
+	}
+
+	result["auto_full_backup_day"] = string(obj.AutoFullBackupDay)
+
+	if obj.AutoFullBackupWindow != "" {
+		result["auto_full_backup_window"] = string(obj.AutoFullBackupWindow)
+	}
+
+	result["backup_deletion_policy"] = string(obj.BackupDeletionPolicy)
+
+	backupDestinationDetails := []interface{}{}
+	for _, item := range obj.BackupDestinationDetails {
+		backupDestinationDetails = append(backupDestinationDetails, s.BackupDestinationDetailsToMap(item))
+	}
+	result["backup_destination_details"] = backupDestinationDetails
+
+	if obj.RecoveryWindowInDays != nil {
+		result["recovery_window_in_days"] = int(*obj.RecoveryWindowInDays)
+	}
+
+	if obj.RunImmediateFullBackup != nil {
+		result["run_immediate_full_backup"] = bool(*obj.RunImmediateFullBackup)
+	}
+
+	return result
+}
+
+func (s *DatabaseDatabaseResourceCrud) BackupDestinationDetailsToMap(obj oci_database.BackupDestinationDetails) map[string]interface{} {
+	result := map[string]interface{}{}
+
+	if obj.DbrsPolicyId != nil {
+		result["dbrs_policy_id"] = string(*obj.DbrsPolicyId)
+	}
+
+	if obj.Id != nil {
+		result["id"] = string(*obj.Id)
+	}
+
+	if obj.InternetProxy != nil {
+		result["internet_proxy"] = string(*obj.InternetProxy)
+	}
+
+	if obj.IsRemote != nil {
+		result["is_remote"] = bool(*obj.IsRemote)
+	}
+
+	if obj.RemoteRegion != nil {
+		result["remote_region"] = string(*obj.RemoteRegion)
+	}
+
+	result["type"] = string(obj.Type)
+
+	if vpcPassword, ok := s.D.GetOkExists("database.0.db_backup_config.0.backup_destination_details.0.vpc_password"); ok && vpcPassword != nil {
+		result["vpc_password"] = vpcPassword.(string)
+	}
+
+	if obj.VpcUser != nil {
+		result["vpc_user"] = string(*obj.VpcUser)
+	}
+
+	return result
+}
+
 func BackupDestinationDetailsToMap(obj oci_database.BackupDestinationDetails) map[string]interface{} {
 	result := map[string]interface{}{}
 
@@ -1097,6 +1233,18 @@ func BackupDestinationDetailsToMap(obj oci_database.BackupDestinationDetails) ma
 
 	if obj.Id != nil {
 		result["id"] = string(*obj.Id)
+	}
+
+	if obj.InternetProxy != nil {
+		result["internet_proxy"] = string(*obj.InternetProxy)
+	}
+
+	if obj.IsRemote != nil {
+		result["is_remote"] = bool(*obj.IsRemote)
+	}
+
+	if obj.RemoteRegion != nil {
+		result["remote_region"] = string(*obj.RemoteRegion)
 	}
 
 	result["type"] = string(obj.Type)
@@ -1479,6 +1627,13 @@ func (s *DatabaseDatabaseResourceCrud) mapToEncryptionKeyLocationDetails(fieldKe
 		providerType = "" // default value
 	}
 	switch strings.ToLower(providerType) {
+	case strings.ToLower("AZURE"):
+		details := oci_database.AzureEncryptionKeyDetails{}
+		if azureEncryptionKeyId, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "azure_encryption_key_id")); ok {
+			tmp := azureEncryptionKeyId.(string)
+			details.AzureEncryptionKeyId = &tmp
+		}
+		baseObject = details
 	case strings.ToLower("EXTERNAL"):
 		details := oci_database.ExternalHsmEncryptionDetails{}
 		if hsmPassword, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "hsm_password")); ok {
@@ -1494,7 +1649,13 @@ func (s *DatabaseDatabaseResourceCrud) mapToEncryptionKeyLocationDetails(fieldKe
 
 func EncryptionKeyLocationDetailsToMap(obj *oci_database.EncryptionKeyLocationDetails, hsmPassword string) map[string]interface{} {
 	result := map[string]interface{}{}
-	switch (*obj).(type) {
+	switch v := (*obj).(type) {
+	case oci_database.AzureEncryptionKeyDetails:
+		result["provider_type"] = "AZURE"
+
+		if v.AzureEncryptionKeyId != nil {
+			result["azure_encryption_key_id"] = string(*v.AzureEncryptionKeyId)
+		}
 	case oci_database.ExternalHsmEncryptionDetails:
 		result["provider_type"] = "EXTERNAL"
 		result["hsm_password"] = hsmPassword
@@ -1874,7 +2035,7 @@ func (s *DatabaseDatabaseResourceCrud) DatabaseToMap(obj *oci_database.Database)
 	}
 
 	if obj.DbBackupConfig != nil {
-		result["db_backup_config"] = []interface{}{DbBackupConfigToMap(obj.DbBackupConfig)}
+		result["db_backup_config"] = []interface{}{s.DatabaseBackupConfigToMap(obj.DbBackupConfig)}
 	}
 
 	if obj.DbName != nil {

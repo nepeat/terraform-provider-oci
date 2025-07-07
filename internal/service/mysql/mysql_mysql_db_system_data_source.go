@@ -138,6 +138,12 @@ func (s *MysqlMysqlDbSystemDataSourceCrud) SetData() error {
 		s.D.Set("display_name", *s.Res.DisplayName)
 	}
 
+	if s.Res.EncryptData != nil {
+		s.D.Set("encrypt_data", []interface{}{EncryptDataDetailsToMap(s.Res.EncryptData)})
+	} else {
+		s.D.Set("encrypt_data", nil)
+	}
+
 	endpoints := []interface{}{}
 	for _, item := range s.Res.Endpoints {
 		endpoints = append(endpoints, DbSystemEndpointToMap(item))
@@ -186,6 +192,8 @@ func (s *MysqlMysqlDbSystemDataSourceCrud) SetData() error {
 		s.D.Set("mysql_version", *s.Res.MysqlVersion)
 	}
 
+	s.D.Set("nsg_ids", s.Res.NsgIds)
+
 	if s.Res.PointInTimeRecoveryDetails != nil {
 		s.D.Set("point_in_time_recovery_details", []interface{}{PointInTimeRecoveryDetailsToMap(s.Res.PointInTimeRecoveryDetails)})
 	} else {
@@ -204,6 +212,12 @@ func (s *MysqlMysqlDbSystemDataSourceCrud) SetData() error {
 		s.D.Set("read_endpoint", []interface{}{ReadEndpointDetailsToMap(s.Res.ReadEndpoint)})
 	} else {
 		s.D.Set("read_endpoint", nil)
+	}
+
+	if s.Res.Rest != nil {
+		s.D.Set("rest", []interface{}{RestDetailsToMap(s.Res.Rest)})
+	} else {
+		s.D.Set("rest", nil)
 	}
 
 	if s.Res.SecureConnections != nil {

@@ -20,7 +20,7 @@ func ContainerengineClusterDataSource() *schema.Resource {
 		Required: true,
 	}
 	fieldMap["should_include_oidc_config_file"] = &schema.Schema{
-		Type:     schema.TypeString,
+		Type:     schema.TypeBool,
 		Optional: true,
 	}
 	return tfresource.GetSingularDataSourceItemSchema(ContainerengineClusterResource(), fieldMap, readSingularContainerengineCluster)
@@ -135,6 +135,10 @@ func (s *ContainerengineClusterDataSourceCrud) SetData() error {
 
 	if s.Res.OpenIdConnectDiscoveryEndpoint != nil {
 		s.D.Set("open_id_connect_discovery_endpoint", *s.Res.OpenIdConnectDiscoveryEndpoint)
+	}
+
+	if s.Res.OpenIdConnectDiscoveryKey != nil {
+		s.D.Set("open_id_connect_discovery_key", *s.Res.OpenIdConnectDiscoveryKey)
 	}
 
 	if s.Res.Options != nil {

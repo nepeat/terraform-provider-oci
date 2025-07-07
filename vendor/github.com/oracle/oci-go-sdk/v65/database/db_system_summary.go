@@ -70,7 +70,8 @@ type DbSystemSummary struct {
 	// The number of CPU cores enabled on the DB system.
 	CpuCoreCount *int `mandatory:"true" json:"cpuCoreCount"`
 
-	// The Oracle Database edition that applies to all the databases on the DB system.
+	// The Oracle Database Edition that applies to all the databases on the DB system.
+	// Exadata DB systems and 2-node RAC DB systems require ENTERPRISE_EDITION_EXTREME_PERFORMANCE.
 	DatabaseEdition DbSystemSummaryDatabaseEditionEnum `mandatory:"true" json:"databaseEdition"`
 
 	// The current state of the DB system.
@@ -203,6 +204,10 @@ type DbSystemSummary struct {
 	// For more information, see Resource Tags (https://docs.oracle.com/iaas/Content/General/Concepts/resourcetags.htm).
 	DefinedTags map[string]map[string]interface{} `mandatory:"false" json:"definedTags"`
 
+	// System tags for this resource. Each key is predefined and scoped to a namespace.
+	// For more information, see Resource Tags (https://docs.oracle.com/iaas/Content/General/Concepts/resourcetags.htm).
+	SystemTags map[string]map[string]interface{} `mandatory:"false" json:"systemTags"`
+
 	// Security Attributes for this resource. Each key is predefined and scoped to a namespace.
 	// For more information, see Resource Tags (https://docs.oracle.com/iaas/Content/General/Concepts/resourcetags.htm).
 	// Example: `{"Oracle-ZPR": {"MaxEgressCount": {"value": "42", "mode": "audit"}}}`
@@ -299,6 +304,7 @@ const (
 	DbSystemSummaryDatabaseEditionEnterpriseEdition                   DbSystemSummaryDatabaseEditionEnum = "ENTERPRISE_EDITION"
 	DbSystemSummaryDatabaseEditionEnterpriseEditionHighPerformance    DbSystemSummaryDatabaseEditionEnum = "ENTERPRISE_EDITION_HIGH_PERFORMANCE"
 	DbSystemSummaryDatabaseEditionEnterpriseEditionExtremePerformance DbSystemSummaryDatabaseEditionEnum = "ENTERPRISE_EDITION_EXTREME_PERFORMANCE"
+	DbSystemSummaryDatabaseEditionEnterpriseEditionDeveloper          DbSystemSummaryDatabaseEditionEnum = "ENTERPRISE_EDITION_DEVELOPER"
 )
 
 var mappingDbSystemSummaryDatabaseEditionEnum = map[string]DbSystemSummaryDatabaseEditionEnum{
@@ -306,6 +312,7 @@ var mappingDbSystemSummaryDatabaseEditionEnum = map[string]DbSystemSummaryDataba
 	"ENTERPRISE_EDITION":                     DbSystemSummaryDatabaseEditionEnterpriseEdition,
 	"ENTERPRISE_EDITION_HIGH_PERFORMANCE":    DbSystemSummaryDatabaseEditionEnterpriseEditionHighPerformance,
 	"ENTERPRISE_EDITION_EXTREME_PERFORMANCE": DbSystemSummaryDatabaseEditionEnterpriseEditionExtremePerformance,
+	"ENTERPRISE_EDITION_DEVELOPER":           DbSystemSummaryDatabaseEditionEnterpriseEditionDeveloper,
 }
 
 var mappingDbSystemSummaryDatabaseEditionEnumLowerCase = map[string]DbSystemSummaryDatabaseEditionEnum{
@@ -313,6 +320,7 @@ var mappingDbSystemSummaryDatabaseEditionEnumLowerCase = map[string]DbSystemSumm
 	"enterprise_edition":                     DbSystemSummaryDatabaseEditionEnterpriseEdition,
 	"enterprise_edition_high_performance":    DbSystemSummaryDatabaseEditionEnterpriseEditionHighPerformance,
 	"enterprise_edition_extreme_performance": DbSystemSummaryDatabaseEditionEnterpriseEditionExtremePerformance,
+	"enterprise_edition_developer":           DbSystemSummaryDatabaseEditionEnterpriseEditionDeveloper,
 }
 
 // GetDbSystemSummaryDatabaseEditionEnumValues Enumerates the set of values for DbSystemSummaryDatabaseEditionEnum
@@ -331,6 +339,7 @@ func GetDbSystemSummaryDatabaseEditionEnumStringValues() []string {
 		"ENTERPRISE_EDITION",
 		"ENTERPRISE_EDITION_HIGH_PERFORMANCE",
 		"ENTERPRISE_EDITION_EXTREME_PERFORMANCE",
+		"ENTERPRISE_EDITION_DEVELOPER",
 	}
 }
 

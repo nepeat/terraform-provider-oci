@@ -87,7 +87,7 @@ func (s *MysqlMysqlBackupDataSourceCrud) SetData() error {
 	}
 
 	if s.Res.DbSystemSnapshot != nil {
-		s.D.Set("db_system_snapshot", []interface{}{DbSystemSnapshotToMap(s.Res.DbSystemSnapshot)})
+		s.D.Set("db_system_snapshot", []interface{}{DbSystemSnapshotToMap(s.Res.DbSystemSnapshot, true)})
 	} else {
 		s.D.Set("db_system_snapshot", nil)
 	}
@@ -102,6 +102,12 @@ func (s *MysqlMysqlBackupDataSourceCrud) SetData() error {
 
 	if s.Res.DisplayName != nil {
 		s.D.Set("display_name", *s.Res.DisplayName)
+	}
+
+	if s.Res.EncryptData != nil {
+		s.D.Set("encrypt_data", []interface{}{EncryptDataDetailsToMap(s.Res.EncryptData)})
+	} else {
+		s.D.Set("encrypt_data", nil)
 	}
 
 	s.D.Set("freeform_tags", s.Res.FreeformTags)
@@ -129,6 +135,8 @@ func (s *MysqlMysqlBackupDataSourceCrud) SetData() error {
 	if s.Res.ShapeName != nil {
 		s.D.Set("shape_name", *s.Res.ShapeName)
 	}
+
+	s.D.Set("soft_delete", s.Res.SoftDelete)
 
 	s.D.Set("state", s.Res.LifecycleState)
 

@@ -37,6 +37,8 @@ type CreateDbSystemDetails struct {
 	// User-provided data about the DB System.
 	Description *string `mandatory:"false" json:"description"`
 
+	Rest *CreateRestDetails `mandatory:"false" json:"rest"`
+
 	// Specifies if the DB System is highly available.
 	// When creating a DB System with High Availability, three instances
 	// are created and placed according to your region- and
@@ -64,6 +66,9 @@ type CreateDbSystemDetails struct {
 
 	// The specific MySQL version identifier.
 	MysqlVersion *string `mandatory:"false" json:"mysqlVersion"`
+
+	// Network Security Group OCIDs used for the VNIC attachment.
+	NsgIds []string `mandatory:"false" json:"nsgIds"`
 
 	// The username for the administrative user.
 	AdminUsername *string `mandatory:"false" json:"adminUsername"`
@@ -125,6 +130,8 @@ type CreateDbSystemDetails struct {
 
 	SecureConnections *SecureConnectionDetails `mandatory:"false" json:"secureConnections"`
 
+	EncryptData *EncryptDataDetails `mandatory:"false" json:"encryptData"`
+
 	// The database mode indicating the types of statements that will be allowed to run in the DB system.
 	// This mode will apply only to statements run by user connections. Replicated write statements will continue
 	// to be allowed regardless of the DatabaseMode.
@@ -180,11 +187,13 @@ func (m *CreateDbSystemDetails) UnmarshalJSON(data []byte) (e error) {
 	model := struct {
 		DisplayName          *string                           `json:"displayName"`
 		Description          *string                           `json:"description"`
+		Rest                 *CreateRestDetails                `json:"rest"`
 		IsHighlyAvailable    *bool                             `json:"isHighlyAvailable"`
 		AvailabilityDomain   *string                           `json:"availabilityDomain"`
 		FaultDomain          *string                           `json:"faultDomain"`
 		ConfigurationId      *string                           `json:"configurationId"`
 		MysqlVersion         *string                           `json:"mysqlVersion"`
+		NsgIds               []string                          `json:"nsgIds"`
 		AdminUsername        *string                           `json:"adminUsername"`
 		AdminPassword        *string                           `json:"adminPassword"`
 		DataStorageSizeInGBs *int                              `json:"dataStorageSizeInGBs"`
@@ -202,6 +211,7 @@ func (m *CreateDbSystemDetails) UnmarshalJSON(data []byte) (e error) {
 		CrashRecovery        CrashRecoveryStatusEnum           `json:"crashRecovery"`
 		DatabaseManagement   DatabaseManagementStatusEnum      `json:"databaseManagement"`
 		SecureConnections    *SecureConnectionDetails          `json:"secureConnections"`
+		EncryptData          *EncryptDataDetails               `json:"encryptData"`
 		DatabaseMode         DbSystemDatabaseModeEnum          `json:"databaseMode"`
 		AccessMode           DbSystemAccessModeEnum            `json:"accessMode"`
 		CustomerContacts     []CustomerContact                 `json:"customerContacts"`
@@ -220,6 +230,8 @@ func (m *CreateDbSystemDetails) UnmarshalJSON(data []byte) (e error) {
 
 	m.Description = model.Description
 
+	m.Rest = model.Rest
+
 	m.IsHighlyAvailable = model.IsHighlyAvailable
 
 	m.AvailabilityDomain = model.AvailabilityDomain
@@ -230,6 +242,8 @@ func (m *CreateDbSystemDetails) UnmarshalJSON(data []byte) (e error) {
 
 	m.MysqlVersion = model.MysqlVersion
 
+	m.NsgIds = make([]string, len(model.NsgIds))
+	copy(m.NsgIds, model.NsgIds)
 	m.AdminUsername = model.AdminUsername
 
 	m.AdminPassword = model.AdminPassword
@@ -271,6 +285,8 @@ func (m *CreateDbSystemDetails) UnmarshalJSON(data []byte) (e error) {
 	m.DatabaseManagement = model.DatabaseManagement
 
 	m.SecureConnections = model.SecureConnections
+
+	m.EncryptData = model.EncryptData
 
 	m.DatabaseMode = model.DatabaseMode
 

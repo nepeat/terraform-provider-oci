@@ -153,9 +153,8 @@ func (client DatabaseClient) activateExadataInfrastructure(ctx context.Context, 
 	return response, err
 }
 
-// AddStandbyAutonomousContainerDatabase Create Standby Autonomous Container Database.
-// For more information about changing Autonomous Container Databases Add Standby, see
-// Create Standby Autonomous Container Database (https://docs.oracle.com/en/cloud/paas/autonomous-database/dedicated/adbcl/index.html#ADBCL-GUID-D3B503F1-0032-4B0D-9F00-ACAE8151AB80) and Convert Snapshot Standby to Physical Standby (https://docs.oracle.com/en/cloud/paas/autonomous-database/dedicated/adbcl/index.html#ADBCL-GUID-E8D7E0EE-8244-467D-B33A-1BC6F969A0A4).
+// AddStandbyAutonomousContainerDatabase Add a standby Autonomous Container Database. For more information about Autonomous Data Guard,see
+// Protect Critical Databases from Failures and Disasters Using Autonomous Data Guard (https://docs.oracle.com/en/cloud/paas/autonomous-database/dedicated/adbau/GUID-C57B9A6E-7471-4CDC-8F10-B8386538E31C).
 //
 // # See also
 //
@@ -715,7 +714,7 @@ func (client DatabaseClient) cascadingDeleteSchedulingPlan(ctx context.Context, 
 
 // ChangeAutonomousContainerDatabaseCompartment Move the Autonomous Container Database and its dependent resources to the specified compartment.
 // For more information about moving Autonomous Container Databases, see
-// Moving Database Resources to a Different Compartment (https://docs.oracle.com/iaas/Content/Database/Concepts/databaseoverview.htm#moveRes).
+// Moving Database Resources to a Different Compartment (https://docs.oracle.com/en/cloud/paas/autonomous-database/dedicated/raqyy/#articletitle.html).
 //
 // # See also
 //
@@ -1217,6 +1216,68 @@ func (client DatabaseClient) changeCloudAutonomousVmClusterCompartment(ctx conte
 	return response, err
 }
 
+// ChangeCloudAutonomousVmClusterSubscription Associate a Cloud Autonomous VM cluster with a different subscription.
+//
+// # See also
+//
+// Click https://docs.oracle.com/en-us/iaas/tools/go-sdk-examples/latest/database/ChangeCloudAutonomousVmClusterSubscription.go.html to see an example of how to use ChangeCloudAutonomousVmClusterSubscription API.
+func (client DatabaseClient) ChangeCloudAutonomousVmClusterSubscription(ctx context.Context, request ChangeCloudAutonomousVmClusterSubscriptionRequest) (response ChangeCloudAutonomousVmClusterSubscriptionResponse, err error) {
+	var ociResponse common.OCIResponse
+	policy := common.NoRetryPolicy()
+	if client.RetryPolicy() != nil {
+		policy = *client.RetryPolicy()
+	}
+	if request.RetryPolicy() != nil {
+		policy = *request.RetryPolicy()
+	}
+
+	if !(request.OpcRetryToken != nil && *request.OpcRetryToken != "") {
+		request.OpcRetryToken = common.String(common.RetryToken())
+	}
+
+	ociResponse, err = common.Retry(ctx, request, client.changeCloudAutonomousVmClusterSubscription, policy)
+	if err != nil {
+		if ociResponse != nil {
+			if httpResponse := ociResponse.HTTPResponse(); httpResponse != nil {
+				opcRequestId := httpResponse.Header.Get("opc-request-id")
+				response = ChangeCloudAutonomousVmClusterSubscriptionResponse{RawResponse: httpResponse, OpcRequestId: &opcRequestId}
+			} else {
+				response = ChangeCloudAutonomousVmClusterSubscriptionResponse{}
+			}
+		}
+		return
+	}
+	if convertedResponse, ok := ociResponse.(ChangeCloudAutonomousVmClusterSubscriptionResponse); ok {
+		response = convertedResponse
+	} else {
+		err = fmt.Errorf("failed to convert OCIResponse into ChangeCloudAutonomousVmClusterSubscriptionResponse")
+	}
+	return
+}
+
+// changeCloudAutonomousVmClusterSubscription implements the OCIOperation interface (enables retrying operations)
+func (client DatabaseClient) changeCloudAutonomousVmClusterSubscription(ctx context.Context, request common.OCIRequest, binaryReqBody *common.OCIReadSeekCloser, extraHeaders map[string]string) (common.OCIResponse, error) {
+
+	httpRequest, err := request.HTTPRequest(http.MethodPost, "/cloudAutonomousVmClusters/{cloudAutonomousVmClusterId}/actions/changeSubscription", binaryReqBody, extraHeaders)
+	if err != nil {
+		return nil, err
+	}
+
+	var response ChangeCloudAutonomousVmClusterSubscriptionResponse
+	var httpResponse *http.Response
+	httpResponse, err = client.Call(ctx, &httpRequest)
+	defer common.CloseBodyIfValid(httpResponse)
+	response.RawResponse = httpResponse
+	if err != nil {
+		apiReferenceLink := "https://docs.oracle.com/iaas/api/#/en/database/20160918/CloudAutonomousVmCluster/ChangeCloudAutonomousVmClusterSubscription"
+		err = common.PostProcessServiceError(err, "Database", "ChangeCloudAutonomousVmClusterSubscription", apiReferenceLink)
+		return response, err
+	}
+
+	err = common.UnmarshalResponse(httpResponse, &response)
+	return response, err
+}
+
 // ChangeCloudExadataInfrastructureCompartment Moves a cloud Exadata infrastructure resource and its dependent resources to another compartment. Applies to Exadata Cloud Service instances and Autonomous Database on dedicated Exadata infrastructure only.For more information about moving resources to a different compartment, see Moving Database Resources to a Different Compartment (https://docs.oracle.com/iaas/Content/Database/Concepts/databaseoverview.htm#moveRes).
 //
 // # See also
@@ -1529,8 +1590,8 @@ func (client DatabaseClient) changeDatabaseSoftwareImageCompartment(ctx context.
 	return response, err
 }
 
-// ChangeDataguardRole Switch the Autonomous Container Database role between Standby and Snapshot Standby.
-// For more information about changing Autonomous Container Databases Dataguard Role, see
+// ChangeDataguardRole **Deprecated.** Use the ConvertStandbyAutonomousContainerDatabase operation to switch the Autonomous Container Database (ACD) role between Standby and Snapshot Standby.
+// For more information about changing ACD Role, see
 // Convert Physical Standby to Snapshot Standby (https://docs.oracle.com/en/cloud/paas/autonomous-database/dedicated/adbcl/index.html#ADBCL-GUID-D3B503F1-0032-4B0D-9F00-ACAE8151AB80) and Convert Snapshot Standby to Physical Standby (https://docs.oracle.com/en/cloud/paas/autonomous-database/dedicated/adbcl/index.html#ADBCL-GUID-E8D7E0EE-8244-467D-B33A-1BC6F969A0A4).
 //
 // # See also
@@ -3026,9 +3087,8 @@ func (client DatabaseClient) confirmKeyStoreDetailsAreCorrect(ctx context.Contex
 	return response, err
 }
 
-// ConvertStandbyAutonomousContainerDatabase Convert between and SnapshotStandby Standby Autonomous Container Database .
-// For more information about changing Autonomous Container Databases Add Standby, see
-// Convert Standby Autonomous Container Database (https://docs.oracle.com/en/cloud/paas/autonomous-database/dedicated/adbcl/index.html#ADBCL-GUID-D3B503F1-0032-4B0D-9F00-ACAE8151AB80) and Convert Snapshot Standby to Physical Standby (https://docs.oracle.com/en/cloud/paas/autonomous-database/dedicated/adbcl/index.html#ADBCL-GUID-E8D7E0EE-8244-467D-B33A-1BC6F969A0A4).
+// ConvertStandbyAutonomousContainerDatabase Convert the standby Autonomous Container Database (ACD) between physical standby and snapshot standby ACD. For more information about converting standby ACDs, see
+// Convert Physical Standby to Snapshot Standby (https://docs.oracle.com/en/cloud/paas/autonomous-database/dedicated/adbcl/index.html#ADBCL-GUID-D3B503F1-0032-4B0D-9F00-ACAE8151AB80) and Convert Snapshot Standby to Physical Standby (https://docs.oracle.com/en/cloud/paas/autonomous-database/dedicated/adbcl/index.html#ADBCL-GUID-E8D7E0EE-8244-467D-B33A-1BC6F969A0A4).
 //
 // # See also
 //
@@ -3398,13 +3458,8 @@ func (client DatabaseClient) createAutonomousContainerDatabase(ctx context.Conte
 	return response, err
 }
 
-// CreateAutonomousContainerDatabaseDataguardAssociation Create a new Autonomous Data Guard association. An Autonomous Data Guard association represents the replication relationship between the
-// specified Autonomous Container database and a peer Autonomous Container database. For more information, see Using Oracle Data Guard (https://docs.oracle.com/iaas/Content/Database/Tasks/usingdataguard.htm).
-// All Oracle Cloud Infrastructure resources, including Data Guard associations, get an Oracle-assigned, unique ID
-// called an Oracle Cloud Identifier (OCID). When you create a resource, you can find its OCID in the response.
-// You can also retrieve a resource's OCID by using a List API operation on that resource type, or by viewing the
-// resource in the Console. For more information, see
-// Resource Identifiers (https://docs.oracle.com/iaas/Content/General/Concepts/identifiers.htm).
+// CreateAutonomousContainerDatabaseDataguardAssociation **Deprecated.** Use the AddStandbyAutonomousContainerDatabase operation to create a new Autonomous Data Guard association. An Autonomous Data Guard association represents the replication relationship between the
+// specified Autonomous Container database and a peer Autonomous Container database. For more information, see Using Oracle Data Guard (https://docs.oracle.com/en/cloud/paas/autonomous-database/dedicated/adbau/#articletitle.html).
 //
 // # See also
 //
@@ -8655,9 +8710,8 @@ func (client DatabaseClient) downloadVmClusterNetworkConfigFile(ctx context.Cont
 	return response, err
 }
 
-// EditAutonomousContainerDatabaseDataguard Edit Autonomous Container Database Dataguard.
-// For more information about changing Autonomous Container Databases Add Standby, see
-// Update Autonomous Container Database Dataguard (https://docs.oracle.com/en/cloud/paas/autonomous-database/dedicated/adbcl/index.html#ADBCL-GUID-D3B503F1-0032-4B0D-9F00-ACAE8151AB80) and Convert Snapshot Standby to Physical Standby (https://docs.oracle.com/en/cloud/paas/autonomous-database/dedicated/adbcl/index.html#ADBCL-GUID-E8D7E0EE-8244-467D-B33A-1BC6F969A0A4).
+// EditAutonomousContainerDatabaseDataguard Modify Autonomous Container Database Data Guard settings such as protection mode, automatic failover, and fast start failover lag limit. For more information, see
+// Update Autonomous Container Database Dataguard (https://docs.oracle.com/en/cloud/paas/autonomous-database/dedicated/adbcl/index.html#ADBCL-GUID-3A936EC7-7A49-4FD2-9F39-8DB6B22011CE).
 //
 // # See also
 //
@@ -9526,7 +9580,8 @@ func (client DatabaseClient) failOverAutonomousDatabase(ctx context.Context, req
 	return response, err
 }
 
-// FailoverAutonomousContainerDatabaseDataguard Failover Autonomous Container Database, identified by the autonomousContainerDatabaseId parameter, to an active standby Autonomous Container Database.
+// FailoverAutonomousContainerDatabaseDataguard Performs failover to a standby Autonomous Container Database (ACD) identified by the autonomousContainerDatabaseId parameter. This standby ACD will become the new primary ACD when the failover completes successfully. For more information, see
+// Fail Over to the Standby in an Autonomous Data Guard Configuration (https://docs.oracle.com/en/cloud/paas/autonomous-database/dedicated/adbcl/index.html#ADBCL-GUID-C8FFA343-223C-4F41-9656-AEC356AD90A0).
 //
 // # See also
 //
@@ -9583,7 +9638,7 @@ func (client DatabaseClient) failoverAutonomousContainerDatabaseDataguard(ctx co
 	return response, err
 }
 
-// FailoverAutonomousContainerDatabaseDataguardAssociation Fails over the standby Autonomous Container Database identified by the autonomousContainerDatabaseId parameter to the primary Autonomous Container Database after the existing primary Autonomous Container Database fails or becomes unreachable.
+// FailoverAutonomousContainerDatabaseDataguardAssociation **Deprecated.** Use the FailoverAutonomousContainerDatabaseDataguard operation to fail over the standby Autonomous Container Database (ACD) to the primary ACD after the existing primary ACD fails or becomes unreachable.
 // A failover can result in data loss, depending on the protection mode in effect at the time the primary Autonomous Container Database fails.
 //
 // # See also
@@ -10004,7 +10059,7 @@ func (client DatabaseClient) getAutonomousContainerDatabase(ctx context.Context,
 	return response, err
 }
 
-// GetAutonomousContainerDatabaseDataguardAssociation Gets an Autonomous Container Database enabled with Autonomous Data Guard associated with the specified Autonomous Container Database.
+// GetAutonomousContainerDatabaseDataguardAssociation **Deprecated.** Use the GetAutonomousContainerDatabase operation to get the details of an Autonomous Container Database (ACD) enabled with Autonomous Data Guard associated with the specified ACD.
 //
 // # See also
 //
@@ -10232,7 +10287,7 @@ func (client DatabaseClient) getAutonomousDatabaseBackup(ctx context.Context, re
 	return response, err
 }
 
-// GetAutonomousDatabaseDataguardAssociation Gets an Autonomous Data Guard-enabled database associated with the specified Autonomous Database.
+// GetAutonomousDatabaseDataguardAssociation *Deprecated.* Use the GetAutonomousContainerDatabase operation to gets an Autonomous Data Guard-enabled database associated with the specified Autonomous Database.
 //
 // # See also
 //
@@ -11078,7 +11133,7 @@ func (client DatabaseClient) getCloudExadataInfrastructureUnallocatedResources(c
 	defer common.CloseBodyIfValid(httpResponse)
 	response.RawResponse = httpResponse
 	if err != nil {
-		apiReferenceLink := "https://docs.oracle.com/iaas/api/#/en/database/20160918/CloudExadataInfrastructureUnallocatedResources/GetCloudExadataInfrastructureUnallocatedResources"
+		apiReferenceLink := "https://docs.oracle.com/iaas/api/#/en/database/20160918/CloudExadataInfrastructure/GetCloudExadataInfrastructureUnallocatedResources"
 		err = common.PostProcessServiceError(err, "Database", "GetCloudExadataInfrastructureUnallocatedResources", apiReferenceLink)
 		return response, err
 	}
@@ -14250,7 +14305,64 @@ func (client DatabaseClient) listApplicationVips(ctx context.Context, request co
 	return response, err
 }
 
-// ListAutonomousContainerDatabaseDataguardAssociations Gets a list of the Autonomous Container Databases with Autonomous Data Guard-enabled associated with the specified Autonomous Container Database.
+// ListAutonomousContainerDatabaseBackups Gets a list of Autonomous Container Database backups by using either the 'autonomousDatabaseId' or 'compartmentId' as your query parameter.
+//
+// # See also
+//
+// Click https://docs.oracle.com/en-us/iaas/tools/go-sdk-examples/latest/database/ListAutonomousContainerDatabaseBackups.go.html to see an example of how to use ListAutonomousContainerDatabaseBackups API.
+func (client DatabaseClient) ListAutonomousContainerDatabaseBackups(ctx context.Context, request ListAutonomousContainerDatabaseBackupsRequest) (response ListAutonomousContainerDatabaseBackupsResponse, err error) {
+	var ociResponse common.OCIResponse
+	policy := common.NoRetryPolicy()
+	if client.RetryPolicy() != nil {
+		policy = *client.RetryPolicy()
+	}
+	if request.RetryPolicy() != nil {
+		policy = *request.RetryPolicy()
+	}
+	ociResponse, err = common.Retry(ctx, request, client.listAutonomousContainerDatabaseBackups, policy)
+	if err != nil {
+		if ociResponse != nil {
+			if httpResponse := ociResponse.HTTPResponse(); httpResponse != nil {
+				opcRequestId := httpResponse.Header.Get("opc-request-id")
+				response = ListAutonomousContainerDatabaseBackupsResponse{RawResponse: httpResponse, OpcRequestId: &opcRequestId}
+			} else {
+				response = ListAutonomousContainerDatabaseBackupsResponse{}
+			}
+		}
+		return
+	}
+	if convertedResponse, ok := ociResponse.(ListAutonomousContainerDatabaseBackupsResponse); ok {
+		response = convertedResponse
+	} else {
+		err = fmt.Errorf("failed to convert OCIResponse into ListAutonomousContainerDatabaseBackupsResponse")
+	}
+	return
+}
+
+// listAutonomousContainerDatabaseBackups implements the OCIOperation interface (enables retrying operations)
+func (client DatabaseClient) listAutonomousContainerDatabaseBackups(ctx context.Context, request common.OCIRequest, binaryReqBody *common.OCIReadSeekCloser, extraHeaders map[string]string) (common.OCIResponse, error) {
+
+	httpRequest, err := request.HTTPRequest(http.MethodGet, "/autonomousContainerDatabaseBackups", binaryReqBody, extraHeaders)
+	if err != nil {
+		return nil, err
+	}
+
+	var response ListAutonomousContainerDatabaseBackupsResponse
+	var httpResponse *http.Response
+	httpResponse, err = client.Call(ctx, &httpRequest)
+	defer common.CloseBodyIfValid(httpResponse)
+	response.RawResponse = httpResponse
+	if err != nil {
+		apiReferenceLink := "https://docs.oracle.com/iaas/api/#/en/database/20160918/AutonomousContainerDatabaseBackup/ListAutonomousContainerDatabaseBackups"
+		err = common.PostProcessServiceError(err, "Database", "ListAutonomousContainerDatabaseBackups", apiReferenceLink)
+		return response, err
+	}
+
+	err = common.UnmarshalResponse(httpResponse, &response)
+	return response, err
+}
+
+// ListAutonomousContainerDatabaseDataguardAssociations **Deprecated.** Use the ListAutonomousContainerDatabases operation to get a list of the Autonomous Container Databases (ACDs)with Autonomous Data Guard-enabled associated with the specified ACD.
 //
 // # See also
 //
@@ -14592,7 +14704,7 @@ func (client DatabaseClient) listAutonomousDatabaseClones(ctx context.Context, r
 	return response, err
 }
 
-// ListAutonomousDatabaseDataguardAssociations Gets a list of the Autonomous Data Guard-enabled databases associated with the specified Autonomous Database.
+// ListAutonomousDatabaseDataguardAssociations *Deprecated.* Use the GetAutonomousContainerDatabase operation to get a list of the Autonomous Data Guard-enabled databases associated with the specified Autonomous Database.
 //
 // # See also
 //
@@ -16304,7 +16416,7 @@ func (client DatabaseClient) listDbHomes(ctx context.Context, request common.OCI
 	return response, err
 }
 
-// ListDbNodes Lists the database nodes in the specified DB system and compartment. A database node is a server running database software.
+// ListDbNodes Lists the database nodes in the specified DB system and compartment. In addition to the other required parameters, either '--db-system-id' or '--vm-cluster-id' also must be provided, depending on the service being accessed.
 //
 // # See also
 //
@@ -16753,6 +16865,63 @@ func (client DatabaseClient) listDbSystemUpgradeHistoryEntries(ctx context.Conte
 	if err != nil {
 		apiReferenceLink := "https://docs.oracle.com/iaas/api/#/en/database/20160918/DbSystemUpgradeHistoryEntry/ListDbSystemUpgradeHistoryEntries"
 		err = common.PostProcessServiceError(err, "Database", "ListDbSystemUpgradeHistoryEntries", apiReferenceLink)
+		return response, err
+	}
+
+	err = common.UnmarshalResponse(httpResponse, &response)
+	return response, err
+}
+
+// ListDbSystemUpgrades Lists the applicable upgrade components for a DB systems.
+//
+// # See also
+//
+// Click https://docs.oracle.com/en-us/iaas/tools/go-sdk-examples/latest/database/ListDbSystemUpgrades.go.html to see an example of how to use ListDbSystemUpgrades API.
+func (client DatabaseClient) ListDbSystemUpgrades(ctx context.Context, request ListDbSystemUpgradesRequest) (response ListDbSystemUpgradesResponse, err error) {
+	var ociResponse common.OCIResponse
+	policy := common.NoRetryPolicy()
+	if client.RetryPolicy() != nil {
+		policy = *client.RetryPolicy()
+	}
+	if request.RetryPolicy() != nil {
+		policy = *request.RetryPolicy()
+	}
+	ociResponse, err = common.Retry(ctx, request, client.listDbSystemUpgrades, policy)
+	if err != nil {
+		if ociResponse != nil {
+			if httpResponse := ociResponse.HTTPResponse(); httpResponse != nil {
+				opcRequestId := httpResponse.Header.Get("opc-request-id")
+				response = ListDbSystemUpgradesResponse{RawResponse: httpResponse, OpcRequestId: &opcRequestId}
+			} else {
+				response = ListDbSystemUpgradesResponse{}
+			}
+		}
+		return
+	}
+	if convertedResponse, ok := ociResponse.(ListDbSystemUpgradesResponse); ok {
+		response = convertedResponse
+	} else {
+		err = fmt.Errorf("failed to convert OCIResponse into ListDbSystemUpgradesResponse")
+	}
+	return
+}
+
+// listDbSystemUpgrades implements the OCIOperation interface (enables retrying operations)
+func (client DatabaseClient) listDbSystemUpgrades(ctx context.Context, request common.OCIRequest, binaryReqBody *common.OCIReadSeekCloser, extraHeaders map[string]string) (common.OCIResponse, error) {
+
+	httpRequest, err := request.HTTPRequest(http.MethodGet, "/dbSystems/{dbSystemId}/dbSystemUpgrades", binaryReqBody, extraHeaders)
+	if err != nil {
+		return nil, err
+	}
+
+	var response ListDbSystemUpgradesResponse
+	var httpResponse *http.Response
+	httpResponse, err = client.Call(ctx, &httpRequest)
+	defer common.CloseBodyIfValid(httpResponse)
+	response.RawResponse = httpResponse
+	if err != nil {
+		apiReferenceLink := "https://docs.oracle.com/iaas/api/#/en/database/20160918/DbSystemUpgradeSummary/ListDbSystemUpgrades"
+		err = common.PostProcessServiceError(err, "Database", "ListDbSystemUpgrades", apiReferenceLink)
 		return response, err
 	}
 
@@ -18148,6 +18317,63 @@ func (client DatabaseClient) listRecommendedScheduledActions(ctx context.Context
 	return response, err
 }
 
+// ListResourcePoolMembers Lists the OCIDs of the Autonomous Database resource pool members for the specified Autonomous Database leader.
+//
+// # See also
+//
+// Click https://docs.oracle.com/en-us/iaas/tools/go-sdk-examples/latest/database/ListResourcePoolMembers.go.html to see an example of how to use ListResourcePoolMembers API.
+func (client DatabaseClient) ListResourcePoolMembers(ctx context.Context, request ListResourcePoolMembersRequest) (response ListResourcePoolMembersResponse, err error) {
+	var ociResponse common.OCIResponse
+	policy := common.NoRetryPolicy()
+	if client.RetryPolicy() != nil {
+		policy = *client.RetryPolicy()
+	}
+	if request.RetryPolicy() != nil {
+		policy = *request.RetryPolicy()
+	}
+	ociResponse, err = common.Retry(ctx, request, client.listResourcePoolMembers, policy)
+	if err != nil {
+		if ociResponse != nil {
+			if httpResponse := ociResponse.HTTPResponse(); httpResponse != nil {
+				opcRequestId := httpResponse.Header.Get("opc-request-id")
+				response = ListResourcePoolMembersResponse{RawResponse: httpResponse, OpcRequestId: &opcRequestId}
+			} else {
+				response = ListResourcePoolMembersResponse{}
+			}
+		}
+		return
+	}
+	if convertedResponse, ok := ociResponse.(ListResourcePoolMembersResponse); ok {
+		response = convertedResponse
+	} else {
+		err = fmt.Errorf("failed to convert OCIResponse into ListResourcePoolMembersResponse")
+	}
+	return
+}
+
+// listResourcePoolMembers implements the OCIOperation interface (enables retrying operations)
+func (client DatabaseClient) listResourcePoolMembers(ctx context.Context, request common.OCIRequest, binaryReqBody *common.OCIReadSeekCloser, extraHeaders map[string]string) (common.OCIResponse, error) {
+
+	httpRequest, err := request.HTTPRequest(http.MethodGet, "/autonomousDatabases/{autonomousDatabaseId}/resourcePoolMembers", binaryReqBody, extraHeaders)
+	if err != nil {
+		return nil, err
+	}
+
+	var response ListResourcePoolMembersResponse
+	var httpResponse *http.Response
+	httpResponse, err = client.Call(ctx, &httpRequest)
+	defer common.CloseBodyIfValid(httpResponse)
+	response.RawResponse = httpResponse
+	if err != nil {
+		apiReferenceLink := "https://docs.oracle.com/iaas/api/#/en/database/20160918/AutonomousDatabase/ListResourcePoolMembers"
+		err = common.PostProcessServiceError(err, "Database", "ListResourcePoolMembers", apiReferenceLink)
+		return response, err
+	}
+
+	err = common.UnmarshalResponse(httpResponse, &response)
+	return response, err
+}
+
 // ListScheduledActions Lists the Scheduled Action resources in the specified compartment.
 //
 // # See also
@@ -19446,7 +19672,70 @@ func (client DatabaseClient) registerAutonomousDatabaseDataSafe(ctx context.Cont
 	return response, err
 }
 
-// ReinstateAutonomousContainerDatabaseDataguard Reinstates a disabled standby Autonomous Container Database, identified by the autonomousContainerDatabaseId parameter, to an active standby Autonomous Container Database.
+// RegisterCloudVmClusterPkcs Install the PKCS11 driver for given keystore type
+//
+// # See also
+//
+// Click https://docs.oracle.com/en-us/iaas/tools/go-sdk-examples/latest/database/RegisterCloudVmClusterPkcs.go.html to see an example of how to use RegisterCloudVmClusterPkcs API.
+func (client DatabaseClient) RegisterCloudVmClusterPkcs(ctx context.Context, request RegisterCloudVmClusterPkcsRequest) (response RegisterCloudVmClusterPkcsResponse, err error) {
+	var ociResponse common.OCIResponse
+	policy := common.NoRetryPolicy()
+	if client.RetryPolicy() != nil {
+		policy = *client.RetryPolicy()
+	}
+	if request.RetryPolicy() != nil {
+		policy = *request.RetryPolicy()
+	}
+
+	if !(request.OpcRetryToken != nil && *request.OpcRetryToken != "") {
+		request.OpcRetryToken = common.String(common.RetryToken())
+	}
+
+	ociResponse, err = common.Retry(ctx, request, client.registerCloudVmClusterPkcs, policy)
+	if err != nil {
+		if ociResponse != nil {
+			if httpResponse := ociResponse.HTTPResponse(); httpResponse != nil {
+				opcRequestId := httpResponse.Header.Get("opc-request-id")
+				response = RegisterCloudVmClusterPkcsResponse{RawResponse: httpResponse, OpcRequestId: &opcRequestId}
+			} else {
+				response = RegisterCloudVmClusterPkcsResponse{}
+			}
+		}
+		return
+	}
+	if convertedResponse, ok := ociResponse.(RegisterCloudVmClusterPkcsResponse); ok {
+		response = convertedResponse
+	} else {
+		err = fmt.Errorf("failed to convert OCIResponse into RegisterCloudVmClusterPkcsResponse")
+	}
+	return
+}
+
+// registerCloudVmClusterPkcs implements the OCIOperation interface (enables retrying operations)
+func (client DatabaseClient) registerCloudVmClusterPkcs(ctx context.Context, request common.OCIRequest, binaryReqBody *common.OCIReadSeekCloser, extraHeaders map[string]string) (common.OCIResponse, error) {
+
+	httpRequest, err := request.HTTPRequest(http.MethodPost, "/cloudVmClusters/{cloudVmClusterId}/actions/registerPkcs", binaryReqBody, extraHeaders)
+	if err != nil {
+		return nil, err
+	}
+
+	var response RegisterCloudVmClusterPkcsResponse
+	var httpResponse *http.Response
+	httpResponse, err = client.Call(ctx, &httpRequest)
+	defer common.CloseBodyIfValid(httpResponse)
+	response.RawResponse = httpResponse
+	if err != nil {
+		apiReferenceLink := "https://docs.oracle.com/iaas/api/#/en/database/20160918/CloudVmCluster/RegisterCloudVmClusterPkcs"
+		err = common.PostProcessServiceError(err, "Database", "RegisterCloudVmClusterPkcs", apiReferenceLink)
+		return response, err
+	}
+
+	err = common.UnmarshalResponse(httpResponse, &response)
+	return response, err
+}
+
+// ReinstateAutonomousContainerDatabaseDataguard Reinstates a disabled standby Autonomous Container Database (ACD), identified by the autonomousContainerDatabaseId parameter to an active standby ACD. For more information, see
+// Reinstate the Disabled Standby in an Autonomous Data Guard Configuration (https://docs.oracle.com/en/cloud/paas/autonomous-database/dedicated/adbcl/index.html#ADBCL-GUID-B5C6A90D-72E3-4F32-988D-8AECC0A2D947).
 //
 // # See also
 //
@@ -19503,7 +19792,7 @@ func (client DatabaseClient) reinstateAutonomousContainerDatabaseDataguard(ctx c
 	return response, err
 }
 
-// ReinstateAutonomousContainerDatabaseDataguardAssociation Reinstates a disabled standby Autonomous Container Database, identified by the autonomousContainerDatabaseId parameter, to an active standby Autonomous Container Database.
+// ReinstateAutonomousContainerDatabaseDataguardAssociation **Deprecated.** Use the ReinstateAutonomousContainerDatabaseDataguard operation to reinstate a disabled standby Autonomous Container Database (ACD), identified by the autonomousContainerDatabaseId parameter, to an active standby ACD.
 //
 // # See also
 //
@@ -21631,7 +21920,8 @@ func (client DatabaseClient) switchOverDataGuard(ctx context.Context, request co
 	return response, err
 }
 
-// SwitchoverAutonomousContainerDatabaseDataguard Switchover Autonomous Container Database, identified by the autonomousContainerDatabaseId parameter, to an active standby Autonomous Container Database.
+// SwitchoverAutonomousContainerDatabaseDataguard Switchover an Autonomous Container Database (ACD), identified by the autonomousContainerDatabaseId parameter, to an active standby ACD. This standby ACD will become the new primary ACD when the switchover completes successfully. For more information, see
+// Switch Roles in an Autonomous Data Guard Configuration (https://docs.oracle.com/en/cloud/paas/autonomous-database/dedicated/adbcl/index.html#ADBCL-GUID-A2AB31F6-D52D-493C-9BA7-D87A0F17078F).
 //
 // # See also
 //
@@ -21688,7 +21978,7 @@ func (client DatabaseClient) switchoverAutonomousContainerDatabaseDataguard(ctx 
 	return response, err
 }
 
-// SwitchoverAutonomousContainerDatabaseDataguardAssociation Switches over the primary Autonomous Container Database of an Autonomous Data Guard peer association to standby role. The standby Autonomous Container Database associated with autonomousContainerDatabaseDataguardAssociationId assumes the primary Autonomous Container Database role.
+// SwitchoverAutonomousContainerDatabaseDataguardAssociation **Deprecated.** Use the SwitchoverAutonomousContainerDatabaseDataguard operation to switches over the primary Autonomous Container Database (ACD) of an Autonomous Data Guard peer association to standby role. The standby ACD associated with autonomousContainerDatabaseDataguardAssociationId assumes the primary ACD role.
 // A switchover incurs no data loss.
 //
 // # See also
@@ -22045,6 +22335,68 @@ func (client DatabaseClient) terminateDbSystem(ctx context.Context, request comm
 	return response, err
 }
 
+// UnregisterCloudVmClusterPkcs Uninstall the PKCS11 driver for given keystore type
+//
+// # See also
+//
+// Click https://docs.oracle.com/en-us/iaas/tools/go-sdk-examples/latest/database/UnregisterCloudVmClusterPkcs.go.html to see an example of how to use UnregisterCloudVmClusterPkcs API.
+func (client DatabaseClient) UnregisterCloudVmClusterPkcs(ctx context.Context, request UnregisterCloudVmClusterPkcsRequest) (response UnregisterCloudVmClusterPkcsResponse, err error) {
+	var ociResponse common.OCIResponse
+	policy := common.NoRetryPolicy()
+	if client.RetryPolicy() != nil {
+		policy = *client.RetryPolicy()
+	}
+	if request.RetryPolicy() != nil {
+		policy = *request.RetryPolicy()
+	}
+
+	if !(request.OpcRetryToken != nil && *request.OpcRetryToken != "") {
+		request.OpcRetryToken = common.String(common.RetryToken())
+	}
+
+	ociResponse, err = common.Retry(ctx, request, client.unregisterCloudVmClusterPkcs, policy)
+	if err != nil {
+		if ociResponse != nil {
+			if httpResponse := ociResponse.HTTPResponse(); httpResponse != nil {
+				opcRequestId := httpResponse.Header.Get("opc-request-id")
+				response = UnregisterCloudVmClusterPkcsResponse{RawResponse: httpResponse, OpcRequestId: &opcRequestId}
+			} else {
+				response = UnregisterCloudVmClusterPkcsResponse{}
+			}
+		}
+		return
+	}
+	if convertedResponse, ok := ociResponse.(UnregisterCloudVmClusterPkcsResponse); ok {
+		response = convertedResponse
+	} else {
+		err = fmt.Errorf("failed to convert OCIResponse into UnregisterCloudVmClusterPkcsResponse")
+	}
+	return
+}
+
+// unregisterCloudVmClusterPkcs implements the OCIOperation interface (enables retrying operations)
+func (client DatabaseClient) unregisterCloudVmClusterPkcs(ctx context.Context, request common.OCIRequest, binaryReqBody *common.OCIReadSeekCloser, extraHeaders map[string]string) (common.OCIResponse, error) {
+
+	httpRequest, err := request.HTTPRequest(http.MethodPost, "/cloudVmClusters/{cloudVmClusterId}/actions/unregisterPkcs", binaryReqBody, extraHeaders)
+	if err != nil {
+		return nil, err
+	}
+
+	var response UnregisterCloudVmClusterPkcsResponse
+	var httpResponse *http.Response
+	httpResponse, err = client.Call(ctx, &httpRequest)
+	defer common.CloseBodyIfValid(httpResponse)
+	response.RawResponse = httpResponse
+	if err != nil {
+		apiReferenceLink := "https://docs.oracle.com/iaas/api/#/en/database/20160918/CloudVmCluster/UnregisterCloudVmClusterPkcs"
+		err = common.PostProcessServiceError(err, "Database", "UnregisterCloudVmClusterPkcs", apiReferenceLink)
+		return response, err
+	}
+
+	err = common.UnmarshalResponse(httpResponse, &response)
+	return response, err
+}
+
 // UpdateAutonomousContainerDatabase Updates the properties of an Autonomous Container Database, such as display name, maintenance preference, backup retention, and tags.
 //
 // # See also
@@ -22102,7 +22454,7 @@ func (client DatabaseClient) updateAutonomousContainerDatabase(ctx context.Conte
 	return response, err
 }
 
-// UpdateAutonomousContainerDatabaseDataguardAssociation Update Autonomous Data Guard association.
+// UpdateAutonomousContainerDatabaseDataguardAssociation **Deprecated.** Use the EditAutonomousContainerDatabaseDataguard operation to update an Autonomous Data Guard association.
 //
 // # See also
 //
