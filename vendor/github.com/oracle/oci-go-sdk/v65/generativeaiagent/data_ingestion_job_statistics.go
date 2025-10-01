@@ -28,6 +28,9 @@ type DataIngestionJobStatistics struct {
 	// The number of files that have been successfully ingested during the ingestion.
 	NumberOfIngestedFiles *int `mandatory:"false" json:"numberOfIngestedFiles"`
 
+	// The number of files that have been ignored during the ingestion.
+	NumberOfIgnoredFiles *int `mandatory:"false" json:"numberOfIgnoredFiles"`
+
 	// The duration of this ingestion job.
 	DurationInSeconds *int `mandatory:"false" json:"durationInSeconds"`
 }
@@ -43,7 +46,7 @@ func (m DataIngestionJobStatistics) ValidateEnumValue() (bool, error) {
 	errMessage := []string{}
 
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

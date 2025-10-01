@@ -63,6 +63,14 @@ type Function struct {
 
 	ProvisionedConcurrencyConfig FunctionProvisionedConcurrencyConfig `mandatory:"false" json:"provisionedConcurrencyConfig"`
 
+	// Timeout for detached function invocations. Value in seconds.
+	// Example: `{"detachedModeTimeoutInSeconds": 900}`
+	DetachedModeTimeoutInSeconds *int `mandatory:"false" json:"detachedModeTimeoutInSeconds"`
+
+	FailureDestination FailureDestinationDetails `mandatory:"false" json:"failureDestination"`
+
+	SuccessDestination SuccessDestinationDetails `mandatory:"false" json:"successDestination"`
+
 	TraceConfig *FunctionTraceConfig `mandatory:"false" json:"traceConfig"`
 
 	// Free-form tags for this resource. Each tag is a simple key-value pair with no predefined name, type, or namespace.
@@ -105,7 +113,7 @@ func (m Function) ValidateEnumValue() (bool, error) {
 		errMessage = append(errMessage, fmt.Sprintf("unsupported enum value for Shape: %s. Supported values are: %s.", m.Shape, strings.Join(GetFunctionShapeEnumStringValues(), ",")))
 	}
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }
@@ -125,6 +133,9 @@ func (m *Function) UnmarshalJSON(data []byte) (e error) {
 		Config                       map[string]string                    `json:"config"`
 		TimeoutInSeconds             *int                                 `json:"timeoutInSeconds"`
 		ProvisionedConcurrencyConfig functionprovisionedconcurrencyconfig `json:"provisionedConcurrencyConfig"`
+		DetachedModeTimeoutInSeconds *int                                 `json:"detachedModeTimeoutInSeconds"`
+		FailureDestination           failuredestinationdetails            `json:"failureDestination"`
+		SuccessDestination           successdestinationdetails            `json:"successDestination"`
 		TraceConfig                  *FunctionTraceConfig                 `json:"traceConfig"`
 		FreeformTags                 map[string]string                    `json:"freeformTags"`
 		InvokeEndpoint               *string                              `json:"invokeEndpoint"`
@@ -177,6 +188,28 @@ func (m *Function) UnmarshalJSON(data []byte) (e error) {
 		m.ProvisionedConcurrencyConfig = nn.(FunctionProvisionedConcurrencyConfig)
 	} else {
 		m.ProvisionedConcurrencyConfig = nil
+	}
+
+	m.DetachedModeTimeoutInSeconds = model.DetachedModeTimeoutInSeconds
+
+	nn, e = model.FailureDestination.UnmarshalPolymorphicJSON(model.FailureDestination.JsonData)
+	if e != nil {
+		return
+	}
+	if nn != nil {
+		m.FailureDestination = nn.(FailureDestinationDetails)
+	} else {
+		m.FailureDestination = nil
+	}
+
+	nn, e = model.SuccessDestination.UnmarshalPolymorphicJSON(model.SuccessDestination.JsonData)
+	if e != nil {
+		return
+	}
+	if nn != nil {
+		m.SuccessDestination = nn.(SuccessDestinationDetails)
+	} else {
+		m.SuccessDestination = nil
 	}
 
 	m.TraceConfig = model.TraceConfig

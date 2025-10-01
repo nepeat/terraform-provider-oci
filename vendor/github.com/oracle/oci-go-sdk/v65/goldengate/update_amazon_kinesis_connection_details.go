@@ -63,6 +63,16 @@ type UpdateAmazonKinesisConnectionDetails struct {
 	// Note: When provided, 'secretAccessKey' field must not be provided.
 	SecretAccessKeySecretId *string `mandatory:"false" json:"secretAccessKeySecretId"`
 
+	// The endpoint URL of the Amazon Kinesis service.
+	// e.g.: 'https://kinesis.us-east-1.amazonaws.com'
+	// If not provided, GoldenGate will default to 'https://kinesis.<region>.amazonaws.com'.
+	Endpoint *string `mandatory:"false" json:"endpoint"`
+
+	// The name of the AWS region.
+	// If not provided, GoldenGate will default to 'us-west-1'.
+	// Note: this property will become mandatory after July 30, 2026.
+	Region *string `mandatory:"false" json:"region"`
+
 	// Controls the network traffic direction to the target:
 	// SHARED_SERVICE_ENDPOINT: Traffic flows through the Goldengate Service's network to public hosts. Cannot be used for private targets.
 	// SHARED_DEPLOYMENT_ENDPOINT: Network traffic flows from the assigned deployment's private endpoint through the deployment's subnet.
@@ -134,7 +144,7 @@ func (m UpdateAmazonKinesisConnectionDetails) ValidateEnumValue() (bool, error) 
 		errMessage = append(errMessage, fmt.Sprintf("unsupported enum value for RoutingMethod: %s. Supported values are: %s.", m.RoutingMethod, strings.Join(GetRoutingMethodEnumStringValues(), ",")))
 	}
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

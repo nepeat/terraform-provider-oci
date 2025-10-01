@@ -26,7 +26,7 @@ type ListConfigsRequest struct {
 	OpcRequestId *string `mandatory:"false" contributesTo:"header" name:"opc-request-id"`
 
 	// A filter to match configuration items of a given type.
-	// Supported values are SPAN_FILTER, METRIC_GROUP, and APDEX.
+	// Supported values are SPAN_FILTER, METRIC_GROUP, APDEX, AGENT and MACS_APM_EXTENSION.
 	ConfigType *string `mandatory:"false" contributesTo:"query" name:"configType"`
 
 	// A filter to return resources that match the given display name.
@@ -119,7 +119,7 @@ func (request ListConfigsRequest) ValidateEnumValue() (bool, error) {
 		errMessage = append(errMessage, fmt.Sprintf("unsupported enum value for SortBy: %s. Supported values are: %s.", request.SortBy, strings.Join(GetListConfigsSortByEnumStringValues(), ",")))
 	}
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

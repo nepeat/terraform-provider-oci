@@ -31,6 +31,12 @@ type VmClusterSummary struct {
 
 	// The number of DB nodes on a VM Cluster.
 	DbNodesCount *int `mandatory:"false" json:"dbNodesCount"`
+
+	// The storage allocated on a VM Cluster.
+	StorageAllocatedInGBs *int `mandatory:"false" json:"storageAllocatedInGBs"`
+
+	// The OCID of the VM Cluster.
+	VmClusterId *string `mandatory:"false" json:"vmClusterId"`
 }
 
 func (m VmClusterSummary) String() string {
@@ -44,7 +50,7 @@ func (m VmClusterSummary) ValidateEnumValue() (bool, error) {
 	errMessage := []string{}
 
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

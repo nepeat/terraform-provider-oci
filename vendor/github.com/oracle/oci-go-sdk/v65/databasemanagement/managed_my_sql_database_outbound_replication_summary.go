@@ -17,7 +17,7 @@ import (
 	"strings"
 )
 
-// ManagedMySqlDatabaseOutboundReplicationSummary An outbound replication record of a MySQL Server.
+// ManagedMySqlDatabaseOutboundReplicationSummary An outbound replication record of a MySQL server.
 type ManagedMySqlDatabaseOutboundReplicationSummary struct {
 
 	// The Universally Unique Identifier (UUID) value of the replica server.
@@ -44,7 +44,7 @@ func (m ManagedMySqlDatabaseOutboundReplicationSummary) ValidateEnumValue() (boo
 	errMessage := []string{}
 
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

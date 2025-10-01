@@ -41,7 +41,8 @@ type CreateMountTargetDetails struct {
 	// Must be unique across all VNICs in the subnet and comply
 	// with RFC 952 (https://tools.ietf.org/html/rfc952)
 	// and RFC 1123 (https://tools.ietf.org/html/rfc1123).
-	// Note: This attribute value is stored in the PrivateIp (https://docs.oracle.com/iaas/en-us/iaas/api/#/en/iaas/20160918/PrivateIp/) resource,
+	// Note:
+	// This attribute value is stored in the PrivateIp (https://docs.oracle.com/iaas/en-us/iaas/api/#/en/iaas/20160918/PrivateIp/) resource,
 	// not in the `mountTarget` resource.
 	// To update the `hostnameLabel`, use `GetMountTarget` to obtain the
 	// OCIDs (https://docs.oracle.com/iaas/Content/General/Concepts/identifiers.htm) of the mount target's
@@ -105,7 +106,7 @@ func (m CreateMountTargetDetails) ValidateEnumValue() (bool, error) {
 		errMessage = append(errMessage, fmt.Sprintf("unsupported enum value for IdmapType: %s. Supported values are: %s.", m.IdmapType, strings.Join(GetMountTargetIdmapTypeEnumStringValues(), ",")))
 	}
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

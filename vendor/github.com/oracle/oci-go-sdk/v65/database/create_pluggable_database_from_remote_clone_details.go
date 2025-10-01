@@ -37,6 +37,9 @@ type CreatePluggableDatabaseFromRemoteCloneDetails struct {
 
 	// True if Pluggable Database needs to be thin cloned and false if Pluggable Database needs to be thick cloned.
 	IsThinClone *bool `mandatory:"false" json:"isThinClone"`
+
+	// The OCID of the Source Pluggable Database Snapshot id.
+	SourcePluggableDatabaseSnapshotId *string `mandatory:"false" json:"sourcePluggableDatabaseSnapshotId"`
 }
 
 func (m CreatePluggableDatabaseFromRemoteCloneDetails) String() string {
@@ -50,7 +53,7 @@ func (m CreatePluggableDatabaseFromRemoteCloneDetails) ValidateEnumValue() (bool
 	errMessage := []string{}
 
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

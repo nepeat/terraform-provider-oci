@@ -86,7 +86,7 @@ type CreateJavaMessageServiceConnectionDetails struct {
 	// Note: When provided, 'jndiSecurityCredentials' field must not be provided.
 	JndiSecurityCredentialsSecretId *string `mandatory:"false" json:"jndiSecurityCredentialsSecretId"`
 
-	// Connectin URL of the Java Message Service, specifying the protocol, host, and port.
+	// Connection URL of the Java Message Service, specifying the protocol, host, and port.
 	// e.g.: 'mq://myjms.host.domain:7676'
 	ConnectionUrl *string `mandatory:"false" json:"connectionUrl"`
 
@@ -260,7 +260,7 @@ func (m CreateJavaMessageServiceConnectionDetails) ValidateEnumValue() (bool, er
 		errMessage = append(errMessage, fmt.Sprintf("unsupported enum value for AuthenticationType: %s. Supported values are: %s.", m.AuthenticationType, strings.Join(GetJavaMessageServiceConnectionAuthenticationTypeEnumStringValues(), ",")))
 	}
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

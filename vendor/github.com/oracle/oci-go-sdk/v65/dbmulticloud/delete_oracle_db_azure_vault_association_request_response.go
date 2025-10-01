@@ -18,7 +18,7 @@ import (
 // Click https://docs.oracle.com/en-us/iaas/tools/go-sdk-examples/latest/dbmulticloud/DeleteOracleDbAzureVaultAssociation.go.html to see an example of how to use DeleteOracleDbAzureVaultAssociationRequest.
 type DeleteOracleDbAzureVaultAssociationRequest struct {
 
-	// The ID of the Oracle DB Azure Vault Association Resource.
+	// The OCID (https://docs.oracle.com/iaas/Content/General/Concepts/identifiers.htm) of the Oracle DB Azure Vault Association resource.
 	OracleDbAzureVaultAssociationId *string `mandatory:"true" contributesTo:"path" name:"oracleDbAzureVaultAssociationId"`
 
 	// For optimistic concurrency control. In the PUT or DELETE call
@@ -68,7 +68,7 @@ func (request DeleteOracleDbAzureVaultAssociationRequest) RetryPolicy() *common.
 func (request DeleteOracleDbAzureVaultAssociationRequest) ValidateEnumValue() (bool, error) {
 	errMessage := []string{}
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

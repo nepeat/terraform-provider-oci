@@ -32,7 +32,7 @@ type ListDatabaseTableAccessEntriesRequest struct {
 	// at RFC3339 (https://tools.ietf.org/html/draft-ietf-scim-api-12). In SCIM filtering expressions,
 	// text, date, and time values must be enclosed in quotation marks, with date and time values using ISO-8601 format.
 	// (Numeric and boolean values should not be quoted.)
-	// **Example:** query=(accessType eq 'SELECT') and (grantee eq 'ADMIN')
+	// **Example:** query=(accessType eq "SELECT") and (grantee eq "ADMIN")
 	ScimQuery *string `mandatory:"false" contributesTo:"query" name:"scimQuery"`
 
 	// The field to sort by. Only one sort parameter should be provided.
@@ -87,7 +87,7 @@ func (request ListDatabaseTableAccessEntriesRequest) ValidateEnumValue() (bool, 
 		errMessage = append(errMessage, fmt.Sprintf("unsupported enum value for SortOrder: %s. Supported values are: %s.", request.SortOrder, strings.Join(GetListDatabaseTableAccessEntriesSortOrderEnumStringValues(), ",")))
 	}
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

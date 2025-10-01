@@ -92,7 +92,8 @@ type CreateOciObjectStorageConnectionDetails struct {
 	// See documentation: https://docs.oracle.com/en-us/iaas/Content/Identity/Tasks/managingcredentials.htm
 	PublicKeyFingerprint *string `mandatory:"false" json:"publicKeyFingerprint"`
 
-	// Indicates that the user intents to connect to the instance through resource principal.
+	// Specifies that the user intends to authenticate to the instance using a resource principal.
+	// Default: false
 	ShouldUseResourcePrincipal *bool `mandatory:"false" json:"shouldUseResourcePrincipal"`
 
 	// Controls the network traffic direction to the target:
@@ -182,7 +183,7 @@ func (m CreateOciObjectStorageConnectionDetails) ValidateEnumValue() (bool, erro
 		errMessage = append(errMessage, fmt.Sprintf("unsupported enum value for TechnologyType: %s. Supported values are: %s.", m.TechnologyType, strings.Join(GetOciObjectStorageConnectionTechnologyTypeEnumStringValues(), ",")))
 	}
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

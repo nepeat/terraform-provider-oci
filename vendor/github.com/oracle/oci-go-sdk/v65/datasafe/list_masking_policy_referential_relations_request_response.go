@@ -101,7 +101,7 @@ func (request ListMaskingPolicyReferentialRelationsRequest) ValidateEnumValue() 
 		errMessage = append(errMessage, fmt.Sprintf("unsupported enum value for SortBy: %s. Supported values are: %s.", request.SortBy, strings.Join(GetListMaskingPolicyReferentialRelationsSortByEnumStringValues(), ",")))
 	}
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }
@@ -231,22 +231,19 @@ type ListMaskingPolicyReferentialRelationsSortByEnum string
 const (
 	ListMaskingPolicyReferentialRelationsSortByRelationtype ListMaskingPolicyReferentialRelationsSortByEnum = "relationType"
 	ListMaskingPolicyReferentialRelationsSortBySchemaname   ListMaskingPolicyReferentialRelationsSortByEnum = "schemaName"
-	ListMaskingPolicyReferentialRelationsSortByTablename    ListMaskingPolicyReferentialRelationsSortByEnum = "tableName"
-	ListMaskingPolicyReferentialRelationsSortByColumnname   ListMaskingPolicyReferentialRelationsSortByEnum = "columnName"
+	ListMaskingPolicyReferentialRelationsSortByObjectname   ListMaskingPolicyReferentialRelationsSortByEnum = "objectName"
 )
 
 var mappingListMaskingPolicyReferentialRelationsSortByEnum = map[string]ListMaskingPolicyReferentialRelationsSortByEnum{
 	"relationType": ListMaskingPolicyReferentialRelationsSortByRelationtype,
 	"schemaName":   ListMaskingPolicyReferentialRelationsSortBySchemaname,
-	"tableName":    ListMaskingPolicyReferentialRelationsSortByTablename,
-	"columnName":   ListMaskingPolicyReferentialRelationsSortByColumnname,
+	"objectName":   ListMaskingPolicyReferentialRelationsSortByObjectname,
 }
 
 var mappingListMaskingPolicyReferentialRelationsSortByEnumLowerCase = map[string]ListMaskingPolicyReferentialRelationsSortByEnum{
 	"relationtype": ListMaskingPolicyReferentialRelationsSortByRelationtype,
 	"schemaname":   ListMaskingPolicyReferentialRelationsSortBySchemaname,
-	"tablename":    ListMaskingPolicyReferentialRelationsSortByTablename,
-	"columnname":   ListMaskingPolicyReferentialRelationsSortByColumnname,
+	"objectname":   ListMaskingPolicyReferentialRelationsSortByObjectname,
 }
 
 // GetListMaskingPolicyReferentialRelationsSortByEnumValues Enumerates the set of values for ListMaskingPolicyReferentialRelationsSortByEnum
@@ -263,8 +260,7 @@ func GetListMaskingPolicyReferentialRelationsSortByEnumStringValues() []string {
 	return []string{
 		"relationType",
 		"schemaName",
-		"tableName",
-		"columnName",
+		"objectName",
 	}
 }
 

@@ -12,11 +12,15 @@ resource "oci_database_exascale_db_storage_vault" "test_exascale_db_storage_vaul
   additional_flash_cache_in_percent = 20
   cluster_placement_group_id        = var.cpg_id
   subscription_id                   = var.subscription_id
+  autoscale_limit_in_gbs            = var.autoscale_limit_in_gbs
+  is_autoscale_enabled              = var.is_autoscale_enabled
 }
 
 data "oci_database_exascale_db_storage_vaults" "test_exascale_db_storage_vaults" {
   #Required
   compartment_id = var.compartment_ocid
+  #Optional
+  attached_shape_attributes = local.shape_attribute
 }
 
 data "oci_database_exascale_db_storage_vault" "test_exascale_db_storage_vault" {

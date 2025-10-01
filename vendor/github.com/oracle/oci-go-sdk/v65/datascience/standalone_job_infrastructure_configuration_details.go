@@ -16,7 +16,7 @@ import (
 	"strings"
 )
 
-// StandaloneJobInfrastructureConfigurationDetails The standalone job infrastructure configuration.
+// StandaloneJobInfrastructureConfigurationDetails This type should only be used at the top level infrastructure configuration field for configuring single-node jobs.
 type StandaloneJobInfrastructureConfigurationDetails struct {
 
 	// The shape used to launch the job run instances.
@@ -42,7 +42,7 @@ func (m StandaloneJobInfrastructureConfigurationDetails) ValidateEnumValue() (bo
 	errMessage := []string{}
 
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

@@ -18,6 +18,7 @@ import (
 )
 
 // UpdateFsuCycleDetails Update Exadata Fleet Update Cycle resource details.
+// If automated maintenance is enabled for the associated Exadata Fleet Update Collection, updating Exadata Fleet Update Cycle will not affect the Exadata Fleet Update Collection.
 type UpdateFsuCycleDetails interface {
 
 	// Exadata Fleet Update Cycle display name.
@@ -135,7 +136,7 @@ func (m updatefsucycledetails) ValidateEnumValue() (bool, error) {
 	errMessage := []string{}
 
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

@@ -99,7 +99,7 @@ func (m AutonomousContainerDatabaseBackupSummary) ValidateEnumValue() (bool, err
 		errMessage = append(errMessage, fmt.Sprintf("unsupported enum value for InfrastructureType: %s. Supported values are: %s.", m.InfrastructureType, strings.Join(GetAutonomousContainerDatabaseBackupSummaryInfrastructureTypeEnumStringValues(), ",")))
 	}
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }
@@ -111,16 +111,19 @@ type AutonomousContainerDatabaseBackupSummaryTypeEnum string
 const (
 	AutonomousContainerDatabaseBackupSummaryTypeIncremental AutonomousContainerDatabaseBackupSummaryTypeEnum = "INCREMENTAL"
 	AutonomousContainerDatabaseBackupSummaryTypeFull        AutonomousContainerDatabaseBackupSummaryTypeEnum = "FULL"
+	AutonomousContainerDatabaseBackupSummaryTypeVirtualFull AutonomousContainerDatabaseBackupSummaryTypeEnum = "VIRTUAL_FULL"
 )
 
 var mappingAutonomousContainerDatabaseBackupSummaryTypeEnum = map[string]AutonomousContainerDatabaseBackupSummaryTypeEnum{
-	"INCREMENTAL": AutonomousContainerDatabaseBackupSummaryTypeIncremental,
-	"FULL":        AutonomousContainerDatabaseBackupSummaryTypeFull,
+	"INCREMENTAL":  AutonomousContainerDatabaseBackupSummaryTypeIncremental,
+	"FULL":         AutonomousContainerDatabaseBackupSummaryTypeFull,
+	"VIRTUAL_FULL": AutonomousContainerDatabaseBackupSummaryTypeVirtualFull,
 }
 
 var mappingAutonomousContainerDatabaseBackupSummaryTypeEnumLowerCase = map[string]AutonomousContainerDatabaseBackupSummaryTypeEnum{
-	"incremental": AutonomousContainerDatabaseBackupSummaryTypeIncremental,
-	"full":        AutonomousContainerDatabaseBackupSummaryTypeFull,
+	"incremental":  AutonomousContainerDatabaseBackupSummaryTypeIncremental,
+	"full":         AutonomousContainerDatabaseBackupSummaryTypeFull,
+	"virtual_full": AutonomousContainerDatabaseBackupSummaryTypeVirtualFull,
 }
 
 // GetAutonomousContainerDatabaseBackupSummaryTypeEnumValues Enumerates the set of values for AutonomousContainerDatabaseBackupSummaryTypeEnum
@@ -137,6 +140,7 @@ func GetAutonomousContainerDatabaseBackupSummaryTypeEnumStringValues() []string 
 	return []string{
 		"INCREMENTAL",
 		"FULL",
+		"VIRTUAL_FULL",
 	}
 }
 

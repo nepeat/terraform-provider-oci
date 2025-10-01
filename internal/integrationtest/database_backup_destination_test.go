@@ -50,7 +50,7 @@ var (
 		"display_name":      acctest.Representation{RepType: acctest.Required, Create: `Recovery Appliance1`},
 		"type":              acctest.Representation{RepType: acctest.Required, Create: `RECOVERY_APPLIANCE`},
 		"connection_string": acctest.Representation{RepType: acctest.Optional, Create: `connectionString`, Update: `connectionString2`},
-		"defined_tags":      acctest.Representation{RepType: acctest.Optional, Create: `${map("${oci_identity_tag_namespace.tag-namespace1.name}.${oci_identity_tag.tag1.name}", "value")}`, Update: `${map("${oci_identity_tag_namespace.tag-namespace1.name}.${oci_identity_tag.tag1.name}", "updatedValue")}`},
+		"defined_tags":      acctest.Representation{RepType: acctest.Optional, Create: `${tomap({"${oci_identity_tag_namespace.tag-namespace1.name}.${oci_identity_tag.tag1.name}" = "value"})}`, Update: `${tomap({"${oci_identity_tag_namespace.tag-namespace1.name}.${oci_identity_tag.tag1.name}" = "updatedValue"})}`},
 		"freeform_tags":     acctest.Representation{RepType: acctest.Optional, Create: map[string]string{"Department": "Finance"}, Update: map[string]string{"Department": "Accounting"}},
 		"vpc_users":         acctest.Representation{RepType: acctest.Optional, Create: []string{`bkupUser1`}, Update: []string{`bkupUser1`, `bkupUser2`}},
 	}
@@ -165,6 +165,8 @@ func TestDatabaseBackupDestinationResource_basic(t *testing.T) {
 
 				resource.TestCheckResourceAttr(datasourceName, "backup_destinations.#", "1"),
 				resource.TestCheckResourceAttr(datasourceName, "backup_destinations.0.associated_databases.#", "0"),
+				resource.TestCheckResourceAttrSet(datasourceName, "backup_destinations.0.associated_long_term_backup_count"),
+				resource.TestCheckResourceAttr(datasourceName, "backup_destinations.0.associated_long_term_backups.#", "0"),
 				resource.TestCheckResourceAttr(datasourceName, "backup_destinations.0.compartment_id", compartmentId),
 				resource.TestCheckResourceAttr(datasourceName, "backup_destinations.0.connection_string", "connectionString2"),
 				resource.TestCheckResourceAttr(datasourceName, "backup_destinations.0.display_name", "Recovery Appliance1"),
@@ -184,8 +186,8 @@ func TestDatabaseBackupDestinationResource_basic(t *testing.T) {
 				compartmentIdVariableStr + DatabaseBackupDestinationResourceConfig,
 			Check: acctest.ComposeAggregateTestCheckFuncWrapper(
 				resource.TestCheckResourceAttrSet(singularDatasourceName, "backup_destination_id"),
-
 				resource.TestCheckResourceAttr(singularDatasourceName, "associated_databases.#", "0"),
+				resource.TestCheckResourceAttr(singularDatasourceName, "associated_long_term_backups.#", "0"),
 				resource.TestCheckResourceAttr(singularDatasourceName, "compartment_id", compartmentId),
 				resource.TestCheckResourceAttr(singularDatasourceName, "connection_string", "connectionString2"),
 				resource.TestCheckResourceAttr(singularDatasourceName, "display_name", "Recovery Appliance1"),

@@ -41,6 +41,12 @@ type ListBackupsRequest struct {
 	// Backup Soft Delete
 	SoftDelete ListBackupsSoftDeleteEnum `mandatory:"false" contributesTo:"query" name:"softDelete" omitEmpty:"true"`
 
+	// Indicates whether the backup has been prepared successfully.
+	BackupPreparationStatus BackupValidationDetailsBackupPreparationStatusEnum `mandatory:"false" contributesTo:"query" name:"backupPreparationStatus" omitEmpty:"true"`
+
+	// Backup validation status
+	ValidationStatus BackupValidationDetailsValidationStatusEnum `mandatory:"false" contributesTo:"query" name:"validationStatus" omitEmpty:"true"`
+
 	// Backup creationType
 	CreationType BackupCreationTypeEnum `mandatory:"false" contributesTo:"query" name:"creationType" omitEmpty:"true"`
 
@@ -101,6 +107,12 @@ func (request ListBackupsRequest) ValidateEnumValue() (bool, error) {
 	if _, ok := GetMappingListBackupsSoftDeleteEnum(string(request.SoftDelete)); !ok && request.SoftDelete != "" {
 		errMessage = append(errMessage, fmt.Sprintf("unsupported enum value for SoftDelete: %s. Supported values are: %s.", request.SoftDelete, strings.Join(GetListBackupsSoftDeleteEnumStringValues(), ",")))
 	}
+	if _, ok := GetMappingBackupValidationDetailsBackupPreparationStatusEnum(string(request.BackupPreparationStatus)); !ok && request.BackupPreparationStatus != "" {
+		errMessage = append(errMessage, fmt.Sprintf("unsupported enum value for BackupPreparationStatus: %s. Supported values are: %s.", request.BackupPreparationStatus, strings.Join(GetBackupValidationDetailsBackupPreparationStatusEnumStringValues(), ",")))
+	}
+	if _, ok := GetMappingBackupValidationDetailsValidationStatusEnum(string(request.ValidationStatus)); !ok && request.ValidationStatus != "" {
+		errMessage = append(errMessage, fmt.Sprintf("unsupported enum value for ValidationStatus: %s. Supported values are: %s.", request.ValidationStatus, strings.Join(GetBackupValidationDetailsValidationStatusEnumStringValues(), ",")))
+	}
 	if _, ok := GetMappingBackupCreationTypeEnum(string(request.CreationType)); !ok && request.CreationType != "" {
 		errMessage = append(errMessage, fmt.Sprintf("unsupported enum value for CreationType: %s. Supported values are: %s.", request.CreationType, strings.Join(GetBackupCreationTypeEnumStringValues(), ",")))
 	}
@@ -111,7 +123,7 @@ func (request ListBackupsRequest) ValidateEnumValue() (bool, error) {
 		errMessage = append(errMessage, fmt.Sprintf("unsupported enum value for SortOrder: %s. Supported values are: %s.", request.SortOrder, strings.Join(GetListBackupsSortOrderEnumStringValues(), ",")))
 	}
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

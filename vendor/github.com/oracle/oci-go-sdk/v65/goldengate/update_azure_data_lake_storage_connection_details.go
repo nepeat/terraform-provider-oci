@@ -95,6 +95,13 @@ type UpdateAzureDataLakeStorageConnectionDetails struct {
 	// e.g: https://test.blob.core.windows.net
 	Endpoint *string `mandatory:"false" json:"endpoint"`
 
+	// The endpoint used for authentication with Microsoft Entra ID (formerly Azure Active Directory).
+	// Default value: https://login.microsoftonline.com
+	// When connecting to a non-public Azure Cloud, the endpoint must be provided, eg:
+	// * Azure China: https://login.chinacloudapi.cn/
+	// * Azure US Government: https://login.microsoftonline.us/
+	AzureAuthorityHost *string `mandatory:"false" json:"azureAuthorityHost"`
+
 	// Controls the network traffic direction to the target:
 	// SHARED_SERVICE_ENDPOINT: Traffic flows through the Goldengate Service's network to public hosts. Cannot be used for private targets.
 	// SHARED_DEPLOYMENT_ENDPOINT: Network traffic flows from the assigned deployment's private endpoint through the deployment's subnet.
@@ -172,7 +179,7 @@ func (m UpdateAzureDataLakeStorageConnectionDetails) ValidateEnumValue() (bool, 
 		errMessage = append(errMessage, fmt.Sprintf("unsupported enum value for AuthenticationType: %s. Supported values are: %s.", m.AuthenticationType, strings.Join(GetAzureDataLakeStorageConnectionAuthenticationTypeEnumStringValues(), ",")))
 	}
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

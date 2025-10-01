@@ -35,6 +35,8 @@ type DataIngestionJob struct {
 	// The OCID (https://docs.oracle.com/iaas/Content/General/Concepts/identifiers.htm) of the parent DataSource.
 	DataSourceId *string `mandatory:"true" json:"dataSourceId"`
 
+	DataIngestionJobType *DataIngestionJobType `mandatory:"true" json:"dataIngestionJobType"`
+
 	DataIngestionJobStatistics *DataIngestionJobStatistics `mandatory:"true" json:"dataIngestionJobStatistics"`
 
 	// The date and time the data ingestion job was created, in the format defined by RFC 3339 (https://tools.ietf.org/html/rfc3339).
@@ -87,7 +89,7 @@ func (m DataIngestionJob) ValidateEnumValue() (bool, error) {
 	}
 
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

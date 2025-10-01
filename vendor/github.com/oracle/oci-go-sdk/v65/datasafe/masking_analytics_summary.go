@@ -25,6 +25,9 @@ type MaskingAnalyticsSummary struct {
 	Count *int64 `mandatory:"true" json:"count"`
 
 	Dimensions *MaskingAnalyticsDimensions `mandatory:"false" json:"dimensions"`
+
+	// The date and time the target database was last masked using a masking policy, in the format defined by RFC3339 (https://tools.ietf.org/html/rfc3339).
+	TimeLastMasked *common.SDKTime `mandatory:"false" json:"timeLastMasked"`
 }
 
 func (m MaskingAnalyticsSummary) String() string {
@@ -41,7 +44,7 @@ func (m MaskingAnalyticsSummary) ValidateEnumValue() (bool, error) {
 	}
 
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

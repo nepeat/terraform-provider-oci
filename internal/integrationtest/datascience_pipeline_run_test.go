@@ -50,15 +50,16 @@ var (
 
 	// change projectId to optional after creating the new branches
 	pipelineRunRepresentation = map[string]interface{}{
-		"compartment_id":                     acctest.Representation{RepType: acctest.Required, Create: `${var.compartment_id}`},
-		"pipeline_id":                        acctest.Representation{RepType: acctest.Required, Create: `${oci_datascience_pipeline.test_pipeline.id}`},
-		"project_id":                         acctest.Representation{RepType: acctest.Required, Create: `${oci_datascience_project.test_project.id}`},
-		"configuration_override_details":     acctest.RepresentationGroup{RepType: acctest.Optional, Group: pipelineRunConfigurationOverrideDetailsRepresentation},
-		"display_name":                       acctest.Representation{RepType: acctest.Optional, Create: `displayName`, Update: `displayName2`},
-		"freeform_tags":                      acctest.Representation{RepType: acctest.Optional, Create: map[string]string{"Department": "Finance"}, Update: map[string]string{"Department": "Accounting"}},
-		"delete_related_job_runs":            acctest.Representation{RepType: acctest.Required, Create: `true`, Update: `true`},
-		"log_configuration_override_details": acctest.RepresentationGroup{RepType: acctest.Optional, Group: pipelineRunLogConfigurationOverrideDetailsRepresentation},
-		"step_override_details":              acctest.RepresentationGroup{RepType: acctest.Optional, Group: pipelineRunStepOverrideDetailsRepresentation},
+		"compartment_id":                 acctest.Representation{RepType: acctest.Required, Create: `${var.compartment_id}`},
+		"pipeline_id":                    acctest.Representation{RepType: acctest.Required, Create: `${oci_datascience_pipeline.test_pipeline.id}`},
+		"project_id":                     acctest.Representation{RepType: acctest.Required, Create: `${oci_datascience_project.test_project.id}`},
+		"configuration_override_details": acctest.RepresentationGroup{RepType: acctest.Optional, Group: pipelineRunConfigurationOverrideDetailsRepresentation},
+		"display_name":                   acctest.Representation{RepType: acctest.Optional, Create: `displayName`, Update: `displayName2`},
+		"freeform_tags":                  acctest.Representation{RepType: acctest.Optional, Create: map[string]string{"Department": "Finance"}, Update: map[string]string{"Department": "Accounting"}},
+		"delete_related_job_runs":        acctest.Representation{RepType: acctest.Required, Create: `true`, Update: `true`},
+		"infrastructure_configuration_override_details": acctest.RepresentationGroup{RepType: acctest.Optional, Group: DatasciencePipelineRunInfrastructureConfigurationOverrideDetailsRepresentation},
+		"log_configuration_override_details":            acctest.RepresentationGroup{RepType: acctest.Optional, Group: pipelineRunLogConfigurationOverrideDetailsRepresentation},
+		"step_override_details":                         acctest.RepresentationGroup{RepType: acctest.Optional, Group: pipelineRunStepOverrideDetailsRepresentation},
 	}
 
 	pipelineRunContainerRepresentation = map[string]interface{}{
@@ -91,6 +92,12 @@ var (
 		"environment_variables":      acctest.Representation{RepType: acctest.Optional, Create: map[string]string{"environmentVariablesOverriden": "environmentVariablesOverriden"}},
 		"maximum_runtime_in_minutes": acctest.Representation{RepType: acctest.Optional, Create: `10`},
 	}
+	DatasciencePipelineRunInfrastructureConfigurationOverrideDetailsRepresentation = map[string]interface{}{
+		"block_storage_size_in_gbs": acctest.Representation{RepType: acctest.Required, Create: `10`},
+		"shape_name":                acctest.Representation{RepType: acctest.Required, Create: `${oci_core_shape.test_shape.name}`},
+		"shape_config_details":      acctest.RepresentationGroup{RepType: acctest.Optional, Group: DatasciencePipelineRunInfrastructureConfigurationOverrideDetailsShapeConfigDetailsRepresentation},
+		"subnet_id":                 acctest.Representation{RepType: acctest.Optional, Create: `${oci_core_subnet.test_subnet.id}`},
+	}
 	pipelineRunDataflowConfigurationOverrideDetailsRepresentation = map[string]interface{}{
 		"type":                       acctest.Representation{RepType: acctest.Required, Create: `DEFAULT`},
 		"maximum_runtime_in_minutes": acctest.Representation{RepType: acctest.Optional, Create: `60`},
@@ -105,6 +112,17 @@ var (
 		"step_configuration_details": acctest.RepresentationGroup{RepType: acctest.Required, Group: pipelineRunStepOverrideDetailsStepConfigurationDetailsRepresentation},
 		"step_name":                  acctest.Representation{RepType: acctest.Required, Create: `stepName`},
 		//"step_container_configuration_details": acctest.RepresentationGroup{RepType: acctest.Optional, Group: DatasciencePipelineRunStepOverrideDetailsContainerConfigurationDetailsRepresentation},
+	}
+	DatasciencePipelineRunStepOverrideDetailsRepresentation = map[string]interface{}{
+		"step_configuration_details":                acctest.RepresentationGroup{RepType: acctest.Required, Group: pipelineRunStepOverrideDetailsStepConfigurationDetailsRepresentation},
+		"step_name":                                 acctest.Representation{RepType: acctest.Required, Create: `stepName`},
+		"step_container_configuration_details":      acctest.RepresentationGroup{RepType: acctest.Optional, Group: pipelineRunStepOverrideDetailsStepConfigurationDetailsRepresentation},
+		"step_dataflow_configuration_details":       acctest.RepresentationGroup{RepType: acctest.Optional, Group: DatasciencePipelineRunStepOverrideDetailsStepDataflowConfigurationDetailsRepresentation},
+		"step_infrastructure_configuration_details": acctest.RepresentationGroup{RepType: acctest.Optional, Group: DatasciencePipelineRunStepOverrideDetailsStepInfrastructureConfigurationDetailsRepresentation},
+	}
+	DatasciencePipelineRunInfrastructureConfigurationOverrideDetailsShapeConfigDetailsRepresentation = map[string]interface{}{
+		"memory_in_gbs": acctest.Representation{RepType: acctest.Optional, Create: `1.0`},
+		"ocpus":         acctest.Representation{RepType: acctest.Optional, Create: `1.0`},
 	}
 	pipelineRunStepOverrideDetailsContainerRepresentation = map[string]interface{}{
 		"step_configuration_details":           acctest.RepresentationGroup{RepType: acctest.Required, Group: pipelineRunStepOverrideDetailsStepConfigurationDetailsRepresentation},
@@ -126,7 +144,7 @@ var (
 	}
 	DatasciencePipelineRunStepOverrideDetailsContainerConfigurationDetailsRepresentation = map[string]interface{}{
 		"container_type":     acctest.Representation{RepType: acctest.Required, Create: `OCIR_CONTAINER`},
-		"image":              acctest.Representation{RepType: acctest.Required, Create: `iad.ocir.io/idtlxnfdweil/byod-hello-world:1`},
+		"image":              acctest.Representation{RepType: acctest.Required, Create: `iad.ocir.io/idtlxnfdweil/byod/test-hello-world:1.0`},
 		"cmd":                acctest.Representation{RepType: acctest.Optional, Create: []string{``}},
 		"entrypoint":         acctest.Representation{RepType: acctest.Optional, Create: []string{``}},
 		"image_digest":       acctest.Representation{RepType: acctest.Optional, Create: ``},
@@ -142,12 +160,22 @@ var (
 		"num_executors":                 acctest.Representation{RepType: acctest.Optional, Create: `1`},
 		"warehouse_bucket_uri":          acctest.Representation{RepType: acctest.Optional, Create: `oci://xuejuzha-test@idtlxnfdweil/`},
 	}
+	DatasciencePipelineRunStepOverrideDetailsStepInfrastructureConfigurationDetailsRepresentation = map[string]interface{}{
+		"block_storage_size_in_gbs": acctest.Representation{RepType: acctest.Required, Create: `10`},
+		"shape_name":                acctest.Representation{RepType: acctest.Required, Create: `${oci_core_shape.test_shape.name}`},
+		"shape_config_details":      acctest.RepresentationGroup{RepType: acctest.Optional, Group: DatasciencePipelineRunStepOverrideDetailsStepInfrastructureConfigurationDetailsShapeConfigDetailsRepresentation},
+		"subnet_id":                 acctest.Representation{RepType: acctest.Optional, Create: `${oci_core_subnet.test_subnet.id}`},
+	}
 	DatasciencePipelineRunStepOverrideDetailsStepDataflowConfigurationDetailsDriverShapeConfigDetailsRepresentation = map[string]interface{}{
 		"memory_in_gbs": acctest.Representation{RepType: acctest.Optional, Create: `8.0`},
 		"ocpus":         acctest.Representation{RepType: acctest.Optional, Create: `1.0`},
 	}
 	DatasciencePipelineRunStepOverrideDetailsStepDataflowConfigurationDetailsExecutorShapeConfigDetailsRepresentation = map[string]interface{}{
 		"memory_in_gbs": acctest.Representation{RepType: acctest.Optional, Create: `8.0`},
+		"ocpus":         acctest.Representation{RepType: acctest.Optional, Create: `1.0`},
+	}
+	DatasciencePipelineRunStepOverrideDetailsStepInfrastructureConfigurationDetailsShapeConfigDetailsRepresentation = map[string]interface{}{
+		"memory_in_gbs": acctest.Representation{RepType: acctest.Optional, Create: `1.0`},
 		"ocpus":         acctest.Representation{RepType: acctest.Optional, Create: `1.0`},
 	}
 
@@ -161,17 +189,23 @@ var (
 	PipelineRunResourceDependencies = acctest.GenerateResourceFromRepresentationMap("oci_datascience_pipeline", "test_pipeline", acctest.Required, acctest.Create, pipelineRepresentation) +
 		acctest.GenerateResourceFromRepresentationMap("oci_datascience_project", "test_project", acctest.Required, acctest.Create, DatascienceProjectRepresentation) +
 		acctest.GenerateResourceFromRepresentationMap("oci_logging_log_group", "terraform_test_custom_log_group", acctest.Required, acctest.Create, pipelineLogGroupRepresentation) +
-		acctest.GenerateResourceFromRepresentationMap("oci_logging_log", "terraform_test_custom_log", acctest.Required, acctest.Create, pipelineLogRepresentation)
+		acctest.GenerateResourceFromRepresentationMap("oci_logging_log", "terraform_test_custom_log", acctest.Required, acctest.Create, pipelineLogRepresentation) +
+		acctest.GenerateResourceFromRepresentationMap("oci_core_vcn", "test_vcn", acctest.Required, acctest.Create, CoreVcnRepresentation) +
+		acctest.GenerateResourceFromRepresentationMap("oci_core_subnet", "test_subnet", acctest.Required, acctest.Create, CoreSubnetRepresentation)
 
 	PipelineRunContainerResourceDependencies = acctest.GenerateResourceFromRepresentationMap("oci_datascience_pipeline", "test_pipeline", acctest.Optional, acctest.Create, pipelineRepresentationContainer) +
 		acctest.GenerateResourceFromRepresentationMap("oci_datascience_project", "test_project", acctest.Required, acctest.Create, DatascienceProjectRepresentation) +
 		acctest.GenerateResourceFromRepresentationMap("oci_logging_log_group", "terraform_test_custom_log_group", acctest.Required, acctest.Create, pipelineLogGroupRepresentation) +
-		acctest.GenerateResourceFromRepresentationMap("oci_logging_log", "terraform_test_custom_log", acctest.Required, acctest.Create, pipelineLogRepresentation)
+		acctest.GenerateResourceFromRepresentationMap("oci_logging_log", "terraform_test_custom_log", acctest.Required, acctest.Create, pipelineLogRepresentation) +
+		acctest.GenerateResourceFromRepresentationMap("oci_core_vcn", "test_vcn", acctest.Required, acctest.Create, CoreVcnRepresentation) +
+		acctest.GenerateResourceFromRepresentationMap("oci_core_subnet", "test_subnet", acctest.Required, acctest.Create, CoreSubnetRepresentation)
 
 	PipelineRunDataflowResourceDependencies = acctest.GenerateResourceFromRepresentationMap("oci_datascience_pipeline", "test_pipeline", acctest.Optional, acctest.Create, pipelineRepresentationDataflow) +
 		acctest.GenerateResourceFromRepresentationMap("oci_datascience_project", "test_project", acctest.Required, acctest.Create, DatascienceProjectRepresentation) +
 		acctest.GenerateResourceFromRepresentationMap("oci_logging_log_group", "terraform_test_custom_log_group", acctest.Required, acctest.Create, pipelineLogGroupRepresentation) +
-		acctest.GenerateResourceFromRepresentationMap("oci_logging_log", "terraform_test_custom_log", acctest.Required, acctest.Create, pipelineLogRepresentation)
+		acctest.GenerateResourceFromRepresentationMap("oci_logging_log", "terraform_test_custom_log", acctest.Required, acctest.Create, pipelineLogRepresentation) +
+		acctest.GenerateResourceFromRepresentationMap("oci_core_vcn", "test_vcn", acctest.Required, acctest.Create, CoreVcnRepresentation) +
+		acctest.GenerateResourceFromRepresentationMap("oci_core_subnet", "test_subnet", acctest.Required, acctest.Create, CoreSubnetRepresentation)
 )
 
 // issue-routing-tag: datascience/default
@@ -198,70 +232,70 @@ func TestDatasciencePipelineRunResource_basic(t *testing.T) {
 
 	acctest.ResourceTest(t, testAccCheckDatasciencePipelineRunDestroy, []resource.TestStep{
 		// Step 0 - Verify Create Pipeline Run with Container
-		{
-			Config: config + compartmentIdVariableStr + PipelineRunDataflowResourceDependencies +
-				acctest.GenerateResourceFromRepresentationMap("oci_datascience_pipeline_run", "test_pipeline_run", acctest.Optional, acctest.Create, pipelineRunDataflowRepresentation),
-			Check: acctest.ComposeAggregateTestCheckFuncWrapper(
-				resource.TestCheckResourceAttr(resourceName, "compartment_id", compartmentId),
-				resource.TestCheckResourceAttrSet(resourceName, "pipeline_id"),
-				resource.TestCheckResourceAttrSet(resourceName, "project_id"),
-				resource.TestCheckResourceAttrSet(resourceName, "id"),
-				resource.TestCheckResourceAttr(resourceName, "step_override_details.#", "1"),
-				resource.TestCheckResourceAttr(resourceName, "step_override_details.0.step_dataflow_configuration_details.#", "1"),
-				resource.TestCheckResourceAttr(resourceName, "step_override_details.0.step_name", "stepNameDataflow"),
-				resource.TestCheckResourceAttr(resourceName, "step_override_details.0.step_dataflow_configuration_details.#", "1"),
-				resource.TestCheckResourceAttr(resourceName, "step_override_details.0.step_dataflow_configuration_details.0.driver_shape", "VM.Standard.E5.Flex"),
-				resource.TestCheckResourceAttr(resourceName, "step_override_details.0.step_dataflow_configuration_details.0.driver_shape_config_details.#", "1"),
-				resource.TestCheckResourceAttr(resourceName, "step_override_details.0.step_dataflow_configuration_details.0.driver_shape_config_details.0.memory_in_gbs", "16"),
-				resource.TestCheckResourceAttr(resourceName, "step_override_details.0.step_dataflow_configuration_details.0.driver_shape_config_details.0.ocpus", "1"),
-				resource.TestCheckResourceAttr(resourceName, "step_override_details.0.step_dataflow_configuration_details.0.executor_shape", "VM.Standard.E5.Flex"),
-				resource.TestCheckResourceAttr(resourceName, "step_override_details.0.step_dataflow_configuration_details.0.executor_shape_config_details.#", "1"),
-				resource.TestCheckResourceAttr(resourceName, "step_override_details.0.step_dataflow_configuration_details.0.executor_shape_config_details.0.memory_in_gbs", "16"),
-				resource.TestCheckResourceAttr(resourceName, "step_override_details.0.step_dataflow_configuration_details.0.executor_shape_config_details.0.ocpus", "1"),
-				resource.TestCheckResourceAttr(resourceName, "step_override_details.0.step_dataflow_configuration_details.0.logs_bucket_uri", "oci://xuejuzha-test@idtlxnfdweil/"),
-				resource.TestCheckResourceAttr(resourceName, "step_override_details.0.step_dataflow_configuration_details.0.num_executors", "1"),
-				resource.TestCheckResourceAttr(resourceName, "step_override_details.0.step_dataflow_configuration_details.0.warehouse_bucket_uri", "oci://xuejuzha-test@idtlxnfdweil/"),
-
-				func(s *terraform.State) (err error) {
-					resId, err = acctest.FromInstanceState(s, resourceName, "id")
-					return err
-				},
-			),
-		},
-		{
-			Config: config + compartmentIdVariableStr + PipelineRunContainerResourceDependencies, // current pipeline state = ACCEPTED and DELETE after SUCCEEDED/CANCELED/FAILED
-		},
-		{
-			Config: config + compartmentIdVariableStr + PipelineRunContainerResourceDependencies +
-				acctest.GenerateResourceFromRepresentationMap("oci_datascience_pipeline_run", "test_pipeline_run", acctest.Optional, acctest.Create, pipelineRunContainerRepresentation),
-			Check: acctest.ComposeAggregateTestCheckFuncWrapper(
-				resource.TestCheckResourceAttr(resourceName, "compartment_id", compartmentId),
-				resource.TestCheckResourceAttrSet(resourceName, "pipeline_id"),
-				resource.TestCheckResourceAttrSet(resourceName, "project_id"),
-				resource.TestCheckResourceAttrSet(resourceName, "id"),
-				resource.TestCheckResourceAttr(resourceName, "configuration_override_details.#", "1"),
-				resource.TestCheckResourceAttr(resourceName, "step_override_details.#", "1"),
-				resource.TestCheckResourceAttr(resourceName, "step_override_details.0.step_configuration_details.#", "1"),
-				resource.TestCheckResourceAttr(resourceName, "step_override_details.0.step_configuration_details.0.command_line_arguments", "commandLineArgumentsOverriden"),
-				resource.TestCheckResourceAttr(resourceName, "step_override_details.0.step_configuration_details.0.environment_variables.%", "1"),
-				resource.TestCheckResourceAttr(resourceName, "step_override_details.0.step_configuration_details.0.maximum_runtime_in_minutes", "10"),
-				resource.TestCheckResourceAttr(resourceName, "step_override_details.0.step_name", "stepNameContainer"),
-				resource.TestCheckResourceAttr(resourceName, "step_override_details.0.step_container_configuration_details.#", "1"),
-				resource.TestCheckResourceAttr(resourceName, "step_override_details.0.step_container_configuration_details.0.container_type", "OCIR_CONTAINER"),
-				resource.TestCheckResourceAttr(resourceName, "step_override_details.0.step_container_configuration_details.0.image", "iad.ocir.io/idtlxnfdweil/byod-hello-world:1"),
-				resource.TestCheckResourceAttr(resourceName, "step_override_details.0.step_container_configuration_details.0.cmd.#", "0"),
-				resource.TestCheckResourceAttr(resourceName, "step_override_details.0.step_container_configuration_details.0.entrypoint.#", "0"),
-
-				func(s *terraform.State) (err error) {
-					resId, err = acctest.FromInstanceState(s, resourceName, "id")
-					return err
-				},
-			),
-		},
-		// Step 1 - delete before next Create
-		{
-			Config: config + compartmentIdVariableStr + PipelineRunContainerResourceDependencies, // current pipeline state = ACCEPTED and DELETE after SUCCEEDED/CANCELED/FAILED
-		},
+		//{
+		//	Config: config + compartmentIdVariableStr + PipelineRunDataflowResourceDependencies +
+		//		acctest.GenerateResourceFromRepresentationMap("oci_datascience_pipeline_run", "test_pipeline_run", acctest.Optional, acctest.Create, pipelineRunDataflowRepresentation),
+		//	Check: acctest.ComposeAggregateTestCheckFuncWrapper(
+		//		resource.TestCheckResourceAttr(resourceName, "compartment_id", compartmentId),
+		//		resource.TestCheckResourceAttrSet(resourceName, "pipeline_id"),
+		//		resource.TestCheckResourceAttrSet(resourceName, "project_id"),
+		//		resource.TestCheckResourceAttrSet(resourceName, "id"),
+		//		resource.TestCheckResourceAttr(resourceName, "step_override_details.#", "1"),
+		//		resource.TestCheckResourceAttr(resourceName, "step_override_details.0.step_dataflow_configuration_details.#", "1"),
+		//		resource.TestCheckResourceAttr(resourceName, "step_override_details.0.step_name", "stepNameDataflow"),
+		//		resource.TestCheckResourceAttr(resourceName, "step_override_details.0.step_dataflow_configuration_details.#", "1"),
+		//		resource.TestCheckResourceAttr(resourceName, "step_override_details.0.step_dataflow_configuration_details.0.driver_shape", "VM.Standard.E5.Flex"),
+		//		resource.TestCheckResourceAttr(resourceName, "step_override_details.0.step_dataflow_configuration_details.0.driver_shape_config_details.#", "1"),
+		//		resource.TestCheckResourceAttr(resourceName, "step_override_details.0.step_dataflow_configuration_details.0.driver_shape_config_details.0.memory_in_gbs", "14"),
+		//		resource.TestCheckResourceAttr(resourceName, "step_override_details.0.step_dataflow_configuration_details.0.driver_shape_config_details.0.ocpus", "2"),
+		//		resource.TestCheckResourceAttr(resourceName, "step_override_details.0.step_dataflow_configuration_details.0.executor_shape", "VM.Standard.E5.Flex"),
+		//		resource.TestCheckResourceAttr(resourceName, "step_override_details.0.step_dataflow_configuration_details.0.executor_shape_config_details.#", "1"),
+		//		resource.TestCheckResourceAttr(resourceName, "step_override_details.0.step_dataflow_configuration_details.0.executor_shape_config_details.0.memory_in_gbs", "14"),
+		//		resource.TestCheckResourceAttr(resourceName, "step_override_details.0.step_dataflow_configuration_details.0.executor_shape_config_details.0.ocpus", "2"),
+		//		resource.TestCheckResourceAttr(resourceName, "step_override_details.0.step_dataflow_configuration_details.0.logs_bucket_uri", "oci://xuejuzha-test@idtlxnfdweil/"),
+		//		resource.TestCheckResourceAttr(resourceName, "step_override_details.0.step_dataflow_configuration_details.0.num_executors", "1"),
+		//		resource.TestCheckResourceAttr(resourceName, "step_override_details.0.step_dataflow_configuration_details.0.warehouse_bucket_uri", "oci://xuejuzha-test@idtlxnfdweil/"),
+		//
+		//		func(s *terraform.State) (err error) {
+		//			resId, err = acctest.FromInstanceState(s, resourceName, "id")
+		//			return err
+		//		},
+		//	),
+		//},
+		//{
+		//	Config: config + compartmentIdVariableStr + PipelineRunContainerResourceDependencies, // current pipeline state = ACCEPTED and DELETE after SUCCEEDED/CANCELED/FAILED
+		//},
+		//{
+		//	Config: config + compartmentIdVariableStr + PipelineRunContainerResourceDependencies +
+		//		acctest.GenerateResourceFromRepresentationMap("oci_datascience_pipeline_run", "test_pipeline_run", acctest.Optional, acctest.Create, pipelineRunContainerRepresentation),
+		//	Check: acctest.ComposeAggregateTestCheckFuncWrapper(
+		//		resource.TestCheckResourceAttr(resourceName, "compartment_id", compartmentId),
+		//		resource.TestCheckResourceAttrSet(resourceName, "pipeline_id"),
+		//		resource.TestCheckResourceAttrSet(resourceName, "project_id"),
+		//		resource.TestCheckResourceAttrSet(resourceName, "id"),
+		//		resource.TestCheckResourceAttr(resourceName, "configuration_override_details.#", "1"),
+		//		resource.TestCheckResourceAttr(resourceName, "step_override_details.#", "1"),
+		//		resource.TestCheckResourceAttr(resourceName, "step_override_details.0.step_configuration_details.#", "1"),
+		//		resource.TestCheckResourceAttr(resourceName, "step_override_details.0.step_configuration_details.0.command_line_arguments", "commandLineArgumentsOverriden"),
+		//		resource.TestCheckResourceAttr(resourceName, "step_override_details.0.step_configuration_details.0.environment_variables.%", "1"),
+		//		resource.TestCheckResourceAttr(resourceName, "step_override_details.0.step_configuration_details.0.maximum_runtime_in_minutes", "10"),
+		//		resource.TestCheckResourceAttr(resourceName, "step_override_details.0.step_name", "stepNameContainer"),
+		//		resource.TestCheckResourceAttr(resourceName, "step_override_details.0.step_container_configuration_details.#", "1"),
+		//		resource.TestCheckResourceAttr(resourceName, "step_override_details.0.step_container_configuration_details.0.container_type", "OCIR_CONTAINER"),
+		//		resource.TestCheckResourceAttr(resourceName, "step_override_details.0.step_container_configuration_details.0.image", "iad.ocir.io/idtlxnfdweil/byod/test-hello-world:1.0"),
+		//		resource.TestCheckResourceAttr(resourceName, "step_override_details.0.step_container_configuration_details.0.cmd.#", "0"),
+		//		resource.TestCheckResourceAttr(resourceName, "step_override_details.0.step_container_configuration_details.0.entrypoint.#", "0"),
+		//
+		//		func(s *terraform.State) (err error) {
+		//			resId, err = acctest.FromInstanceState(s, resourceName, "id")
+		//			return err
+		//		},
+		//	),
+		//},
+		//// Step 1 - delete before next Create
+		//{
+		//	Config: config + compartmentIdVariableStr + PipelineRunContainerResourceDependencies, // current pipeline state = ACCEPTED and DELETE after SUCCEEDED/CANCELED/FAILED
+		//},
 		// Step 2 - verify Create
 		{
 			Config: config + compartmentIdVariableStr + PipelineRunResourceDependencies +
@@ -296,6 +330,13 @@ func TestDatasciencePipelineRunResource_basic(t *testing.T) {
 				resource.TestCheckResourceAttr(resourceName, "display_name", "displayName"),
 				resource.TestCheckResourceAttr(resourceName, "freeform_tags.%", "1"),
 				resource.TestCheckResourceAttrSet(resourceName, "id"),
+				resource.TestCheckResourceAttr(resourceName, "infrastructure_configuration_override_details.#", "1"),
+				resource.TestCheckResourceAttr(resourceName, "infrastructure_configuration_override_details.0.block_storage_size_in_gbs", "10"),
+				resource.TestCheckResourceAttr(resourceName, "infrastructure_configuration_override_details.0.shape_config_details.#", "1"),
+				resource.TestCheckResourceAttr(resourceName, "infrastructure_configuration_override_details.0.shape_config_details.0.memory_in_gbs", "1.0"),
+				resource.TestCheckResourceAttr(resourceName, "infrastructure_configuration_override_details.0.shape_config_details.0.ocpus", "1.0"),
+				resource.TestCheckResourceAttrSet(resourceName, "infrastructure_configuration_override_details.0.shape_name"),
+				resource.TestCheckResourceAttrSet(resourceName, "infrastructure_configuration_override_details.0.subnet_id"),
 				resource.TestCheckResourceAttr(resourceName, "log_configuration_override_details.#", "1"),
 				resource.TestCheckResourceAttr(resourceName, "log_configuration_override_details.0.enable_auto_log_creation", "false"),
 				resource.TestCheckResourceAttr(resourceName, "log_configuration_override_details.0.enable_logging", "true"),
@@ -344,6 +385,13 @@ func TestDatasciencePipelineRunResource_basic(t *testing.T) {
 				resource.TestCheckResourceAttr(resourceName, "display_name", "displayName"),
 				resource.TestCheckResourceAttr(resourceName, "freeform_tags.%", "1"),
 				resource.TestCheckResourceAttrSet(resourceName, "id"),
+				resource.TestCheckResourceAttr(resourceName, "infrastructure_configuration_override_details.#", "1"),
+				resource.TestCheckResourceAttr(resourceName, "infrastructure_configuration_override_details.0.block_storage_size_in_gbs", "10"),
+				resource.TestCheckResourceAttr(resourceName, "infrastructure_configuration_override_details.0.shape_config_details.#", "1"),
+				resource.TestCheckResourceAttr(resourceName, "infrastructure_configuration_override_details.0.shape_config_details.0.memory_in_gbs", "1.0"),
+				resource.TestCheckResourceAttr(resourceName, "infrastructure_configuration_override_details.0.shape_config_details.0.ocpus", "1.0"),
+				resource.TestCheckResourceAttrSet(resourceName, "infrastructure_configuration_override_details.0.shape_name"),
+				resource.TestCheckResourceAttrSet(resourceName, "infrastructure_configuration_override_details.0.subnet_id"),
 				resource.TestCheckResourceAttr(resourceName, "log_configuration_override_details.#", "1"),
 				resource.TestCheckResourceAttr(resourceName, "log_configuration_override_details.0.enable_auto_log_creation", "false"),
 				resource.TestCheckResourceAttr(resourceName, "log_configuration_override_details.0.enable_logging", "true"),
@@ -357,36 +405,13 @@ func TestDatasciencePipelineRunResource_basic(t *testing.T) {
 				resource.TestCheckResourceAttr(resourceName, "step_override_details.0.step_configuration_details.0.command_line_arguments", "commandLineArgumentsOverriden"),
 				resource.TestCheckResourceAttr(resourceName, "step_override_details.0.step_configuration_details.0.environment_variables.%", "1"),
 				resource.TestCheckResourceAttr(resourceName, "step_override_details.0.step_configuration_details.0.maximum_runtime_in_minutes", "10"),
-				resource.TestCheckResourceAttr(resourceName, "step_override_details.0.step_name", "stepName"),
-				resource.TestCheckResourceAttr(resourceName, "step_runs.#", "1"),
-				resource.TestCheckResourceAttr(resourceName, "system_tags.#", "0"),
-				resource.TestCheckResourceAttrSet(resourceName, "time_accepted"),
-
-				func(s *terraform.State) (err error) {
-					resId2, err = acctest.FromInstanceState(s, resourceName, "id")
-					if resId != resId2 {
-						return fmt.Errorf("resource recreated when it was supposed to be updated")
-					}
-					return err
-				},
-			),
-		},
-
-		// Step 6 - verify updates to updatable parameters
-		{
-			Config: config + compartmentIdVariableStr + PipelineRunResourceDependencies +
-				acctest.GenerateResourceFromRepresentationMap("oci_datascience_pipeline_run", "test_pipeline_run", acctest.Optional, acctest.Update, pipelineRunRepresentation),
-			Check: acctest.ComposeAggregateTestCheckFuncWrapper(
-				resource.TestCheckResourceAttr(resourceName, "compartment_id", compartmentId),
-				resource.TestCheckResourceAttr(resourceName, "configuration_override_details.#", "1"),
-				resource.TestCheckResourceAttr(resourceName, "configuration_override_details.0.command_line_arguments", "commandLineArgumentsOverriden"),
-				resource.TestCheckResourceAttr(resourceName, "configuration_override_details.0.environment_variables.%", "1"),
-				resource.TestCheckResourceAttr(resourceName, "configuration_override_details.0.maximum_runtime_in_minutes", "10"),
-				resource.TestCheckResourceAttr(resourceName, "configuration_override_details.0.type", "DEFAULT"),
-				resource.TestCheckResourceAttrSet(resourceName, "created_by"),
-				resource.TestCheckResourceAttr(resourceName, "display_name", "displayName2"),
-				resource.TestCheckResourceAttr(resourceName, "freeform_tags.%", "1"),
-				resource.TestCheckResourceAttrSet(resourceName, "id"),
+				resource.TestCheckResourceAttr(resourceName, "infrastructure_configuration_override_details.#", "1"),
+				resource.TestCheckResourceAttr(resourceName, "infrastructure_configuration_override_details.0.block_storage_size_in_gbs", "10"),
+				resource.TestCheckResourceAttr(resourceName, "infrastructure_configuration_override_details.0.shape_config_details.#", "1"),
+				resource.TestCheckResourceAttr(resourceName, "infrastructure_configuration_override_details.0.shape_config_details.0.memory_in_gbs", "1.0"),
+				resource.TestCheckResourceAttr(resourceName, "infrastructure_configuration_override_details.0.shape_config_details.0.ocpus", "1.0"),
+				resource.TestCheckResourceAttrSet(resourceName, "infrastructure_configuration_override_details.0.shape_name"),
+				resource.TestCheckResourceAttrSet(resourceName, "infrastructure_configuration_override_details.0.subnet_id"),
 				resource.TestCheckResourceAttr(resourceName, "log_configuration_override_details.#", "1"),
 				resource.TestCheckResourceAttr(resourceName, "log_configuration_override_details.0.enable_auto_log_creation", "false"),
 				resource.TestCheckResourceAttr(resourceName, "log_configuration_override_details.0.enable_logging", "true"),
@@ -459,6 +484,11 @@ func TestDatasciencePipelineRunResource_basic(t *testing.T) {
 				resource.TestCheckResourceAttr(singularDatasourceName, "display_name", "displayName2"),
 				resource.TestCheckResourceAttr(singularDatasourceName, "freeform_tags.%", "1"),
 				resource.TestCheckResourceAttrSet(singularDatasourceName, "id"),
+				resource.TestCheckResourceAttr(singularDatasourceName, "infrastructure_configuration_override_details.#", "1"),
+				resource.TestCheckResourceAttr(singularDatasourceName, "infrastructure_configuration_override_details.0.block_storage_size_in_gbs", "10"),
+				resource.TestCheckResourceAttr(singularDatasourceName, "infrastructure_configuration_override_details.0.shape_config_details.#", "1"),
+				resource.TestCheckResourceAttr(singularDatasourceName, "infrastructure_configuration_override_details.0.shape_config_details.0.memory_in_gbs", "1.0"),
+				resource.TestCheckResourceAttr(singularDatasourceName, "infrastructure_configuration_override_details.0.shape_config_details.0.ocpus", "1.0"),
 				resource.TestCheckResourceAttr(singularDatasourceName, "log_configuration_override_details.#", "1"),
 				resource.TestCheckResourceAttr(singularDatasourceName, "log_configuration_override_details.0.enable_auto_log_creation", "false"),
 				resource.TestCheckResourceAttr(singularDatasourceName, "log_configuration_override_details.0.enable_logging", "true"),

@@ -18,6 +18,9 @@ import (
 // UpdateRedisClusterDetails The configuration to update for an existing cluster.
 type UpdateRedisClusterDetails struct {
 
+	// The ID of the corresponding OCI Cache Config Set for the cluster.
+	OciCacheConfigSetId *string `mandatory:"false" json:"ociCacheConfigSetId"`
+
 	// The number of shards in sharded cluster. Only applicable when clusterMode is SHARDED.
 	ShardCount *int `mandatory:"false" json:"shardCount"`
 
@@ -61,7 +64,7 @@ func (m UpdateRedisClusterDetails) ValidateEnumValue() (bool, error) {
 		errMessage = append(errMessage, fmt.Sprintf("unsupported enum value for SoftwareVersion: %s. Supported values are: %s.", m.SoftwareVersion, strings.Join(GetRedisClusterSoftwareVersionEnumStringValues(), ",")))
 	}
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

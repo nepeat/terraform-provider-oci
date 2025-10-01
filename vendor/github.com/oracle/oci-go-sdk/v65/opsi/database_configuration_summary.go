@@ -108,6 +108,10 @@ func (m *databaseconfigurationsummary) UnmarshalPolymorphicJSON(data []byte) (in
 		mm := EmManagedExternalDatabaseConfigurationSummary{}
 		err = json.Unmarshal(data, &mm)
 		return mm, err
+	case "MACS_MANAGED_AUTONOMOUS_DATABASE":
+		mm := MacsManagedAutonomousDatabaseConfigurationSummary{}
+		err = json.Unmarshal(data, &mm)
+		return mm, err
 	case "EXTERNAL_MYSQL_DATABASE_SYSTEM":
 		mm := ExternalMysqlDatabaseConfigurationSummary{}
 		err = json.Unmarshal(data, &mm)
@@ -199,7 +203,7 @@ func (m databaseconfigurationsummary) ValidateEnumValue() (bool, error) {
 	errMessage := []string{}
 
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

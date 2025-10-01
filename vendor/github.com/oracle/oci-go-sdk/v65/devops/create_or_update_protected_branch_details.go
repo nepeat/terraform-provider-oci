@@ -18,7 +18,7 @@ import (
 // CreateOrUpdateProtectedBranchDetails Information to create a protected branch
 type CreateOrUpdateProtectedBranchDetails struct {
 
-	// Name of a branch to protect.
+	// The branchName can either be exact branch name or branch pattern.
 	BranchName *string `mandatory:"true" json:"branchName"`
 
 	// Level of protection to add on a branch.
@@ -42,7 +42,7 @@ func (m CreateOrUpdateProtectedBranchDetails) ValidateEnumValue() (bool, error) 
 	}
 
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

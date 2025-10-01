@@ -36,9 +36,13 @@ resource "oci_data_safe_security_assessment" "oci_data_safe_security_assessment"
   #Optional
   description = var.description
   display_name = var.display_name
+
+  lifecycle {
+    ignore_changes = [system_tags]
+  }
 }
 
 data "oci_data_safe_security_assessment_findings" "test_security_assessment_findings" {
   #Required
-  security_assessment_id = var.security_assessment_ocid
+  security_assessment_id = oci_data_safe_security_assessment.oci_data_safe_security_assessment.id
 }

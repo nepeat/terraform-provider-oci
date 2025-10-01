@@ -142,8 +142,22 @@ func (s *DatabaseDbSystemsDataSourceCrud) SetData() error {
 			dbSystem["cluster_name"] = *r.ClusterName
 		}
 
+		if r.ComputeCount != nil {
+			dbSystem["compute_count"] = *r.ComputeCount
+		}
+
+		dbSystem["compute_model"] = r.ComputeModel
+
 		if r.CpuCoreCount != nil {
 			dbSystem["cpu_core_count"] = *r.CpuCoreCount
+		}
+
+		if r.ClusterPlacementGroupId != nil {
+			dbSystem["cluster_placement_group_id"] = *r.ClusterPlacementGroupId
+		}
+
+		if r.SubscriptionId != nil {
+			dbSystem["subscription_id"] = *r.SubscriptionId
 		}
 
 		if r.DataCollectionOptions != nil {

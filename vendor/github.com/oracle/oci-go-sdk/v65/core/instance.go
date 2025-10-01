@@ -77,6 +77,9 @@ type Instance struct {
 
 	PlacementConstraintDetails PlacementConstraintDetails `mandatory:"false" json:"placementConstraintDetails"`
 
+	// Whether AI enterprise is enabled on the instance.
+	IsAIEnterpriseEnabled *bool `mandatory:"false" json:"isAIEnterpriseEnabled"`
+
 	// The OCID of the cluster placement group of the instance.
 	ClusterPlacementGroupId *string `mandatory:"false" json:"clusterPlacementGroupId"`
 
@@ -194,9 +197,6 @@ type Instance struct {
 
 	// List of licensing configurations associated with the instance.
 	LicensingConfigs []LicensingConfig `mandatory:"false" json:"licensingConfigs"`
-
-	// The OCID (https://docs.oracle.com/iaas/Content/General/Concepts/identifiers.htm) for the Customer-unique host group
-	ComputeHostGroupId *string `mandatory:"false" json:"computeHostGroupId"`
 }
 
 func (m Instance) String() string {
@@ -219,7 +219,7 @@ func (m Instance) ValidateEnumValue() (bool, error) {
 		errMessage = append(errMessage, fmt.Sprintf("unsupported enum value for LaunchMode: %s. Supported values are: %s.", m.LaunchMode, strings.Join(GetInstanceLaunchModeEnumStringValues(), ",")))
 	}
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }
@@ -229,6 +229,7 @@ func (m *Instance) UnmarshalJSON(data []byte) (e error) {
 	model := struct {
 		CapacityReservationId      *string                             `json:"capacityReservationId"`
 		PlacementConstraintDetails placementconstraintdetails          `json:"placementConstraintDetails"`
+		IsAIEnterpriseEnabled      *bool                               `json:"isAIEnterpriseEnabled"`
 		ClusterPlacementGroupId    *string                             `json:"clusterPlacementGroupId"`
 		DedicatedVmHostId          *string                             `json:"dedicatedVmHostId"`
 		DefinedTags                map[string]map[string]interface{}   `json:"definedTags"`
@@ -255,7 +256,6 @@ func (m *Instance) UnmarshalJSON(data []byte) (e error) {
 		PlatformConfig             platformconfig                      `json:"platformConfig"`
 		InstanceConfigurationId    *string                             `json:"instanceConfigurationId"`
 		LicensingConfigs           []LicensingConfig                   `json:"licensingConfigs"`
-		ComputeHostGroupId         *string                             `json:"computeHostGroupId"`
 		AvailabilityDomain         *string                             `json:"availabilityDomain"`
 		CompartmentId              *string                             `json:"compartmentId"`
 		Id                         *string                             `json:"id"`
@@ -281,6 +281,8 @@ func (m *Instance) UnmarshalJSON(data []byte) (e error) {
 	} else {
 		m.PlacementConstraintDetails = nil
 	}
+
+	m.IsAIEnterpriseEnabled = model.IsAIEnterpriseEnabled
 
 	m.ClusterPlacementGroupId = model.ClusterPlacementGroupId
 
@@ -350,8 +352,6 @@ func (m *Instance) UnmarshalJSON(data []byte) (e error) {
 
 	m.LicensingConfigs = make([]LicensingConfig, len(model.LicensingConfigs))
 	copy(m.LicensingConfigs, model.LicensingConfigs)
-	m.ComputeHostGroupId = model.ComputeHostGroupId
-
 	m.AvailabilityDomain = model.AvailabilityDomain
 
 	m.CompartmentId = model.CompartmentId

@@ -20,6 +20,8 @@ import (
 
 // HttpBackend Send the request to an HTTP backend.
 type HttpBackend struct {
+
+	// The url of the HTTP Backend
 	Url *string `mandatory:"true" json:"url"`
 
 	// Defines a timeout for establishing a connection with a proxied server.
@@ -46,7 +48,7 @@ func (m HttpBackend) ValidateEnumValue() (bool, error) {
 	errMessage := []string{}
 
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

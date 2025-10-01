@@ -17,7 +17,7 @@ import (
 	"strings"
 )
 
-// TargetIdsRemoveTargetsDetails Remove a list of targets from a Exadata Fleet Update Collection.
+// TargetIdsRemoveTargetsDetails Remove a list of targets from an Exadata Fleet Update Collection.
 type TargetIdsRemoveTargetsDetails struct {
 
 	// List of target entries to remove from the Exadata Fleet Update Collection.
@@ -35,7 +35,7 @@ func (m TargetIdsRemoveTargetsDetails) ValidateEnumValue() (bool, error) {
 	errMessage := []string{}
 
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

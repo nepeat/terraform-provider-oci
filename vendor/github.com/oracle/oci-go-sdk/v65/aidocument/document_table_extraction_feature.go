@@ -18,6 +18,9 @@ import (
 
 // DocumentTableExtractionFeature Detecting and extracting data in tables.
 type DocumentTableExtractionFeature struct {
+
+	// Unique identifier custom model OCID that should be used for inference.
+	ModelId *string `mandatory:"false" json:"modelId"`
 }
 
 func (m DocumentTableExtractionFeature) String() string {
@@ -31,7 +34,7 @@ func (m DocumentTableExtractionFeature) ValidateEnumValue() (bool, error) {
 	errMessage := []string{}
 
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

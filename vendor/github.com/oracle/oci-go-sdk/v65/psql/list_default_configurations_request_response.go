@@ -27,9 +27,14 @@ type ListDefaultConfigurationsRequest struct {
 	// Version of the PostgreSQL database, such as 14.9.
 	DbVersion *string `mandatory:"false" contributesTo:"query" name:"dbVersion"`
 
-	// The name of the shape for the configuration.
-	// Example: `VM.Standard.E4.Flex`
+	// The compute name of the shape for the configuration.
 	Shape *string `mandatory:"false" contributesTo:"query" name:"shape"`
+
+	// The instance ocpu count for the configuration.
+	InstanceOcpuCount *int `mandatory:"false" contributesTo:"query" name:"instanceOcpuCount"`
+
+	// The instance memory size in GBs for the configuration.
+	InstanceMemorySizeInGBs *int `mandatory:"false" contributesTo:"query" name:"instanceMemorySizeInGBs"`
 
 	// A unique identifier for the configuration.
 	ConfigurationId *string `mandatory:"false" contributesTo:"query" name:"configurationId"`
@@ -95,7 +100,7 @@ func (request ListDefaultConfigurationsRequest) ValidateEnumValue() (bool, error
 		errMessage = append(errMessage, fmt.Sprintf("unsupported enum value for SortBy: %s. Supported values are: %s.", request.SortBy, strings.Join(GetListDefaultConfigurationsSortByEnumStringValues(), ",")))
 	}
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

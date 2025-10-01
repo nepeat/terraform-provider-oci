@@ -53,6 +53,8 @@ type ExportSetting struct {
 
 	// The update date and time of the export setting (formatted according to RFC3339 (https://datatracker.ietf.org/doc/html/rfc3339)).
 	TimeLastModified *common.SDKTime `mandatory:"false" json:"timeLastModified"`
+
+	ExportDataFilters *ExportDataFilters `mandatory:"false" json:"exportDataFilters"`
 }
 
 func (m ExportSetting) String() string {
@@ -75,7 +77,7 @@ func (m ExportSetting) ValidateEnumValue() (bool, error) {
 		errMessage = append(errMessage, fmt.Sprintf("unsupported enum value for ExportFrequency: %s. Supported values are: %s.", m.ExportFrequency, strings.Join(GetExportFrequencyEnumStringValues(), ",")))
 	}
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

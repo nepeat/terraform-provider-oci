@@ -18,7 +18,7 @@ import (
 // Click https://docs.oracle.com/en-us/iaas/tools/go-sdk-examples/latest/dbmulticloud/DeleteOracleDbAzureBlobMount.go.html to see an example of how to use DeleteOracleDbAzureBlobMountRequest.
 type DeleteOracleDbAzureBlobMountRequest struct {
 
-	// The ID of the Azure Container Resource.
+	// The OCID (https://docs.oracle.com/iaas/Content/General/Concepts/identifiers.htm) of the Oracle DB Azure Blob Mount resource.
 	OracleDbAzureBlobMountId *string `mandatory:"true" contributesTo:"path" name:"oracleDbAzureBlobMountId"`
 
 	// For optimistic concurrency control. In the PUT or DELETE call
@@ -68,7 +68,7 @@ func (request DeleteOracleDbAzureBlobMountRequest) RetryPolicy() *common.RetryPo
 func (request DeleteOracleDbAzureBlobMountRequest) ValidateEnumValue() (bool, error) {
 	errMessage := []string{}
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

@@ -59,11 +59,20 @@ type RedisCluster struct {
 	// A message describing the current state in more detail. For example, the message might provide actionable information for a resource in `FAILED` state.
 	LifecycleDetails *string `mandatory:"false" json:"lifecycleDetails"`
 
+	// The fully qualified domain name (FQDN) of the API endpoint for sharded cluster discovery.
+	DiscoveryFqdn *string `mandatory:"false" json:"discoveryFqdn"`
+
+	// The private IP address of the API endpoint for sharded cluster discovery.
+	DiscoveryEndpointIpAddress *string `mandatory:"false" json:"discoveryEndpointIpAddress"`
+
 	// The date and time the cluster was created. An RFC3339 (https://datatracker.ietf.org/doc/html/rfc3339) formatted datetime string.
 	TimeCreated *common.SDKTime `mandatory:"false" json:"timeCreated"`
 
 	// The date and time the cluster was updated. An RFC3339 (https://datatracker.ietf.org/doc/html/rfc3339) formatted datetime string.
 	TimeUpdated *common.SDKTime `mandatory:"false" json:"timeUpdated"`
+
+	// The ID of the corresponding OCI Cache Config Set for the cluster.
+	OciCacheConfigSetId *string `mandatory:"false" json:"ociCacheConfigSetId"`
 
 	// Specifies whether the cluster is sharded or non-sharded.
 	ClusterMode RedisClusterClusterModeEnum `mandatory:"false" json:"clusterMode,omitempty"`
@@ -109,7 +118,7 @@ func (m RedisCluster) ValidateEnumValue() (bool, error) {
 		errMessage = append(errMessage, fmt.Sprintf("unsupported enum value for ClusterMode: %s. Supported values are: %s.", m.ClusterMode, strings.Join(GetRedisClusterClusterModeEnumStringValues(), ",")))
 	}
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

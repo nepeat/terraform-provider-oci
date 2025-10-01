@@ -104,12 +104,20 @@ func (m *configsummary) UnmarshalPolymorphicJSON(data []byte) (interface{}, erro
 
 	var err error
 	switch m.ConfigType {
+	case "MACS_APM_EXTENSION":
+		mm := MacsApmExtensionSummary{}
+		err = json.Unmarshal(data, &mm)
+		return mm, err
 	case "METRIC_GROUP":
 		mm := MetricGroupSummary{}
 		err = json.Unmarshal(data, &mm)
 		return mm, err
 	case "APDEX":
 		mm := ApdexRulesSummary{}
+		err = json.Unmarshal(data, &mm)
+		return mm, err
+	case "AGENT":
+		mm := AgentConfigSummary{}
 		err = json.Unmarshal(data, &mm)
 		return mm, err
 	case "SPAN_FILTER":
@@ -182,7 +190,7 @@ func (m configsummary) ValidateEnumValue() (bool, error) {
 	errMessage := []string{}
 
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

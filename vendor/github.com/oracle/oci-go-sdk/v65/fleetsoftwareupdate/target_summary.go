@@ -34,6 +34,9 @@ type TargetSummary struct {
 	ActiveFsuCycleId *string `mandatory:"false" json:"activeFsuCycleId"`
 
 	Progress *TargetProgressSummary `mandatory:"false" json:"progress"`
+
+	// List of Exadata Fleet Update Collections containing this target.
+	Memberships []MembershipSummary `mandatory:"false" json:"memberships"`
 }
 
 func (m TargetSummary) String() string {
@@ -50,7 +53,7 @@ func (m TargetSummary) ValidateEnumValue() (bool, error) {
 		errMessage = append(errMessage, fmt.Sprintf("unsupported enum value for Status: %s. Supported values are: %s.", m.Status, strings.Join(GetTargetSummaryStatusEnumStringValues(), ",")))
 	}
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }
@@ -64,6 +67,7 @@ func (m *TargetSummary) UnmarshalJSON(data []byte) (e error) {
 		ExecutingFsuJobId *string                 `json:"executingFsuJobId"`
 		ActiveFsuCycleId  *string                 `json:"activeFsuCycleId"`
 		Progress          *TargetProgressSummary  `json:"progress"`
+		Memberships       []MembershipSummary     `json:"memberships"`
 	}{}
 
 	e = json.Unmarshal(data, &model)
@@ -91,6 +95,8 @@ func (m *TargetSummary) UnmarshalJSON(data []byte) (e error) {
 
 	m.Progress = model.Progress
 
+	m.Memberships = make([]MembershipSummary, len(model.Memberships))
+	copy(m.Memberships, model.Memberships)
 	return
 }
 

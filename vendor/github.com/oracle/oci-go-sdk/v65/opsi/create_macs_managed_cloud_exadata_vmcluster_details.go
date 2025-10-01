@@ -29,6 +29,9 @@ type CreateMacsManagedCloudExadataVmclusterDetails struct {
 
 	// The databases that belong to the VM Cluster
 	MemberDatabaseDetails []CreateMacsManagedCloudDatabaseInsightDetails `mandatory:"false" json:"memberDatabaseDetails"`
+
+	// The autonomous databases that belong to the Autonmous VM Cluster
+	MemberAutonomousDetails []CreateMacsManagedAutonomousDatabaseInsightDetails `mandatory:"false" json:"memberAutonomousDetails"`
 }
 
 // GetVmclusterId returns VmclusterId
@@ -52,7 +55,7 @@ func (m CreateMacsManagedCloudExadataVmclusterDetails) ValidateEnumValue() (bool
 	errMessage := []string{}
 
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

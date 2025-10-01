@@ -55,6 +55,10 @@ func (m *workitemdetails) UnmarshalPolymorphicJSON(data []byte) (interface{}, er
 
 	var err error
 	switch m.Kind {
+	case "JAVA_MIGRATION_DEPLOYED_APPLICATION":
+		mm := JavaMigrationDeployedApplicationWorkItemDetails{}
+		err = json.Unmarshal(data, &mm)
+		return mm, err
 	case "DEPLOYED_APPLICATION":
 		mm := DeployedApplicationWorkItemDetails{}
 		err = json.Unmarshal(data, &mm)
@@ -69,6 +73,10 @@ func (m *workitemdetails) UnmarshalPolymorphicJSON(data []byte) (interface{}, er
 		return mm, err
 	case "APPLICATION":
 		mm := ApplicationWorkItemDetails{}
+		err = json.Unmarshal(data, &mm)
+		return mm, err
+	case "JAVA_MIGRATION_APPLICATION":
+		mm := JavaMigrationApplicationWorkItemDetails{}
 		err = json.Unmarshal(data, &mm)
 		return mm, err
 	default:
@@ -96,7 +104,7 @@ func (m workitemdetails) ValidateEnumValue() (bool, error) {
 		errMessage = append(errMessage, fmt.Sprintf("unsupported enum value for WorkItemType: %s. Supported values are: %s.", m.WorkItemType, strings.Join(GetWorkItemTypeEnumStringValues(), ",")))
 	}
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

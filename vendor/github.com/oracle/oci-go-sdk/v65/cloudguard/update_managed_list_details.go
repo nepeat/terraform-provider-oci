@@ -30,6 +30,9 @@ type UpdateManagedListDetails struct {
 	// List of managed list items
 	ListItems []string `mandatory:"false" json:"listItems"`
 
+	// Managed list type group
+	Group *string `mandatory:"false" json:"group"`
+
 	// Simple key-value pair that is applied without any predefined name, type or scope. Exists for cross-compatibility only.
 	// Example: `{"bar-key": "value"}`
 	// Avoid entering confidential information.
@@ -51,7 +54,7 @@ func (m UpdateManagedListDetails) ValidateEnumValue() (bool, error) {
 	errMessage := []string{}
 
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

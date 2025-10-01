@@ -21,6 +21,9 @@ type InlineDocumentDetails struct {
 
 	// Raw document data with Base64 encoding.
 	Data []byte `mandatory:"true" json:"data"`
+
+	// The page ranges to be analysed.
+	PageRange []string `mandatory:"false" json:"pageRange"`
 }
 
 func (m InlineDocumentDetails) String() string {
@@ -34,7 +37,7 @@ func (m InlineDocumentDetails) ValidateEnumValue() (bool, error) {
 	errMessage := []string{}
 
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

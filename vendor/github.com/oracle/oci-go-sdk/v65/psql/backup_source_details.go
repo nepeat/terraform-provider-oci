@@ -17,8 +17,7 @@ import (
 	"strings"
 )
 
-// BackupSourceDetails Restoring to a new database system from the backup.
-// The database system details that are part of the CreateDbSystem request are not required, but if present will override the details from the backup's database system snapshot.
+// BackupSourceDetails Details of the database system backup.
 type BackupSourceDetails struct {
 
 	// The OCID (https://docs.oracle.com/iaas/Content/General/Concepts/identifiers.htm) of the database system backup.
@@ -39,7 +38,7 @@ func (m BackupSourceDetails) ValidateEnumValue() (bool, error) {
 	errMessage := []string{}
 
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

@@ -20,7 +20,7 @@ import (
 	"strings"
 )
 
-// BasicAuthSecret The details of Basic authentication configured as in OpenSearch.
+// BasicAuthSecret The details of Basic authentication configured using a secret stored in a vault.
 type BasicAuthSecret struct {
 
 	// The OCID (https://docs.oracle.com/iaas/Content/General/Concepts/identifiers.htm) of the secret for basic authentication.
@@ -38,7 +38,7 @@ func (m BasicAuthSecret) ValidateEnumValue() (bool, error) {
 	errMessage := []string{}
 
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

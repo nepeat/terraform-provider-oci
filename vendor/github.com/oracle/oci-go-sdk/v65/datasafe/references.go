@@ -15,7 +15,7 @@ import (
 	"strings"
 )
 
-// References References to the sections of STIG, CIS, GDPR and/or OBP relevant to the current finding.
+// References References to the sections of STIG, CIS, GDPR and/or ORP relevant to the current finding.
 type References struct {
 
 	// Relevant section from STIG.
@@ -29,6 +29,9 @@ type References struct {
 
 	// Relevant section from OBP.
 	Obp *string `mandatory:"false" json:"obp"`
+
+	// Relevant section from ORP.
+	Orp *string `mandatory:"false" json:"orp"`
 }
 
 func (m References) String() string {
@@ -42,7 +45,7 @@ func (m References) ValidateEnumValue() (bool, error) {
 	errMessage := []string{}
 
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

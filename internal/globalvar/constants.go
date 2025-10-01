@@ -13,6 +13,7 @@ const (
 	ResourcePrincipal                     = "ResourcePrincipal"
 	RequestHeaderOpcOboToken              = "opc-obo-token"
 	RequestHeaderOpcHostSerial            = "opc-host-serial"
+	RequestHeaderOpcDryRun                = "opc-dry-run"
 
 	//	HTTPRequestTimeout specifies the maximum duration for completing an HTTP request.
 	HTTPRequestTimeOut    = "HTTP_REQUEST_TIMEOUT"
@@ -33,6 +34,7 @@ const (
 	UserAgentSDKNameEnv          = "OCI_SDK_APPEND_USER_AGENT"
 	DomainNameOverrideEnv        = "domain_name_override"
 	HasCorrectDomainNameEnv      = "has_correct_domain_name"
+	OciRegionMetadataEnv         = "OCI_REGION_METADATA"
 	ClientHostOverridesEnv       = "CLIENT_HOST_OVERRIDES"
 	CustomCertLocationEnv        = "custom_cert_location"
 	AcceptLocalCerts             = "accept_local_certs"

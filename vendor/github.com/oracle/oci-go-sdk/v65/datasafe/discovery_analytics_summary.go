@@ -25,6 +25,9 @@ type DiscoveryAnalyticsSummary struct {
 	Count *int64 `mandatory:"true" json:"count"`
 
 	Dimensions *Dimensions `mandatory:"false" json:"dimensions"`
+
+	// The date and time when data discovery was last done on the target database, in the format defined by RFC3339 (https://tools.ietf.org/html/rfc3339).
+	TimeLastDiscovered *common.SDKTime `mandatory:"false" json:"timeLastDiscovered"`
 }
 
 func (m DiscoveryAnalyticsSummary) String() string {
@@ -41,7 +44,7 @@ func (m DiscoveryAnalyticsSummary) ValidateEnumValue() (bool, error) {
 	}
 
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

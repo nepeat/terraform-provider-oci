@@ -43,6 +43,9 @@ type JavaFamilySummary struct {
 
 	// The date on which the Java release family was first made available (formatted according to RFC3339 (https://datatracker.ietf.org/doc/html/rfc3339)).
 	ReleaseDate *common.SDKTime `mandatory:"false" json:"releaseDate"`
+
+	// The license type(s) associated with the Java family.
+	LicenseTypes []LicenseTypeEnum `mandatory:"false" json:"licenseTypes"`
 }
 
 func (m JavaFamilySummary) String() string {
@@ -59,7 +62,7 @@ func (m JavaFamilySummary) ValidateEnumValue() (bool, error) {
 	}
 
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

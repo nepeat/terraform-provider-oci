@@ -24,6 +24,9 @@ type UpdateAutonomousContainerDatabaseDetails struct {
 	// Customer Contacts. Setting this to an empty list removes all customer contacts.
 	CustomerContacts []CustomerContact `mandatory:"false" json:"customerContacts"`
 
+	// The OKV End Point Group name for the Autonomous Container Database.
+	OkvEndPointGroupName *string `mandatory:"false" json:"okvEndPointGroupName"`
+
 	// Database Patch model preference.
 	PatchModel UpdateAutonomousContainerDatabaseDetailsPatchModelEnum `mandatory:"false" json:"patchModel,omitempty"`
 
@@ -68,7 +71,7 @@ func (m UpdateAutonomousContainerDatabaseDetails) ValidateEnumValue() (bool, err
 		errMessage = append(errMessage, fmt.Sprintf("unsupported enum value for VersionPreference: %s. Supported values are: %s.", m.VersionPreference, strings.Join(GetUpdateAutonomousContainerDatabaseDetailsVersionPreferenceEnumStringValues(), ",")))
 	}
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

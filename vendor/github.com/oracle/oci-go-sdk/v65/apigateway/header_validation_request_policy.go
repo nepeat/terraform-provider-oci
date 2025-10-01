@@ -28,6 +28,7 @@ type HeaderValidationRequestPolicy struct {
 	// `DISABLED` type turns the validation off.
 	ValidationMode HeaderValidationRequestPolicyValidationModeEnum `mandatory:"false" json:"validationMode,omitempty"`
 
+	// The List of Headers
 	Headers []HeaderValidationItem `mandatory:"false" json:"headers"`
 }
 
@@ -45,7 +46,7 @@ func (m HeaderValidationRequestPolicy) ValidateEnumValue() (bool, error) {
 		errMessage = append(errMessage, fmt.Sprintf("unsupported enum value for ValidationMode: %s. Supported values are: %s.", m.ValidationMode, strings.Join(GetHeaderValidationRequestPolicyValidationModeEnumStringValues(), ",")))
 	}
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

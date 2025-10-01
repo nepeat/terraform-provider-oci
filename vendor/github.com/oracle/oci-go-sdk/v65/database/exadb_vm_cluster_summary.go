@@ -171,11 +171,14 @@ type ExadbVmClusterSummary struct {
 	// The memory that you want to be allocated in GBs. Memory is calculated based on 11 GB per VM core reserved.
 	MemorySizeInGBs *int `mandatory:"false" json:"memorySizeInGBs"`
 
-	// The OCID (https://docs.oracle.com/iaas/Content/General/Concepts/identifiers.htm) of the cluster placement group of the Exadata Infrastructure.
+	// The OCID (https://docs.oracle.com/iaas/Content/General/Concepts/identifiers.htm) of the cluster placement group of the Exadata Infrastructure or Db System.
 	ClusterPlacementGroupId *string `mandatory:"false" json:"clusterPlacementGroupId"`
 
 	// The OCID (https://docs.oracle.com/iaas/Content/General/Concepts/identifiers.htm) of the subscription with which resource needs to be associated with.
 	SubscriptionId *string `mandatory:"false" json:"subscriptionId"`
+
+	// The type of Exascale storage used for Exadata VM cluster. The default is SMART_STORAGE which supports Oracle Database 23ai and later
+	ShapeAttribute ExadbVmClusterSummaryShapeAttributeEnum `mandatory:"false" json:"shapeAttribute,omitempty"`
 }
 
 func (m ExadbVmClusterSummary) String() string {
@@ -197,8 +200,11 @@ func (m ExadbVmClusterSummary) ValidateEnumValue() (bool, error) {
 	if _, ok := GetMappingExadbVmClusterSummaryLicenseModelEnum(string(m.LicenseModel)); !ok && m.LicenseModel != "" {
 		errMessage = append(errMessage, fmt.Sprintf("unsupported enum value for LicenseModel: %s. Supported values are: %s.", m.LicenseModel, strings.Join(GetExadbVmClusterSummaryLicenseModelEnumStringValues(), ",")))
 	}
+	if _, ok := GetMappingExadbVmClusterSummaryShapeAttributeEnum(string(m.ShapeAttribute)); !ok && m.ShapeAttribute != "" {
+		errMessage = append(errMessage, fmt.Sprintf("unsupported enum value for ShapeAttribute: %s. Supported values are: %s.", m.ShapeAttribute, strings.Join(GetExadbVmClusterSummaryShapeAttributeEnumStringValues(), ",")))
+	}
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }
@@ -346,5 +352,47 @@ func GetExadbVmClusterSummaryLicenseModelEnumStringValues() []string {
 // GetMappingExadbVmClusterSummaryLicenseModelEnum performs case Insensitive comparison on enum value and return the desired enum
 func GetMappingExadbVmClusterSummaryLicenseModelEnum(val string) (ExadbVmClusterSummaryLicenseModelEnum, bool) {
 	enum, ok := mappingExadbVmClusterSummaryLicenseModelEnumLowerCase[strings.ToLower(val)]
+	return enum, ok
+}
+
+// ExadbVmClusterSummaryShapeAttributeEnum Enum with underlying type: string
+type ExadbVmClusterSummaryShapeAttributeEnum string
+
+// Set of constants representing the allowable values for ExadbVmClusterSummaryShapeAttributeEnum
+const (
+	ExadbVmClusterSummaryShapeAttributeSmartStorage ExadbVmClusterSummaryShapeAttributeEnum = "SMART_STORAGE"
+	ExadbVmClusterSummaryShapeAttributeBlockStorage ExadbVmClusterSummaryShapeAttributeEnum = "BLOCK_STORAGE"
+)
+
+var mappingExadbVmClusterSummaryShapeAttributeEnum = map[string]ExadbVmClusterSummaryShapeAttributeEnum{
+	"SMART_STORAGE": ExadbVmClusterSummaryShapeAttributeSmartStorage,
+	"BLOCK_STORAGE": ExadbVmClusterSummaryShapeAttributeBlockStorage,
+}
+
+var mappingExadbVmClusterSummaryShapeAttributeEnumLowerCase = map[string]ExadbVmClusterSummaryShapeAttributeEnum{
+	"smart_storage": ExadbVmClusterSummaryShapeAttributeSmartStorage,
+	"block_storage": ExadbVmClusterSummaryShapeAttributeBlockStorage,
+}
+
+// GetExadbVmClusterSummaryShapeAttributeEnumValues Enumerates the set of values for ExadbVmClusterSummaryShapeAttributeEnum
+func GetExadbVmClusterSummaryShapeAttributeEnumValues() []ExadbVmClusterSummaryShapeAttributeEnum {
+	values := make([]ExadbVmClusterSummaryShapeAttributeEnum, 0)
+	for _, v := range mappingExadbVmClusterSummaryShapeAttributeEnum {
+		values = append(values, v)
+	}
+	return values
+}
+
+// GetExadbVmClusterSummaryShapeAttributeEnumStringValues Enumerates the set of values in String for ExadbVmClusterSummaryShapeAttributeEnum
+func GetExadbVmClusterSummaryShapeAttributeEnumStringValues() []string {
+	return []string{
+		"SMART_STORAGE",
+		"BLOCK_STORAGE",
+	}
+}
+
+// GetMappingExadbVmClusterSummaryShapeAttributeEnum performs case Insensitive comparison on enum value and return the desired enum
+func GetMappingExadbVmClusterSummaryShapeAttributeEnum(val string) (ExadbVmClusterSummaryShapeAttributeEnum, bool) {
+	enum, ok := mappingExadbVmClusterSummaryShapeAttributeEnumLowerCase[strings.ToLower(val)]
 	return enum, ok
 }

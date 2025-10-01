@@ -129,7 +129,7 @@ func (request SummarizeInstallationUsageRequest) ValidateEnumValue() (bool, erro
 	}
 
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }
@@ -218,6 +218,7 @@ const (
 	SummarizeInstallationUsageSortByApproximateapplicationcount     SummarizeInstallationUsageSortByEnum = "approximateApplicationCount"
 	SummarizeInstallationUsageSortByApproximatemanagedinstancecount SummarizeInstallationUsageSortByEnum = "approximateManagedInstanceCount"
 	SummarizeInstallationUsageSortByOsname                          SummarizeInstallationUsageSortByEnum = "osName"
+	SummarizeInstallationUsageSortBySecuritystatus                  SummarizeInstallationUsageSortByEnum = "securityStatus"
 )
 
 var mappingSummarizeInstallationUsageSortByEnum = map[string]SummarizeInstallationUsageSortByEnum{
@@ -230,6 +231,7 @@ var mappingSummarizeInstallationUsageSortByEnum = map[string]SummarizeInstallati
 	"approximateApplicationCount":     SummarizeInstallationUsageSortByApproximateapplicationcount,
 	"approximateManagedInstanceCount": SummarizeInstallationUsageSortByApproximatemanagedinstancecount,
 	"osName":                          SummarizeInstallationUsageSortByOsname,
+	"securityStatus":                  SummarizeInstallationUsageSortBySecuritystatus,
 }
 
 var mappingSummarizeInstallationUsageSortByEnumLowerCase = map[string]SummarizeInstallationUsageSortByEnum{
@@ -242,6 +244,7 @@ var mappingSummarizeInstallationUsageSortByEnumLowerCase = map[string]SummarizeI
 	"approximateapplicationcount":     SummarizeInstallationUsageSortByApproximateapplicationcount,
 	"approximatemanagedinstancecount": SummarizeInstallationUsageSortByApproximatemanagedinstancecount,
 	"osname":                          SummarizeInstallationUsageSortByOsname,
+	"securitystatus":                  SummarizeInstallationUsageSortBySecuritystatus,
 }
 
 // GetSummarizeInstallationUsageSortByEnumValues Enumerates the set of values for SummarizeInstallationUsageSortByEnum
@@ -265,6 +268,7 @@ func GetSummarizeInstallationUsageSortByEnumStringValues() []string {
 		"approximateApplicationCount",
 		"approximateManagedInstanceCount",
 		"osName",
+		"securityStatus",
 	}
 }
 

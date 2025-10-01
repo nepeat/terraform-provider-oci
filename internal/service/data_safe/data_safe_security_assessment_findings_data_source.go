@@ -22,9 +22,31 @@ func DataSafeSecurityAssessmentFindingsDataSource() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
+			"category": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
+			"compartment_id": {
+				Type:     schema.TypeString,
+				Optional: true,
+			},
 			"compartment_id_in_subtree": {
 				Type:     schema.TypeBool,
 				Optional: true,
+			},
+			"contains_references": {
+				Type:     schema.TypeList,
+				Optional: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+			},
+			"contains_severity": {
+				Type:     schema.TypeList,
+				Optional: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
 			},
 			"field": {
 				Type:     schema.TypeList,
@@ -65,6 +87,13 @@ func DataSafeSecurityAssessmentFindingsDataSource() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
+			"target_ids": {
+				Type:     schema.TypeList,
+				Optional: true,
+				Elem: &schema.Schema{
+					Type: schema.TypeString,
+				},
+			},
 			"findings": {
 				Type:     schema.TypeList,
 				Computed: true,
@@ -85,6 +114,10 @@ func DataSafeSecurityAssessmentFindingsDataSource() *schema.Resource {
 							Elem: &schema.Schema{
 								Type: schema.TypeString,
 							},
+						},
+						"doclink": {
+							Type:     schema.TypeString,
+							Computed: true,
 						},
 						"has_target_db_risk_level_changed": {
 							Type:     schema.TypeBool,
@@ -137,6 +170,10 @@ func DataSafeSecurityAssessmentFindingsDataSource() *schema.Resource {
 										Computed: true,
 									},
 									"obp": {
+										Type:     schema.TypeString,
+										Computed: true,
+									},
+									"orp": {
 										Type:     schema.TypeString,
 										Computed: true,
 									},
@@ -211,9 +248,45 @@ func (s *DataSafeSecurityAssessmentFindingsDataSourceCrud) Get() error {
 		request.AccessLevel = oci_data_safe.ListFindingsAccessLevelEnum(accessLevel.(string))
 	}
 
+	if category, ok := s.D.GetOkExists("category"); ok {
+		tmp := category.(string)
+		request.Category = &tmp
+	}
+
+	if compartmentId, ok := s.D.GetOkExists("compartment_id"); ok {
+		tmp := compartmentId.(string)
+		request.CompartmentId = &tmp
+	}
+
 	if compartmentIdInSubtree, ok := s.D.GetOkExists("compartment_id_in_subtree"); ok {
 		tmp := compartmentIdInSubtree.(bool)
 		request.CompartmentIdInSubtree = &tmp
+	}
+
+	if containsReferences, ok := s.D.GetOkExists("contains_references"); ok {
+		interfaces := containsReferences.([]interface{})
+		tmp := make([]oci_data_safe.SecurityAssessmentReferencesEnum, len(interfaces))
+		for i := range interfaces {
+			if interfaces[i] != nil {
+				tmp[i] = oci_data_safe.SecurityAssessmentReferencesEnum(interfaces[i].(string))
+			}
+		}
+		if len(tmp) != 0 || s.D.HasChange("contains_references") {
+			request.ContainsReferences = tmp
+		}
+	}
+
+	if containsSeverity, ok := s.D.GetOkExists("contains_severity"); ok {
+		interfaces := containsSeverity.([]interface{})
+		tmp := make([]oci_data_safe.ListFindingsContainsSeverityEnum, len(interfaces))
+		for i := range interfaces {
+			if interfaces[i] != nil {
+				tmp[i] = oci_data_safe.ListFindingsContainsSeverityEnum(interfaces[i].(string))
+			}
+		}
+		if len(tmp) != 0 || s.D.HasChange("contains_severity") {
+			request.ContainsSeverity = tmp
+		}
 	}
 
 	if field, ok := s.D.GetOkExists("field"); ok {
@@ -266,6 +339,19 @@ func (s *DataSafeSecurityAssessmentFindingsDataSourceCrud) Get() error {
 		request.TargetId = &tmp
 	}
 
+	if targetIds, ok := s.D.GetOkExists("target_ids"); ok {
+		interfaces := targetIds.([]interface{})
+		tmp := make([]string, len(interfaces))
+		for i := range interfaces {
+			if interfaces[i] != nil {
+				tmp[i] = interfaces[i].(string)
+			}
+		}
+		if len(tmp) != 0 || s.D.HasChange("target_ids") {
+			request.TargetIds = tmp
+		}
+	}
+
 	request.RequestMetadata.RetryPolicy = tfresource.GetRetryPolicy(false, "data_safe")
 
 	response, err := s.Client.ListFindings(context.Background(), request)
@@ -304,10 +390,18 @@ func (s *DataSafeSecurityAssessmentFindingsDataSourceCrud) SetData() error {
 			securityAssessmentFinding["assessment_id"] = *r.AssessmentId
 		}
 
+		if r.Category != nil {
+			securityAssessmentFinding["category"] = *r.Category
+		}
+
 		if r.Details != nil {
 			securityAssessmentFinding["details"] = []interface{}{}
 		} else {
 			securityAssessmentFinding["details"] = nil
+		}
+
+		if r.Doclink != nil {
+			securityAssessmentFinding["doclink"] = *r.Doclink
 		}
 
 		if r.HasTargetDbRiskLevelChanged != nil {
@@ -341,7 +435,7 @@ func (s *DataSafeSecurityAssessmentFindingsDataSourceCrud) SetData() error {
 		securityAssessmentFinding["oracle_defined_severity"] = r.OracleDefinedSeverity
 
 		if r.References != nil {
-			securityAssessmentFinding["references"] = []interface{}{FindingsReferencesToMap(r.References)}
+			securityAssessmentFinding["references"] = []interface{}{ReferencesToMapFinding(r.References)}
 		} else {
 			securityAssessmentFinding["references"] = nil
 		}
@@ -388,7 +482,7 @@ func (s *DataSafeSecurityAssessmentFindingsDataSourceCrud) SetData() error {
 	return nil
 }
 
-func FindingsReferencesToMap(obj *oci_data_safe.References) map[string]interface{} {
+func ReferencesToMapFinding(obj *oci_data_safe.References) map[string]interface{} {
 	result := map[string]interface{}{}
 
 	if obj.Cis != nil {
@@ -401,6 +495,10 @@ func FindingsReferencesToMap(obj *oci_data_safe.References) map[string]interface
 
 	if obj.Obp != nil {
 		result["obp"] = string(*obj.Obp)
+	}
+
+	if obj.Orp != nil {
+		result["orp"] = string(*obj.Orp)
 	}
 
 	if obj.Stig != nil {

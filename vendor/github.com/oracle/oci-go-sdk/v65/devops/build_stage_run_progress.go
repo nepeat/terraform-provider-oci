@@ -109,7 +109,7 @@ func (m BuildStageRunProgress) ValidateEnumValue() (bool, error) {
 		errMessage = append(errMessage, fmt.Sprintf("unsupported enum value for Status: %s. Supported values are: %s.", m.Status, strings.Join(GetBuildPipelineStageRunProgressStatusEnumStringValues(), ",")))
 	}
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }
@@ -203,14 +203,17 @@ type BuildStageRunProgressImageEnum string
 // Set of constants representing the allowable values for BuildStageRunProgressImageEnum
 const (
 	BuildStageRunProgressImageOl7X8664Standard10 BuildStageRunProgressImageEnum = "OL7_X86_64_STANDARD_10"
+	BuildStageRunProgressImageOl8X8664Standard10 BuildStageRunProgressImageEnum = "OL8_X86_64_STANDARD_10"
 )
 
 var mappingBuildStageRunProgressImageEnum = map[string]BuildStageRunProgressImageEnum{
 	"OL7_X86_64_STANDARD_10": BuildStageRunProgressImageOl7X8664Standard10,
+	"OL8_X86_64_STANDARD_10": BuildStageRunProgressImageOl8X8664Standard10,
 }
 
 var mappingBuildStageRunProgressImageEnumLowerCase = map[string]BuildStageRunProgressImageEnum{
 	"ol7_x86_64_standard_10": BuildStageRunProgressImageOl7X8664Standard10,
+	"ol8_x86_64_standard_10": BuildStageRunProgressImageOl8X8664Standard10,
 }
 
 // GetBuildStageRunProgressImageEnumValues Enumerates the set of values for BuildStageRunProgressImageEnum
@@ -226,6 +229,7 @@ func GetBuildStageRunProgressImageEnumValues() []BuildStageRunProgressImageEnum 
 func GetBuildStageRunProgressImageEnumStringValues() []string {
 	return []string{
 		"OL7_X86_64_STANDARD_10",
+		"OL8_X86_64_STANDARD_10",
 	}
 }
 

@@ -59,6 +59,12 @@ type TargetDetectorRecipeDetectorRule struct {
 	// Recommendation for TargetDetectorRecipeDetectorRule resource
 	Recommendation *string `mandatory:"false" json:"recommendation"`
 
+	// Rule category type
+	RuleType []RuleType `mandatory:"false" json:"ruleType"`
+
+	// Is the rule cloneable?
+	IsCloneable *bool `mandatory:"false" json:"isCloneable"`
+
 	Details *TargetDetectorDetails `mandatory:"false" json:"details"`
 
 	// List of managed list types related to this rule
@@ -109,7 +115,7 @@ func (m TargetDetectorRecipeDetectorRule) ValidateEnumValue() (bool, error) {
 		errMessage = append(errMessage, fmt.Sprintf("unsupported enum value for LifecycleState: %s. Supported values are: %s.", m.LifecycleState, strings.Join(GetLifecycleStateEnumStringValues(), ",")))
 	}
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }
@@ -133,6 +139,8 @@ const (
 	TargetDetectorRecipeDetectorRuleManagedListTypesGeneric              TargetDetectorRecipeDetectorRuleManagedListTypesEnum = "GENERIC"
 	TargetDetectorRecipeDetectorRuleManagedListTypesFusionAppsRole       TargetDetectorRecipeDetectorRuleManagedListTypesEnum = "FUSION_APPS_ROLE"
 	TargetDetectorRecipeDetectorRuleManagedListTypesFusionAppsPermission TargetDetectorRecipeDetectorRuleManagedListTypesEnum = "FUSION_APPS_PERMISSION"
+	TargetDetectorRecipeDetectorRuleManagedListTypesNamespaceSelector    TargetDetectorRecipeDetectorRuleManagedListTypesEnum = "NAMESPACE_SELECTOR"
+	TargetDetectorRecipeDetectorRuleManagedListTypesPodResourceSelector  TargetDetectorRecipeDetectorRuleManagedListTypesEnum = "POD_RESOURCE_SELECTOR"
 )
 
 var mappingTargetDetectorRecipeDetectorRuleManagedListTypesEnum = map[string]TargetDetectorRecipeDetectorRuleManagedListTypesEnum{
@@ -150,6 +158,8 @@ var mappingTargetDetectorRecipeDetectorRuleManagedListTypesEnum = map[string]Tar
 	"GENERIC":                TargetDetectorRecipeDetectorRuleManagedListTypesGeneric,
 	"FUSION_APPS_ROLE":       TargetDetectorRecipeDetectorRuleManagedListTypesFusionAppsRole,
 	"FUSION_APPS_PERMISSION": TargetDetectorRecipeDetectorRuleManagedListTypesFusionAppsPermission,
+	"NAMESPACE_SELECTOR":     TargetDetectorRecipeDetectorRuleManagedListTypesNamespaceSelector,
+	"POD_RESOURCE_SELECTOR":  TargetDetectorRecipeDetectorRuleManagedListTypesPodResourceSelector,
 }
 
 var mappingTargetDetectorRecipeDetectorRuleManagedListTypesEnumLowerCase = map[string]TargetDetectorRecipeDetectorRuleManagedListTypesEnum{
@@ -167,6 +177,8 @@ var mappingTargetDetectorRecipeDetectorRuleManagedListTypesEnumLowerCase = map[s
 	"generic":                TargetDetectorRecipeDetectorRuleManagedListTypesGeneric,
 	"fusion_apps_role":       TargetDetectorRecipeDetectorRuleManagedListTypesFusionAppsRole,
 	"fusion_apps_permission": TargetDetectorRecipeDetectorRuleManagedListTypesFusionAppsPermission,
+	"namespace_selector":     TargetDetectorRecipeDetectorRuleManagedListTypesNamespaceSelector,
+	"pod_resource_selector":  TargetDetectorRecipeDetectorRuleManagedListTypesPodResourceSelector,
 }
 
 // GetTargetDetectorRecipeDetectorRuleManagedListTypesEnumValues Enumerates the set of values for TargetDetectorRecipeDetectorRuleManagedListTypesEnum
@@ -195,6 +207,8 @@ func GetTargetDetectorRecipeDetectorRuleManagedListTypesEnumStringValues() []str
 		"GENERIC",
 		"FUSION_APPS_ROLE",
 		"FUSION_APPS_PERMISSION",
+		"NAMESPACE_SELECTOR",
+		"POD_RESOURCE_SELECTOR",
 	}
 }
 

@@ -64,7 +64,7 @@ func (request GetJavaLicenseRequest) ValidateEnumValue() (bool, error) {
 		errMessage = append(errMessage, fmt.Sprintf("unsupported enum value for LicenseType: %s. Supported values are: %s.", request.LicenseType, strings.Join(GetGetJavaLicenseLicenseTypeEnumStringValues(), ",")))
 	}
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }
@@ -99,18 +99,21 @@ type GetJavaLicenseLicenseTypeEnum string
 const (
 	GetJavaLicenseLicenseTypeOtn        GetJavaLicenseLicenseTypeEnum = "OTN"
 	GetJavaLicenseLicenseTypeNftc       GetJavaLicenseLicenseTypeEnum = "NFTC"
+	GetJavaLicenseLicenseTypeBcl        GetJavaLicenseLicenseTypeEnum = "BCL"
 	GetJavaLicenseLicenseTypeRestricted GetJavaLicenseLicenseTypeEnum = "RESTRICTED"
 )
 
 var mappingGetJavaLicenseLicenseTypeEnum = map[string]GetJavaLicenseLicenseTypeEnum{
 	"OTN":        GetJavaLicenseLicenseTypeOtn,
 	"NFTC":       GetJavaLicenseLicenseTypeNftc,
+	"BCL":        GetJavaLicenseLicenseTypeBcl,
 	"RESTRICTED": GetJavaLicenseLicenseTypeRestricted,
 }
 
 var mappingGetJavaLicenseLicenseTypeEnumLowerCase = map[string]GetJavaLicenseLicenseTypeEnum{
 	"otn":        GetJavaLicenseLicenseTypeOtn,
 	"nftc":       GetJavaLicenseLicenseTypeNftc,
+	"bcl":        GetJavaLicenseLicenseTypeBcl,
 	"restricted": GetJavaLicenseLicenseTypeRestricted,
 }
 
@@ -128,6 +131,7 @@ func GetGetJavaLicenseLicenseTypeEnumStringValues() []string {
 	return []string{
 		"OTN",
 		"NFTC",
+		"BCL",
 		"RESTRICTED",
 	}
 }

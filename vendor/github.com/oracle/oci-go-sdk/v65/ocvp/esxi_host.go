@@ -138,6 +138,12 @@ type EsxiHost struct {
 	// Usage of system tag keys. These predefined keys are scoped to namespaces.
 	// Example: `{orcl-cloud: {free-tier-retain: true}}`
 	SystemTags map[string]map[string]interface{} `mandatory:"false" json:"systemTags"`
+
+	// A list of datastore clusters.
+	DatastoreClusterIds []string `mandatory:"false" json:"datastoreClusterIds"`
+
+	// List of DatastoreAttachment objects containing information about attachment details
+	DatastoreAttachments []DatastoreAttachment `mandatory:"false" json:"datastoreAttachments"`
 }
 
 func (m EsxiHost) String() string {
@@ -160,7 +166,7 @@ func (m EsxiHost) ValidateEnumValue() (bool, error) {
 		errMessage = append(errMessage, fmt.Sprintf("unsupported enum value for LifecycleState: %s. Supported values are: %s.", m.LifecycleState, strings.Join(GetLifecycleStatesEnumStringValues(), ",")))
 	}
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

@@ -17,16 +17,17 @@ import (
 	"strings"
 )
 
-// CreateFsuCollectionDetails The information about new Exadata Fleet Update Collection.
+// CreateFsuCollectionDetails Details to create a new Exadata Fleet Update Collection.
+// Targets belonging to another Exadata Fleet Update Collection of the same type will be rejected.
 type CreateFsuCollectionDetails interface {
 
 	// Exadata service type for the target resource members.
 	GetServiceType() CollectionServiceTypesEnum
 
-	// Compartment Identifier
+	// The OCID (https://docs.oracle.com/iaas/Content/General/Concepts/identifiers.htm) of the Compartment.
 	GetCompartmentId() *string
 
-	// Exadata Fleet Update Collection Identifier.
+	// The user-friendly name for the Exadata Fleet Update Collection.
 	GetDisplayName() *string
 
 	// Simple key-value pair that is applied without any predefined name, type or scope. Exists for cross-compatibility only.
@@ -86,6 +87,14 @@ func (m *createfsucollectiondetails) UnmarshalPolymorphicJSON(data []byte) (inte
 		mm := CreateGiFsuCollectionDetails{}
 		err = json.Unmarshal(data, &mm)
 		return mm, err
+	case "GUEST_OS":
+		mm := CreateGuestOsFsuCollectionDetails{}
+		err = json.Unmarshal(data, &mm)
+		return mm, err
+	case "EXADB_STACK":
+		mm := CreateExadbStackFsuCollectionDetails{}
+		err = json.Unmarshal(data, &mm)
+		return mm, err
 	default:
 		common.Logf("Received unsupported enum value for CreateFsuCollectionDetails: %s.", m.Type)
 		return *m, nil
@@ -131,7 +140,7 @@ func (m createfsucollectiondetails) ValidateEnumValue() (bool, error) {
 	}
 
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

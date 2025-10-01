@@ -203,6 +203,12 @@ func (s *DatabaseAutonomousContainerDatabasesDataSourceCrud) SetData() error {
 
 		autonomousContainerDatabase["compute_model"] = r.ComputeModel
 
+		customerContacts := []interface{}{}
+		for _, item := range r.CustomerContacts {
+			customerContacts = append(customerContacts, ACDCustomerContactToMap(item))
+		}
+		autonomousContainerDatabase["customer_contacts"] = customerContacts
+
 		if r.Dataguard != nil {
 			autonomousContainerDatabase["dataguard"] = []interface{}{AutonomousContainerDatabaseDataguardToMap(r.Dataguard)}
 		} else {
@@ -307,6 +313,10 @@ func (s *DatabaseAutonomousContainerDatabasesDataSourceCrud) SetData() error {
 			autonomousContainerDatabase["maintenance_window"] = nil
 		}
 
+		if r.MemoryPerComputeUnitInGBs != nil {
+			autonomousContainerDatabase["memory_per_compute_unit_in_gbs"] = *r.MemoryPerComputeUnitInGBs
+		}
+
 		if r.MemoryPerOracleComputeUnitInGBs != nil {
 			autonomousContainerDatabase["memory_per_oracle_compute_unit_in_gbs"] = *r.MemoryPerOracleComputeUnitInGBs
 		}
@@ -315,6 +325,10 @@ func (s *DatabaseAutonomousContainerDatabasesDataSourceCrud) SetData() error {
 
 		if r.NextMaintenanceRunId != nil {
 			autonomousContainerDatabase["next_maintenance_run_id"] = *r.NextMaintenanceRunId
+		}
+
+		if r.OkvEndPointGroupName != nil {
+			autonomousContainerDatabase["okv_end_point_group_name"] = *r.OkvEndPointGroupName
 		}
 
 		if r.PatchId != nil {

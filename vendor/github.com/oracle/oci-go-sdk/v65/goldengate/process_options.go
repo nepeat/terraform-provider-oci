@@ -24,7 +24,7 @@ type ProcessOptions struct {
 	// If ENABLED, then the replication process restarts itself upon failure. This option applies when creating or updating a pipeline.
 	ShouldRestartOnFailure ProcessOptionsShouldRestartOnFailureEnum `mandatory:"true" json:"shouldRestartOnFailure"`
 
-	// If ENABLED, then the pipeline is started as part of pipeline creation. It uses default mapping. This option applies when creating or updating a pipeline.
+	// If ENABLED, then the pipeline is started as part of pipeline creation. It uses default mapping. This option only applies when creating a pipeline and is not applicable while updating a pipeline.
 	StartUsingDefaultMapping ProcessOptionsStartUsingDefaultMappingEnum `mandatory:"false" json:"startUsingDefaultMapping,omitempty"`
 }
 
@@ -45,7 +45,7 @@ func (m ProcessOptions) ValidateEnumValue() (bool, error) {
 		errMessage = append(errMessage, fmt.Sprintf("unsupported enum value for StartUsingDefaultMapping: %s. Supported values are: %s.", m.StartUsingDefaultMapping, strings.Join(GetProcessOptionsStartUsingDefaultMappingEnumStringValues(), ",")))
 	}
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

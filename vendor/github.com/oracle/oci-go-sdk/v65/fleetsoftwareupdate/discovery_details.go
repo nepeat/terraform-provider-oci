@@ -64,6 +64,14 @@ func (m *discoverydetails) UnmarshalPolymorphicJSON(data []byte) (interface{}, e
 		mm := DbDiscoveryDetails{}
 		err = json.Unmarshal(data, &mm)
 		return mm, err
+	case "EXADB_STACK":
+		mm := ExadbStackDiscoveryDetails{}
+		err = json.Unmarshal(data, &mm)
+		return mm, err
+	case "GUEST_OS":
+		mm := GuestOsDiscoveryDetails{}
+		err = json.Unmarshal(data, &mm)
+		return mm, err
 	default:
 		common.Logf("Received unsupported enum value for DiscoveryDetails: %s.", m.Type)
 		return *m, nil
@@ -89,7 +97,7 @@ func (m discoverydetails) ValidateEnumValue() (bool, error) {
 	}
 
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

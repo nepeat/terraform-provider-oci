@@ -23,6 +23,9 @@ type KeyStoreAssociatedDatabaseDetails struct {
 
 	// The name of the database that is associated with the key store.
 	DbName *string `mandatory:"false" json:"dbName"`
+
+	// The unique name of the database that is associated with the key store.
+	DbUniqueName *string `mandatory:"false" json:"dbUniqueName"`
 }
 
 func (m KeyStoreAssociatedDatabaseDetails) String() string {
@@ -36,7 +39,7 @@ func (m KeyStoreAssociatedDatabaseDetails) ValidateEnumValue() (bool, error) {
 	errMessage := []string{}
 
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

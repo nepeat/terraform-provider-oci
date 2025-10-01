@@ -71,6 +71,8 @@ func (s *DatabaseAutonomousDatabaseDataSourceCrud) SetData() error {
 		s.D.Set("actual_used_data_storage_size_in_tbs", *s.Res.ActualUsedDataStorageSizeInTBs)
 	}
 
+	s.D.Set("additional_attributes", s.Res.AdditionalAttributes)
+
 	if s.Res.AllocatedStorageSizeInTBs != nil {
 		s.D.Set("allocated_storage_size_in_tbs", *s.Res.AllocatedStorageSizeInTBs)
 	}
@@ -124,6 +126,8 @@ func (s *DatabaseAutonomousDatabaseDataSourceCrud) SetData() error {
 	}
 
 	s.D.Set("clone_table_space_list", s.Res.CloneTableSpaceList)
+
+	s.D.Set("clone_type", s.Res.CloneType)
 
 	if s.Res.ClusterPlacementGroupId != nil {
 		s.D.Set("cluster_placement_group_id", *s.Res.ClusterPlacementGroupId)
@@ -224,14 +228,6 @@ func (s *DatabaseAutonomousDatabaseDataSourceCrud) SetData() error {
 	}
 
 	s.D.Set("freeform_tags", s.Res.FreeformTags)
-
-	if s.Res.InMemoryAreaInGBs != nil {
-		s.D.Set("in_memory_area_in_gbs", *s.Res.InMemoryAreaInGBs)
-	}
-
-	if s.Res.InMemoryPercentage != nil {
-		s.D.Set("in_memory_percentage", *s.Res.InMemoryPercentage)
-	}
 
 	if s.Res.InMemoryAreaInGBs != nil {
 		s.D.Set("in_memory_area_in_gbs", *s.Res.InMemoryAreaInGBs)
@@ -347,6 +343,14 @@ func (s *DatabaseAutonomousDatabaseDataSourceCrud) SetData() error {
 		s.D.Set("long_term_backup_schedule", []interface{}{LongTermBackUpScheduleDetailsToMap(s.Res.LongTermBackupSchedule)})
 	} else {
 		s.D.Set("long_term_backup_schedule", nil)
+	}
+
+	if s.Res.MaintenanceTargetComponent != nil {
+		s.D.Set("maintenance_target_component", *s.Res.MaintenanceTargetComponent)
+	}
+
+	if s.Res.MemoryPerComputeUnitInGBs != nil {
+		s.D.Set("memory_per_compute_unit_in_gbs", *s.Res.MemoryPerComputeUnitInGBs)
 	}
 
 	if s.Res.MemoryPerOracleComputeUnitInGBs != nil {
@@ -479,6 +483,14 @@ func (s *DatabaseAutonomousDatabaseDataSourceCrud) SetData() error {
 		s.D.Set("time_disaster_recovery_role_changed", s.Res.TimeDisasterRecoveryRoleChanged.String())
 	}
 
+	if s.Res.TimeEarliestAvailableDbVersionUpgrade != nil {
+		s.D.Set("time_earliest_available_db_version_upgrade", s.Res.TimeEarliestAvailableDbVersionUpgrade.String())
+	}
+
+	if s.Res.TimeLatestAvailableDbVersionUpgrade != nil {
+		s.D.Set("time_latest_available_db_version_upgrade", s.Res.TimeLatestAvailableDbVersionUpgrade.String())
+	}
+
 	if s.Res.TimeLocalDataGuardEnabled != nil {
 		s.D.Set("time_local_data_guard_enabled", s.Res.TimeLocalDataGuardEnabled.String())
 	}
@@ -489,10 +501,6 @@ func (s *DatabaseAutonomousDatabaseDataSourceCrud) SetData() error {
 
 	if s.Res.TimeMaintenanceEnd != nil {
 		s.D.Set("time_maintenance_end", s.Res.TimeMaintenanceEnd.String())
-	}
-
-	if s.Res.MaintenanceTargetComponent != nil {
-		s.D.Set("maintenance_target_component", *s.Res.MaintenanceTargetComponent)
 	}
 
 	if s.Res.TimeOfAutoRefreshStart != nil {
@@ -525,6 +533,10 @@ func (s *DatabaseAutonomousDatabaseDataSourceCrud) SetData() error {
 
 	if s.Res.TimeReclamationOfFreeAutonomousDatabase != nil {
 		s.D.Set("time_reclamation_of_free_autonomous_database", s.Res.TimeReclamationOfFreeAutonomousDatabase.String())
+	}
+
+	if s.Res.TimeScheduledDbVersionUpgrade != nil {
+		s.D.Set("time_scheduled_db_version_upgrade", s.Res.TimeScheduledDbVersionUpgrade.String())
 	}
 
 	if s.Res.TimeUndeleted != nil {

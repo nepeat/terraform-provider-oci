@@ -87,6 +87,11 @@ func RedisRedisClusterResource() *schema.Resource {
 					Type: schema.TypeString,
 				},
 			},
+			"oci_cache_config_set_id": {
+				Type:     schema.TypeString,
+				Optional: true,
+				Computed: true,
+			},
 			"shard_count": {
 				Type:     schema.TypeInt,
 				Optional: true,
@@ -94,6 +99,14 @@ func RedisRedisClusterResource() *schema.Resource {
 			},
 
 			// Computed
+			"discovery_endpoint_ip_address": {
+				Type:     schema.TypeString,
+				Computed: true,
+			},
+			"discovery_fqdn": {
+				Type:     schema.TypeString,
+				Computed: true,
+			},
 			"lifecycle_details": {
 				Type:     schema.TypeString,
 				Computed: true,
@@ -295,6 +308,11 @@ func (s *RedisRedisClusterResourceCrud) Create() error {
 		if len(tmp) != 0 || s.D.HasChange("nsg_ids") {
 			request.NsgIds = tmp
 		}
+	}
+
+	if ociCacheConfigSetId, ok := s.D.GetOkExists("oci_cache_config_set_id"); ok {
+		tmp := ociCacheConfigSetId.(string)
+		request.OciCacheConfigSetId = &tmp
 	}
 
 	if shardCount, ok := s.D.GetOkExists("shard_count"); ok {
@@ -548,6 +566,16 @@ func (s *RedisRedisClusterResourceCrud) Update() error {
 		}
 	}
 
+	if ociCacheConfigSetId, ok := s.D.GetOkExists("oci_cache_config_set_id"); ok && s.D.HasChange("oci_cache_config_set_id") {
+		tmp := ociCacheConfigSetId.(string)
+		request := oci_redis.UpdateRedisClusterRequest{}
+		request.OciCacheConfigSetId = &tmp
+		err := s.updateRedisCluster(request)
+		if err != nil {
+			return err
+		}
+	}
+
 	if nodeMemoryInGBs, ok := s.D.GetOkExists("node_memory_in_gbs"); ok && s.D.HasChange("node_memory_in_gbs") {
 		request := oci_redis.UpdateRedisClusterRequest{}
 		tmp, ok := nodeMemoryInGBs.(float32)
@@ -624,6 +652,14 @@ func (s *RedisRedisClusterResourceCrud) SetData() error {
 		s.D.Set("defined_tags", tfresource.DefinedTagsToMap(s.Res.DefinedTags))
 	}
 
+	if s.Res.DiscoveryEndpointIpAddress != nil {
+		s.D.Set("discovery_endpoint_ip_address", *s.Res.DiscoveryEndpointIpAddress)
+	}
+
+	if s.Res.DiscoveryFqdn != nil {
+		s.D.Set("discovery_fqdn", *s.Res.DiscoveryFqdn)
+	}
+
 	if s.Res.DisplayName != nil {
 		s.D.Set("display_name", *s.Res.DisplayName)
 	}
@@ -653,6 +689,10 @@ func (s *RedisRedisClusterResourceCrud) SetData() error {
 		nsgIds = append(nsgIds, item)
 	}
 	s.D.Set("nsg_ids", schema.NewSet(tfresource.LiteralTypeHashCodeForSets, nsgIds))
+
+	if s.Res.OciCacheConfigSetId != nil {
+		s.D.Set("oci_cache_config_set_id", *s.Res.OciCacheConfigSetId)
+	}
 
 	if s.Res.PrimaryEndpointIpAddress != nil {
 		s.D.Set("primary_endpoint_ip_address", *s.Res.PrimaryEndpointIpAddress)
@@ -740,6 +780,14 @@ func RedisClusterSummaryToMap(obj oci_redis.RedisClusterSummary, datasource bool
 		result["defined_tags"] = tfresource.DefinedTagsToMap(obj.DefinedTags)
 	}
 
+	if obj.DiscoveryEndpointIpAddress != nil {
+		result["discovery_endpoint_ip_address"] = string(*obj.DiscoveryEndpointIpAddress)
+	}
+
+	if obj.DiscoveryFqdn != nil {
+		result["discovery_fqdn"] = string(*obj.DiscoveryFqdn)
+	}
+
 	if obj.DisplayName != nil {
 		result["display_name"] = string(*obj.DisplayName)
 	}
@@ -770,6 +818,10 @@ func RedisClusterSummaryToMap(obj oci_redis.RedisClusterSummary, datasource bool
 		result["nsg_ids"] = nsgIds
 	} else {
 		result["nsg_ids"] = schema.NewSet(tfresource.LiteralTypeHashCodeForSets, nsgIds)
+	}
+
+	if obj.OciCacheConfigSetId != nil {
+		result["oci_cache_config_set_id"] = string(*obj.OciCacheConfigSetId)
 	}
 
 	if obj.PrimaryEndpointIpAddress != nil {

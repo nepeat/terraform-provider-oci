@@ -41,6 +41,8 @@ type UpdateExportSettingDetails struct {
 
 	// Schedule at which data will be exported.
 	ExportFrequency ExportFrequencyEnum `mandatory:"false" json:"exportFrequency,omitempty"`
+
+	ExportDataFilters *ExportDataFilters `mandatory:"false" json:"exportDataFilters"`
 }
 
 func (m UpdateExportSettingDetails) String() string {
@@ -63,7 +65,7 @@ func (m UpdateExportSettingDetails) ValidateEnumValue() (bool, error) {
 		errMessage = append(errMessage, fmt.Sprintf("unsupported enum value for ExportFrequency: %s. Supported values are: %s.", m.ExportFrequency, strings.Join(GetExportFrequencyEnumStringValues(), ",")))
 	}
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

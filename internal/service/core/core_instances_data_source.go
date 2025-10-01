@@ -162,10 +162,6 @@ func (s *CoreInstancesDataSourceCrud) SetData() error {
 			instance["cluster_placement_group_id"] = *r.ClusterPlacementGroupId
 		}
 
-		if r.ComputeHostGroupId != nil {
-			instance["compute_host_group_id"] = *r.ComputeHostGroupId
-		}
-
 		if r.DedicatedVmHostId != nil {
 			instance["dedicated_vm_host_id"] = *r.DedicatedVmHostId
 		}
@@ -208,6 +204,10 @@ func (s *CoreInstancesDataSourceCrud) SetData() error {
 
 		if r.IpxeScript != nil {
 			instance["ipxe_script"] = *r.IpxeScript
+		}
+
+		if r.IsAIEnterpriseEnabled != nil {
+			instance["is_ai_enterprise_enabled"] = *r.IsAIEnterpriseEnabled
 		}
 
 		if r.IsCrossNumaNode != nil {

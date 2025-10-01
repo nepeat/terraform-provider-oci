@@ -1,4 +1,178 @@
-## 7.8.0 (July 03, 2025)
+## 7.21.0 (October 1, 2025)
+
+### Added
+- Support for Immutable Backup and Undelete DB | ADB-D and ADB on ExaC@C
+- Support for sigint context to go sdk for GoldenGate
+- support for distinct instance_shape_config in capacity reservations
+- Support for Generative AI - Private Endpoint support for DAC
+- Support for Vertical Stack Update for Guest OS and GI using generic scheduling mechanism or point operations
+- Support for ADB-S: ADB@GCP (Oasis) Google Key Management Support (GCP CMEK) R3
+- Support for Datastore Management for Standard Shapes
+- Support for Reselling NVAIE License from NVidia
+- Support for Long Running Functions With Guaranteed Response Delivery
+- Support for Resource Analytics service
+- Support for Multicloud service
+
+### Bug Fix
+- for MongoDB API support | ADB-D & ADB-C@C
+- Issue updating management policies with type set to None.
+
+## 7.20.0 (September 23, 2025)
+
+### Added
+- Support for Java Management Service 10.0 - Standalone Plane Component (SDKs & TERSI ONLY)
+- Support for Java Management Service 10.0
+- Support for ExaDB-D Exascale Integration
+- Support for OCI Cache Discovery Endpoint for Sharded Clusters
+- Support for Marketplace Metadata for Attribution and Attestation
+- Support for Data Safe - Confidence Level support in Data Discovery
+
+
+## 7.19.0 (September 17, 2025)
+
+### Added
+- Support for BaseDB@Partner Clouds- DBAAS Support
+- Ensure that WR does not error out if there are no work request errors
+- Support for ADB-S: Refreshable Metadata Clones
+
+### Deprecation
+- Support for IPv6 for OCI FSS
+
+### Bug Fix
+- Fixing tunnel inspection and nat rules names for herds reset export resources failure.
+- display name causing update issue
+
+## 7.18.0 (September 10, 2025)
+
+### Added
+- Support for Support resource locking for Email Delivery
+- Support for OCI FSS IPv6 Support
+
+### Bug Fix
+- TERSI-7599: 08/11-NewDev - UDX fixes only to allow ENTERPRISE_EDITION_EXTREME_PERFORMANCE
+
+## 7.17.0 (September 4, 2025)
+
+### Added
+- Support for AutoScale-DB-Vault | ExaDB-XS
+- Support for Backup Validation (V2)- Terraform HeatWave Service: Backup Validation
+- Support for ADB-S: Provide Available Capacity When Joining an Elastic Pool
+- Support for Container Governance Service
+- Support for dbmulticloud GCP and azure fixes
+- Prod Endpoint for AI Vision Service Stream Video Processing
+- Support for AI Vision Service Stream Video Processing
+
+## 7.16.0 (August 27, 2025)
+
+### Added
+- Support for Compute: GPU Memory Fabric API Update - availableHostCount
+- Support for Mixed License, Recovery Point Time, filter deployments by type
+- Support for E6 - Standard x86 shape for BaseDB on DRCC Butterfly | BaseDB
+- Support for OCI Generative AI Agent - CY25 Q2 Release
+- Support for New managed service leveraging full capabilities and performance potential of raw Apache Kafka
+- Support for Oracle 19C Database in Exadata Database Service on Exascale Infrastructure (ExaDB-XS)
+- MySQL database support for FSDR
+- Data Safe Support for Target Database Group
+
+
+## 7.15.0 (August 20, 2025)
+
+### Added
+- Support for APIGW Resource Locking
+- Support for IPv6-Prefix-for-Subnet & Flexible CIDR support for secondary IPs on VNIC Multi-Prefix-for-Subnet & Flexible CIDR support for secondary IP addresses on VNIC
+- Support for PDB Snapshots on ExaDB-XS
+
+
+## 7.14.0 (August 13, 2025)
+
+### Added
+- Support for scimQuery field for findingAnalytics API in data safe
+- Support for ODSC - Distributed Training V2 (DTv2)
+- Support for OCI Cache - Customer Managed Config Sets
+- Support for AI Vision Service Stream Video Processing
+- Support for GoldenGate Connections Release 8
+- Support for OL8 migration for Devops Build runner
+- Support for fields computeClusterId and placementConstraintDetails in Instance Configuration Launch Details
+- Max Parallel Chunks configurable via env
+- Formatting changes in files
+
+### Bug Fix
+- Fix using security_attributes in UpdateInstance and add tests
+- remove usages of freeformTags and definedTags from ApplianceImageSummary
+- EXACC update fix to send destionationDetails
+- Resolved errors with VCN update requests for IPv6 CIDRs
+
+## 7.13.0 (August 6, 2025)
+
+### Added
+- Max Parallel Chunks configurable via env
+- Formatting changes in files
+
+### Bug Fix
+- for Create route table when route rule contains route_type.
+- Api Gateway terraform correction to align with public sdk resource locking changes
+- Adbs switchover logic and secret Id bug
+
+## 7.12.0 (July 30, 2025)
+
+### Added
+- Support for ODSC - Enable Burstable for Data Science Notebooks, ML Jobs, and ML Pipeline
+- Support for APM - Scheduled Backend Queries - UI & API
+- Support for Ops Insights support for ADB@ExaCC
+- oprional parameters to import
+- Support for API Platform Cloud Service
+- Support for OCI Data Science Multi Model Deployment Experience
+- Support for Design/Implement CPU architecture agnostic configurations
+- Support for Secrets in Vault - Cross Region Replication Feature
+- Support for APM - Agent & Configurations Updates
+
+### Bug Fix
+- Update domain override logic to get realm domain from oci-go-sdk instead of using regex to extract realmn domain
+- Fix for VCN is_ipv6enabled plan drift on apply.
+- ed - Pagination for resource discovery of private zones
+
+## 7.11.0 (July 23, 2025)
+
+### Added
+- Support for Customer Contact for Operational Notifications Phase 2 | ADB-D & ADB-C@C
+- Support for Rel 2.0 Enhancement: Oracle Cloud AI Services Document Understanding
+- Support for Ability to specify tags when adding a standby database or creating a database from backup | ExaDB-D, ExaDB-XS, ExaDB-CC
+- Support for Management Agent: Centralized management of Named Credentials from Management Agent Cloud Service
+- Support for ADB-S: Scheduled Upgrade to 23ai
+- Support for Autoscaling to support Custom Metrics feature
+- Support for ACD - OKV Endpoint group| ADB-D and ADB-C@C
+- Support monitoring of Cloud DB System for Database Management Service
+
+### Deprecation
+- Deprecated Anomaly Detection service
+
+### Bug Fix
+- upgradted go pkg cloudflare/circl@v1.6.0
+
+## 7.10.0 (July 16, 2025)
+
+### Added
+- Support for GenAI Agents Tools API
+- Support for BDS - Automatic Replacement of failed Master (MN0/MN1) and Utility nodes (UN0/UN1)
+- Support for OSP OCI integration service: Fraud changes
+### Bug Fix
+Fix unpinning of addon version
+- Check OIDC is enabled in state to prevent drift
+- fixed backup type issue
+- OS Management Hub: unregister managed instance on resource deletion
+ed - To support TF import of KMS vault replica.
+
+## 7.9.0 (July 09, 2025)
+
+### Added
+Added - Support for OSP OCI integration service: Fraud changes
+Support for GenAI Agents Tools API
+Support for BDS - Automatic Replacement of failed Master (MN0/MN1) and Utility nodes (UN0/UN1)
+### Bug Fix
+OS Management Hub: unregister managed instance on resource deletion
+To support TF import of KMS vault replica.
+
+## 7.8.0 (July 5, 2025)
 
 ### Added
 - Support for [Elastic Pool Support for Child Tenancies] Terraform Support in Prod Region ADB-S: Elastic Pool Support for Child Tenancies
@@ -10,8 +184,7 @@
 - Support for MultiCloud Data Plane Integration for Database services dbmulticloud changes
 ### Bug Fix
 - Corrected Cloud Database Management Integration Test and added Example Test
-
-## 7.7.0 (June 25, 2025)
+## 7.7.0 (June 24, 2025)
 
 ### Added
 - Support for BYoIPv6 support on LBaaS (API ONLY Release)

@@ -108,11 +108,13 @@ type Db2Connection struct {
 
 	// The OCID (https://docs.oracle.com/iaas/Content/General/Concepts/identifiers.htm) of the Secret where the keystore file stored,
 	// which created at the client containing the server certificate / CA root certificate.
+	// This property is not supported for IBM Db2 for i, as client TLS mode is not available.
 	// Note: When provided, 'sslClientKeystoredb' field must not be provided.
 	SslClientKeystoredbSecretId *string `mandatory:"false" json:"sslClientKeystoredbSecretId"`
 
 	// The OCID (https://docs.oracle.com/iaas/Content/General/Concepts/identifiers.htm) of the Secret where the keystash file is stored,
 	// which contains the encrypted password to the key database file.
+	// This property is not supported for IBM Db2 for i, as client TLS mode is not available.
 	// Note: When provided, 'sslClientKeystash' field must not be provided.
 	SslClientKeystashSecretId *string `mandatory:"false" json:"sslClientKeystashSecretId"`
 
@@ -254,7 +256,7 @@ func (m Db2Connection) ValidateEnumValue() (bool, error) {
 		errMessage = append(errMessage, fmt.Sprintf("unsupported enum value for RoutingMethod: %s. Supported values are: %s.", m.RoutingMethod, strings.Join(GetRoutingMethodEnumStringValues(), ",")))
 	}
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

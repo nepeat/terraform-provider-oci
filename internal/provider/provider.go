@@ -11,7 +11,6 @@ import (
 	"os"
 	"path"
 	"path/filepath"
-	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -624,6 +623,8 @@ func BuildConfigureClientFn(configProvider oci_common.ConfigurationProvider, htt
 
 	simulateDbForDbSystemUpgrade, _ := strconv.ParseBool(utils.GetEnvSettingWithDefault("simulate_db_db_system_upgrade", "false"))
 
+	OpcDryRun, _ := strconv.ParseBool(utils.GetEnvSettingWithDefault("opc_dry_run", "false"))
+
 	requestSigner := oci_common.DefaultRequestSigner(configProvider)
 	var oboTokenProvider OboTokenProvider
 	oboTokenProvider = emptyOboTokenProvider{}
@@ -665,6 +666,12 @@ func BuildConfigureClientFn(configProvider oci_common.ConfigurationProvider, htt
 				}
 			}
 
+			if OpcDryRun {
+				if r.Method == http.MethodPost || r.Method == http.MethodPut && (strings.Contains(r.URL.Path, "/dbSystems")) {
+					r.Header.Set(globalvar.RequestHeaderOpcDryRun, "true")
+				}
+			}
+
 			if strings.Contains(r.URL.Path, "/reachableIp") {
 				log.Printf("[DEBUG] Setting JOB_ID for Terraformer: %v ", os.Getenv("JOB_ID"))
 				r.Header.Set(globalvar.JobOCID, os.Getenv("JOB_ID"))
@@ -681,11 +688,16 @@ func BuildConfigureClientFn(configProvider oci_common.ConfigurationProvider, htt
 
 		domainNameOverride := utils.GetEnvSettingWithBlankDefault(globalvar.DomainNameOverrideEnv)
 
-		if domainNameOverride != "" {
+		//Example host:https://auth.us-ashburn-1.oraclecloud.com Example DomainOverride value: oraclecloudmars35.com
+		//Output Host after Override should be: https://auth.us-ashburn-1.oraclecloudmars35.com
+		if domainNameOverride != "" && !strings.HasSuffix(client.Host, domainNameOverride) {
 			hasCorrectDomainName := utils.GetEnvSettingWithBlankDefault(globalvar.HasCorrectDomainNameEnv)
-			re := regexp.MustCompile(`(.*?)[-\w]+\.\w+$`) // (capture: preamble) match: d0main-name . tld end-of-string
 			if hasCorrectDomainName == "" || !strings.HasSuffix(client.Host, hasCorrectDomainName) {
-				client.Host = re.ReplaceAllString(client.Host, "${1}"+domainNameOverride) // non-match conveniently returns original string
+				region, _ := configProvider.Region()
+				currentRealmDomain := oci_common.StringToRegion(region).SecondLevelDomain()
+				if currentRealmDomain != "" && strings.HasSuffix(client.Host, currentRealmDomain) {
+					client.Host = strings.TrimSuffix(client.Host, currentRealmDomain) + domainNameOverride
+				}
 			}
 		}
 

@@ -47,7 +47,7 @@ var (
 		"compartment_id": acctest.Representation{RepType: acctest.Required, Create: `${var.compartment_id}`},
 		"display_name":   acctest.Representation{RepType: acctest.Required, Create: `Key Store1`},
 		"type_details":   acctest.RepresentationGroup{RepType: acctest.Required, Group: DatabaseKeyStoreTypeDetailsRepresentation},
-		"defined_tags":   acctest.Representation{RepType: acctest.Optional, Create: `${map("${oci_identity_tag_namespace.tag-namespace1.name}.${oci_identity_tag.tag1.name}", "value")}`, Update: `${map("${oci_identity_tag_namespace.tag-namespace1.name}.${oci_identity_tag.tag1.name}", "updatedValue")}`},
+		"defined_tags":   acctest.Representation{RepType: acctest.Optional, Create: `${tomap({ "${oci_identity_tag_namespace.tag-namespace1.name}.${oci_identity_tag.tag1.name}" = "value" })}`, Update: `${tomap({ "${oci_identity_tag_namespace.tag-namespace1.name}.${oci_identity_tag.tag1.name}" = "updatedValue" })}`},
 		"freeform_tags":  acctest.Representation{RepType: acctest.Optional, Create: map[string]string{"Department": "Finance"}, Update: map[string]string{"Department": "Accounting"}},
 	}
 	DatabaseKeyStoreTypeDetailsRepresentation = map[string]interface{}{
@@ -206,6 +206,9 @@ func TestDatabaseKeyStoreResource_basic(t *testing.T) {
 
 				resource.TestCheckResourceAttr(datasourceName, "key_stores.#", "1"),
 				resource.TestCheckResourceAttr(datasourceName, "key_stores.0.associated_databases.#", "0"),
+				resource.TestCheckResourceAttrSet(datasourceName, "key_stores.0.associated_long_term_backup_count"),
+				resource.TestCheckResourceAttr(datasourceName, "key_stores.0.associated_long_term_backups.#", "0"),
+
 				resource.TestCheckResourceAttr(datasourceName, "key_stores.0.compartment_id", compartmentId),
 				resource.TestCheckResourceAttr(datasourceName, "key_stores.0.display_name", "Key Store1"),
 				resource.TestCheckResourceAttr(datasourceName, "key_stores.0.freeform_tags.%", "1"),
@@ -227,8 +230,9 @@ func TestDatabaseKeyStoreResource_basic(t *testing.T) {
 				compartmentIdVariableStr + DatabaseKeyStoreResourceConfig,
 			Check: acctest.ComposeAggregateTestCheckFuncWrapper(
 				resource.TestCheckResourceAttrSet(singularDatasourceName, "key_store_id"),
-
 				resource.TestCheckResourceAttr(singularDatasourceName, "associated_databases.#", "0"),
+				resource.TestCheckResourceAttr(singularDatasourceName, "associated_long_term_backups.#", "0"),
+				resource.TestCheckResourceAttrSet(singularDatasourceName, "associated_long_term_backup_count"),
 				resource.TestCheckResourceAttr(singularDatasourceName, "compartment_id", compartmentId),
 				resource.TestCheckResourceAttr(singularDatasourceName, "display_name", "Key Store1"),
 				resource.TestCheckResourceAttr(singularDatasourceName, "freeform_tags.%", "1"),
@@ -254,7 +258,7 @@ func TestDatabaseKeyStoreResource_basic(t *testing.T) {
 
 func testAccCheckDatabaseKeyStoreDestroy(s *terraform.State) error {
 	noResourceFound := true
-	client := acctest.TestAccProvider.Meta().(*client.OracleClients).DatabaseClient()
+	client := acctest.GetTestClients(&schema.ResourceData{}).DatabaseClient()
 	for _, rs := range s.RootModule().Resources {
 		if rs.Type == "oci_database_key_store" {
 			noResourceFound = false

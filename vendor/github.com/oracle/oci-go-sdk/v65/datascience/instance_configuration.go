@@ -15,7 +15,7 @@ import (
 	"strings"
 )
 
-// InstanceConfiguration The model deployment instance configuration
+// InstanceConfiguration The model deployment instance configuration.
 type InstanceConfiguration struct {
 
 	// The shape used to launch the model deployment instances.
@@ -41,7 +41,7 @@ func (m InstanceConfiguration) ValidateEnumValue() (bool, error) {
 	errMessage := []string{}
 
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

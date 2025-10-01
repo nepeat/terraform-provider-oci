@@ -16,7 +16,9 @@ import (
 	"strings"
 )
 
-// AddFsuCollectionTargetsDetails Add Targets to a Exadata Fleet Update Collection.
+// AddFsuCollectionTargetsDetails Add Targets to an Exadata Fleet Update Collection.
+// Targets belonging to another Exadata Fleet Update Collection of the same type will be rejected.
+// If automated maintenance is enabled for the Exadata Fleet Update Collection, then ensure that the scheduling policy and window can accommodate the targets being added.
 type AddFsuCollectionTargetsDetails struct {
 
 	// List of Targets to add into the Exadata Fleet Update Collection.
@@ -34,7 +36,7 @@ func (m AddFsuCollectionTargetsDetails) ValidateEnumValue() (bool, error) {
 	errMessage := []string{}
 
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

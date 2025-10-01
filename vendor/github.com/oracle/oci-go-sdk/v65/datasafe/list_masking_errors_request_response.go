@@ -85,7 +85,7 @@ func (request ListMaskingErrorsRequest) ValidateEnumValue() (bool, error) {
 		errMessage = append(errMessage, fmt.Sprintf("unsupported enum value for SortOrder: %s. Supported values are: %s.", request.SortOrder, strings.Join(GetListMaskingErrorsSortOrderEnumStringValues(), ",")))
 	}
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }
@@ -125,18 +125,24 @@ type ListMaskingErrorsStepNameEnum string
 
 // Set of constants representing the allowable values for ListMaskingErrorsStepNameEnum
 const (
+	ListMaskingErrorsStepNameValidate       ListMaskingErrorsStepNameEnum = "VALIDATE"
+	ListMaskingErrorsStepNameGenerateScript ListMaskingErrorsStepNameEnum = "GENERATE_SCRIPT"
 	ListMaskingErrorsStepNameExecuteMasking ListMaskingErrorsStepNameEnum = "EXECUTE_MASKING"
 	ListMaskingErrorsStepNamePreMasking     ListMaskingErrorsStepNameEnum = "PRE_MASKING"
 	ListMaskingErrorsStepNamePostMasking    ListMaskingErrorsStepNameEnum = "POST_MASKING"
 )
 
 var mappingListMaskingErrorsStepNameEnum = map[string]ListMaskingErrorsStepNameEnum{
+	"VALIDATE":        ListMaskingErrorsStepNameValidate,
+	"GENERATE_SCRIPT": ListMaskingErrorsStepNameGenerateScript,
 	"EXECUTE_MASKING": ListMaskingErrorsStepNameExecuteMasking,
 	"PRE_MASKING":     ListMaskingErrorsStepNamePreMasking,
 	"POST_MASKING":    ListMaskingErrorsStepNamePostMasking,
 }
 
 var mappingListMaskingErrorsStepNameEnumLowerCase = map[string]ListMaskingErrorsStepNameEnum{
+	"validate":        ListMaskingErrorsStepNameValidate,
+	"generate_script": ListMaskingErrorsStepNameGenerateScript,
 	"execute_masking": ListMaskingErrorsStepNameExecuteMasking,
 	"pre_masking":     ListMaskingErrorsStepNamePreMasking,
 	"post_masking":    ListMaskingErrorsStepNamePostMasking,
@@ -154,6 +160,8 @@ func GetListMaskingErrorsStepNameEnumValues() []ListMaskingErrorsStepNameEnum {
 // GetListMaskingErrorsStepNameEnumStringValues Enumerates the set of values in String for ListMaskingErrorsStepNameEnum
 func GetListMaskingErrorsStepNameEnumStringValues() []string {
 	return []string{
+		"VALIDATE",
+		"GENERATE_SCRIPT",
 		"EXECUTE_MASKING",
 		"PRE_MASKING",
 		"POST_MASKING",

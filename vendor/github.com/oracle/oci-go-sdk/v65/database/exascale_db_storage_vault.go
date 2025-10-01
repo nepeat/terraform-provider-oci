@@ -73,11 +73,20 @@ type ExascaleDbStorageVault struct {
 	// The size of additional Flash Cache in percentage of High Capacity database storage.
 	AdditionalFlashCacheInPercent *int `mandatory:"false" json:"additionalFlashCacheInPercent"`
 
-	// The OCID (https://docs.oracle.com/iaas/Content/General/Concepts/identifiers.htm) of the cluster placement group of the Exadata Infrastructure.
+	// The OCID (https://docs.oracle.com/iaas/Content/General/Concepts/identifiers.htm) of the cluster placement group of the Exadata Infrastructure or Db System.
 	ClusterPlacementGroupId *string `mandatory:"false" json:"clusterPlacementGroupId"`
 
 	// The OCID (https://docs.oracle.com/iaas/Content/General/Concepts/identifiers.htm) of the subscription with which resource needs to be associated with.
 	SubscriptionId *string `mandatory:"false" json:"subscriptionId"`
+
+	// Indicates if autoscale feature is enabled for the Database Storage Vault. The default value is `FALSE`.
+	IsAutoscaleEnabled *bool `mandatory:"false" json:"isAutoscaleEnabled"`
+
+	// Maximum limit storage size in gigabytes, that is applicable for the Database Storage Vault.
+	AutoscaleLimitInGBs *int `mandatory:"false" json:"autoscaleLimitInGBs"`
+
+	// The shapeAttribute of the Exadata VM cluster(s) associated with the Exadata Database Storage Vault.
+	AttachedShapeAttributes []ExascaleDbStorageVaultAttachedShapeAttributesEnum `mandatory:"false" json:"attachedShapeAttributes,omitempty"`
 }
 
 func (m ExascaleDbStorageVault) String() string {
@@ -93,8 +102,14 @@ func (m ExascaleDbStorageVault) ValidateEnumValue() (bool, error) {
 		errMessage = append(errMessage, fmt.Sprintf("unsupported enum value for LifecycleState: %s. Supported values are: %s.", m.LifecycleState, strings.Join(GetExascaleDbStorageVaultLifecycleStateEnumStringValues(), ",")))
 	}
 
+	for _, val := range m.AttachedShapeAttributes {
+		if _, ok := GetMappingExascaleDbStorageVaultAttachedShapeAttributesEnum(string(val)); !ok && val != "" {
+			errMessage = append(errMessage, fmt.Sprintf("unsupported enum value for AttachedShapeAttributes: %s. Supported values are: %s.", val, strings.Join(GetExascaleDbStorageVaultAttachedShapeAttributesEnumStringValues(), ",")))
+		}
+	}
+
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }
@@ -154,5 +169,47 @@ func GetExascaleDbStorageVaultLifecycleStateEnumStringValues() []string {
 // GetMappingExascaleDbStorageVaultLifecycleStateEnum performs case Insensitive comparison on enum value and return the desired enum
 func GetMappingExascaleDbStorageVaultLifecycleStateEnum(val string) (ExascaleDbStorageVaultLifecycleStateEnum, bool) {
 	enum, ok := mappingExascaleDbStorageVaultLifecycleStateEnumLowerCase[strings.ToLower(val)]
+	return enum, ok
+}
+
+// ExascaleDbStorageVaultAttachedShapeAttributesEnum Enum with underlying type: string
+type ExascaleDbStorageVaultAttachedShapeAttributesEnum string
+
+// Set of constants representing the allowable values for ExascaleDbStorageVaultAttachedShapeAttributesEnum
+const (
+	ExascaleDbStorageVaultAttachedShapeAttributesSmartStorage ExascaleDbStorageVaultAttachedShapeAttributesEnum = "SMART_STORAGE"
+	ExascaleDbStorageVaultAttachedShapeAttributesBlockStorage ExascaleDbStorageVaultAttachedShapeAttributesEnum = "BLOCK_STORAGE"
+)
+
+var mappingExascaleDbStorageVaultAttachedShapeAttributesEnum = map[string]ExascaleDbStorageVaultAttachedShapeAttributesEnum{
+	"SMART_STORAGE": ExascaleDbStorageVaultAttachedShapeAttributesSmartStorage,
+	"BLOCK_STORAGE": ExascaleDbStorageVaultAttachedShapeAttributesBlockStorage,
+}
+
+var mappingExascaleDbStorageVaultAttachedShapeAttributesEnumLowerCase = map[string]ExascaleDbStorageVaultAttachedShapeAttributesEnum{
+	"smart_storage": ExascaleDbStorageVaultAttachedShapeAttributesSmartStorage,
+	"block_storage": ExascaleDbStorageVaultAttachedShapeAttributesBlockStorage,
+}
+
+// GetExascaleDbStorageVaultAttachedShapeAttributesEnumValues Enumerates the set of values for ExascaleDbStorageVaultAttachedShapeAttributesEnum
+func GetExascaleDbStorageVaultAttachedShapeAttributesEnumValues() []ExascaleDbStorageVaultAttachedShapeAttributesEnum {
+	values := make([]ExascaleDbStorageVaultAttachedShapeAttributesEnum, 0)
+	for _, v := range mappingExascaleDbStorageVaultAttachedShapeAttributesEnum {
+		values = append(values, v)
+	}
+	return values
+}
+
+// GetExascaleDbStorageVaultAttachedShapeAttributesEnumStringValues Enumerates the set of values in String for ExascaleDbStorageVaultAttachedShapeAttributesEnum
+func GetExascaleDbStorageVaultAttachedShapeAttributesEnumStringValues() []string {
+	return []string{
+		"SMART_STORAGE",
+		"BLOCK_STORAGE",
+	}
+}
+
+// GetMappingExascaleDbStorageVaultAttachedShapeAttributesEnum performs case Insensitive comparison on enum value and return the desired enum
+func GetMappingExascaleDbStorageVaultAttachedShapeAttributesEnum(val string) (ExascaleDbStorageVaultAttachedShapeAttributesEnum, bool) {
+	enum, ok := mappingExascaleDbStorageVaultAttachedShapeAttributesEnumLowerCase[strings.ToLower(val)]
 	return enum, ok
 }

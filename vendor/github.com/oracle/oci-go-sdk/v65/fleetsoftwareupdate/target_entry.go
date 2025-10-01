@@ -16,7 +16,7 @@ import (
 	"strings"
 )
 
-// TargetEntry Details to specify a target to add or remove from a Exadata Fleet Update Collection.
+// TargetEntry Details to specify a target to add or remove from an Exadata Fleet Update Collection.
 type TargetEntry struct {
 
 	// Resource entity type
@@ -40,7 +40,7 @@ func (m TargetEntry) ValidateEnumValue() (bool, error) {
 	}
 
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

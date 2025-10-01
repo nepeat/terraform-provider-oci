@@ -33,7 +33,7 @@ type VideoJob struct {
 
 	OutputLocation *OutputLocation `mandatory:"true" json:"outputLocation"`
 
-	// The current state of the batch document job.
+	// The current state of the video job.
 	LifecycleState VideoJobLifecycleStateEnum `mandatory:"true" json:"lifecycleState"`
 
 	// Video job display name.
@@ -83,7 +83,7 @@ func (m VideoJob) ValidateEnumValue() (bool, error) {
 		errMessage = append(errMessage, fmt.Sprintf("unsupported enum value for LifecycleDetails: %s. Supported values are: %s.", m.LifecycleDetails, strings.Join(GetVideoJobLifecycleDetailsEnumStringValues(), ",")))
 	}
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

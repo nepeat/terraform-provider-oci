@@ -15,7 +15,7 @@ import (
 	"strings"
 )
 
-// ChangeSecurityPolicyCompartmentDetails Details for which compartment to move the resource to.
+// ChangeSecurityPolicyCompartmentDetails Details of the compartment the security policy will be moved to.
 type ChangeSecurityPolicyCompartmentDetails struct {
 
 	// The OCID of the compartment where you want to move the security policy.
@@ -33,7 +33,7 @@ func (m ChangeSecurityPolicyCompartmentDetails) ValidateEnumValue() (bool, error
 	errMessage := []string{}
 
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

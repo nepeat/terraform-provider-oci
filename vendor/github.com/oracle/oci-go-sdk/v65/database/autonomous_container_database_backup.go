@@ -97,7 +97,7 @@ func (m AutonomousContainerDatabaseBackup) ValidateEnumValue() (bool, error) {
 		errMessage = append(errMessage, fmt.Sprintf("unsupported enum value for InfrastructureType: %s. Supported values are: %s.", m.InfrastructureType, strings.Join(GetAutonomousContainerDatabaseBackupInfrastructureTypeEnumStringValues(), ",")))
 	}
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }
@@ -109,16 +109,19 @@ type AutonomousContainerDatabaseBackupTypeEnum string
 const (
 	AutonomousContainerDatabaseBackupTypeIncremental AutonomousContainerDatabaseBackupTypeEnum = "INCREMENTAL"
 	AutonomousContainerDatabaseBackupTypeFull        AutonomousContainerDatabaseBackupTypeEnum = "FULL"
+	AutonomousContainerDatabaseBackupTypeVirtualFull AutonomousContainerDatabaseBackupTypeEnum = "VIRTUAL_FULL"
 )
 
 var mappingAutonomousContainerDatabaseBackupTypeEnum = map[string]AutonomousContainerDatabaseBackupTypeEnum{
-	"INCREMENTAL": AutonomousContainerDatabaseBackupTypeIncremental,
-	"FULL":        AutonomousContainerDatabaseBackupTypeFull,
+	"INCREMENTAL":  AutonomousContainerDatabaseBackupTypeIncremental,
+	"FULL":         AutonomousContainerDatabaseBackupTypeFull,
+	"VIRTUAL_FULL": AutonomousContainerDatabaseBackupTypeVirtualFull,
 }
 
 var mappingAutonomousContainerDatabaseBackupTypeEnumLowerCase = map[string]AutonomousContainerDatabaseBackupTypeEnum{
-	"incremental": AutonomousContainerDatabaseBackupTypeIncremental,
-	"full":        AutonomousContainerDatabaseBackupTypeFull,
+	"incremental":  AutonomousContainerDatabaseBackupTypeIncremental,
+	"full":         AutonomousContainerDatabaseBackupTypeFull,
+	"virtual_full": AutonomousContainerDatabaseBackupTypeVirtualFull,
 }
 
 // GetAutonomousContainerDatabaseBackupTypeEnumValues Enumerates the set of values for AutonomousContainerDatabaseBackupTypeEnum
@@ -135,6 +138,7 @@ func GetAutonomousContainerDatabaseBackupTypeEnumStringValues() []string {
 	return []string{
 		"INCREMENTAL",
 		"FULL",
+		"VIRTUAL_FULL",
 	}
 }
 

@@ -26,6 +26,9 @@ type ObjectLocation struct {
 
 	// The Object Storage object name.
 	ObjectName *string `mandatory:"true" json:"objectName"`
+
+	// The page ranges to be analysed.
+	PageRange []string `mandatory:"false" json:"pageRange"`
 }
 
 func (m ObjectLocation) String() string {
@@ -39,7 +42,7 @@ func (m ObjectLocation) ValidateEnumValue() (bool, error) {
 	errMessage := []string{}
 
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

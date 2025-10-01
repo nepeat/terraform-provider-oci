@@ -55,6 +55,8 @@ type Job struct {
 	// Collection of JobStorageMountConfigurationDetails.
 	JobStorageMountConfigurationDetailsList []StorageMountConfigurationDetails `mandatory:"false" json:"jobStorageMountConfigurationDetailsList"`
 
+	JobNodeConfigurationDetails JobNodeConfigurationDetails `mandatory:"false" json:"jobNodeConfigurationDetails"`
+
 	// The state of the job.
 	LifecycleDetails *string `mandatory:"false" json:"lifecycleDetails"`
 
@@ -81,7 +83,7 @@ func (m Job) ValidateEnumValue() (bool, error) {
 	}
 
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }
@@ -94,6 +96,7 @@ func (m *Job) UnmarshalJSON(data []byte) (e error) {
 		JobEnvironmentConfigurationDetails      jobenvironmentconfigurationdetails    `json:"jobEnvironmentConfigurationDetails"`
 		JobLogConfigurationDetails              *JobLogConfigurationDetails           `json:"jobLogConfigurationDetails"`
 		JobStorageMountConfigurationDetailsList []storagemountconfigurationdetails    `json:"jobStorageMountConfigurationDetailsList"`
+		JobNodeConfigurationDetails             jobnodeconfigurationdetails           `json:"jobNodeConfigurationDetails"`
 		LifecycleDetails                        *string                               `json:"lifecycleDetails"`
 		FreeformTags                            map[string]string                     `json:"freeformTags"`
 		DefinedTags                             map[string]map[string]interface{}     `json:"definedTags"`
@@ -140,6 +143,16 @@ func (m *Job) UnmarshalJSON(data []byte) (e error) {
 			m.JobStorageMountConfigurationDetailsList[i] = nil
 		}
 	}
+	nn, e = model.JobNodeConfigurationDetails.UnmarshalPolymorphicJSON(model.JobNodeConfigurationDetails.JsonData)
+	if e != nil {
+		return
+	}
+	if nn != nil {
+		m.JobNodeConfigurationDetails = nn.(JobNodeConfigurationDetails)
+	} else {
+		m.JobNodeConfigurationDetails = nil
+	}
+
 	m.LifecycleDetails = model.LifecycleDetails
 
 	m.FreeformTags = model.FreeformTags

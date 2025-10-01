@@ -6,12 +6,12 @@ package provider
 import (
 	"github.com/oracle/oci-go-sdk/v65/common"
 	tf_adm "github.com/oracle/terraform-provider-oci/internal/service/adm"
-	tf_ai_anomaly_detection "github.com/oracle/terraform-provider-oci/internal/service/ai_anomaly_detection"
 	tf_ai_document "github.com/oracle/terraform-provider-oci/internal/service/ai_document"
 	tf_ai_language "github.com/oracle/terraform-provider-oci/internal/service/ai_language"
 	tf_ai_vision "github.com/oracle/terraform-provider-oci/internal/service/ai_vision"
 	tf_analytics "github.com/oracle/terraform-provider-oci/internal/service/analytics"
 	tf_announcements_service "github.com/oracle/terraform-provider-oci/internal/service/announcements_service"
+	tf_api_platform "github.com/oracle/terraform-provider-oci/internal/service/api_platform"
 	tf_apiaccesscontrol "github.com/oracle/terraform-provider-oci/internal/service/apiaccesscontrol"
 	tf_apigateway "github.com/oracle/terraform-provider-oci/internal/service/apigateway"
 	tf_apm "github.com/oracle/terraform-provider-oci/internal/service/apm"
@@ -74,6 +74,7 @@ import (
 	tf_integration "github.com/oracle/terraform-provider-oci/internal/service/integration"
 	tf_jms "github.com/oracle/terraform-provider-oci/internal/service/jms"
 	tf_jms_java_downloads "github.com/oracle/terraform-provider-oci/internal/service/jms_java_downloads"
+	tf_jms_utils "github.com/oracle/terraform-provider-oci/internal/service/jms_utils"
 	tf_kms "github.com/oracle/terraform-provider-oci/internal/service/kms"
 	tf_license_manager "github.com/oracle/terraform-provider-oci/internal/service/license_manager"
 	tf_limits "github.com/oracle/terraform-provider-oci/internal/service/limits"
@@ -81,12 +82,14 @@ import (
 	tf_log_analytics "github.com/oracle/terraform-provider-oci/internal/service/log_analytics"
 	tf_logging "github.com/oracle/terraform-provider-oci/internal/service/logging"
 	tf_lustre_file_storage "github.com/oracle/terraform-provider-oci/internal/service/lustre_file_storage"
+	tf_managed_kafka "github.com/oracle/terraform-provider-oci/internal/service/managed_kafka"
 	tf_management_agent "github.com/oracle/terraform-provider-oci/internal/service/management_agent"
 	tf_management_dashboard "github.com/oracle/terraform-provider-oci/internal/service/management_dashboard"
 	tf_marketplace "github.com/oracle/terraform-provider-oci/internal/service/marketplace"
 	tf_media_services "github.com/oracle/terraform-provider-oci/internal/service/media_services"
 	tf_metering_computation "github.com/oracle/terraform-provider-oci/internal/service/metering_computation"
 	tf_monitoring "github.com/oracle/terraform-provider-oci/internal/service/monitoring"
+	tf_multicloud "github.com/oracle/terraform-provider-oci/internal/service/multicloud"
 	tf_mysql "github.com/oracle/terraform-provider-oci/internal/service/mysql"
 	tf_network_firewall "github.com/oracle/terraform-provider-oci/internal/service/network_firewall"
 	tf_network_load_balancer "github.com/oracle/terraform-provider-oci/internal/service/network_load_balancer"
@@ -112,6 +115,7 @@ import (
 	tf_queue "github.com/oracle/terraform-provider-oci/internal/service/queue"
 	tf_recovery "github.com/oracle/terraform-provider-oci/internal/service/recovery"
 	tf_redis "github.com/oracle/terraform-provider-oci/internal/service/redis"
+	tf_resource_analytics "github.com/oracle/terraform-provider-oci/internal/service/resource_analytics"
 	tf_resource_scheduler "github.com/oracle/terraform-provider-oci/internal/service/resource_scheduler"
 	tf_resourcemanager "github.com/oracle/terraform-provider-oci/internal/service/resourcemanager"
 	tf_sch "github.com/oracle/terraform-provider-oci/internal/service/sch"
@@ -139,9 +143,6 @@ func init() {
 	if common.CheckForEnabledServices("adm") {
 		tf_adm.RegisterDatasource()
 	}
-	if common.CheckForEnabledServices("aianomalydetection") {
-		tf_ai_anomaly_detection.RegisterDatasource()
-	}
 	if common.CheckForEnabledServices("aidocument") {
 		tf_ai_document.RegisterDatasource()
 	}
@@ -156,6 +157,9 @@ func init() {
 	}
 	if common.CheckForEnabledServices("announcementsservice") {
 		tf_announcements_service.RegisterDatasource()
+	}
+	if common.CheckForEnabledServices("apiplatform") {
+		tf_api_platform.RegisterDatasource()
 	}
 	if common.CheckForEnabledServices("apiaccesscontrol") {
 		tf_apiaccesscontrol.RegisterDatasource()
@@ -346,6 +350,9 @@ func init() {
 	if common.CheckForEnabledServices("jmsjavadownloads") {
 		tf_jms_java_downloads.RegisterDatasource()
 	}
+	if common.CheckForEnabledServices("jmsutils") {
+		tf_jms_utils.RegisterDatasource()
+	}
 	if common.CheckForEnabledServices("kms") {
 		tf_kms.RegisterDatasource()
 	}
@@ -367,6 +374,9 @@ func init() {
 	if common.CheckForEnabledServices("lustrefilestorage") {
 		tf_lustre_file_storage.RegisterDatasource()
 	}
+	if common.CheckForEnabledServices("managedkafka") {
+		tf_managed_kafka.RegisterDatasource()
+	}
 	if common.CheckForEnabledServices("managementagent") {
 		tf_management_agent.RegisterDatasource()
 	}
@@ -384,6 +394,9 @@ func init() {
 	}
 	if common.CheckForEnabledServices("monitoring") {
 		tf_monitoring.RegisterDatasource()
+	}
+	if common.CheckForEnabledServices("multicloud") {
+		tf_multicloud.RegisterDatasource()
 	}
 	if common.CheckForEnabledServices("mysql") {
 		tf_mysql.RegisterDatasource()
@@ -459,6 +472,9 @@ func init() {
 	}
 	if common.CheckForEnabledServices("redis") {
 		tf_redis.RegisterDatasource()
+	}
+	if common.CheckForEnabledServices("resourceanalytics") {
+		tf_resource_analytics.RegisterDatasource()
 	}
 	if common.CheckForEnabledServices("resourcescheduler") {
 		tf_resource_scheduler.RegisterDatasource()

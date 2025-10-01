@@ -30,6 +30,9 @@ type InventoryResourceSummary struct {
 	// Resource types of the resource.
 	ResourceType InventoryResourceSummaryResourceTypeEnum `mandatory:"false" json:"resourceType,omitempty"`
 
+	// Mac Address of IP Resource
+	MacAddress *string `mandatory:"false" json:"macAddress"`
+
 	// Lists the 'IpAddressCollection' object.
 	IpAddressCollection []InventoryIpAddressSummary `mandatory:"false" json:"ipAddressCollection"`
 
@@ -54,7 +57,7 @@ func (m InventoryResourceSummary) ValidateEnumValue() (bool, error) {
 		errMessage = append(errMessage, fmt.Sprintf("unsupported enum value for ResourceType: %s. Supported values are: %s.", m.ResourceType, strings.Join(GetInventoryResourceSummaryResourceTypeEnumStringValues(), ",")))
 	}
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

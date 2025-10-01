@@ -280,6 +280,7 @@ func DatabaseAutonomousDatabaseResource() *schema.Resource {
 							ValidateFunc: validation.StringInSlice([]string{
 								"AWS",
 								"AZURE",
+								"GCP",
 								"OCI",
 								"OKV",
 								"ORACLE_MANAGED",
@@ -315,7 +316,22 @@ func DatabaseAutonomousDatabaseResource() *schema.Resource {
 							Optional: true,
 							Computed: true,
 						},
+						"key_ring": {
+							Type:     schema.TypeString,
+							Optional: true,
+							Computed: true,
+						},
 						"kms_key_id": {
+							Type:     schema.TypeString,
+							Optional: true,
+							Computed: true,
+						},
+						"kms_rest_endpoint": {
+							Type:     schema.TypeString,
+							Optional: true,
+							Computed: true,
+						},
+						"location": {
 							Type:     schema.TypeString,
 							Optional: true,
 							Computed: true,
@@ -326,6 +342,11 @@ func DatabaseAutonomousDatabaseResource() *schema.Resource {
 							Computed: true,
 						},
 						"okv_uri": {
+							Type:     schema.TypeString,
+							Optional: true,
+							Computed: true,
+						},
+						"project": {
 							Type:     schema.TypeString,
 							Optional: true,
 							Computed: true,
@@ -377,6 +398,16 @@ func DatabaseAutonomousDatabaseResource() *schema.Resource {
 				Computed: true,
 			},
 			"is_backup_retention_locked": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Computed: true,
+			},
+			"is_disable_db_version_upgrade_schedule": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Computed: true,
+			},
+			"is_schedule_db_version_upgrade_to_earliest": {
 				Type:     schema.TypeBool,
 				Optional: true,
 				Computed: true,
@@ -501,12 +532,15 @@ func DatabaseAutonomousDatabaseResource() *schema.Resource {
 				Optional: true,
 				Computed: true,
 				MaxItems: 1,
-				MinItems: 1,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						// Required
 
 						// Optional
+						"available_compute_capacity": {
+							Type:     schema.TypeInt,
+							Computed: true,
+						},
 						"is_disabled": {
 							Type:     schema.TypeBool,
 							Optional: true,
@@ -515,6 +549,10 @@ func DatabaseAutonomousDatabaseResource() *schema.Resource {
 						"pool_size": {
 							Type:     schema.TypeInt,
 							Optional: true,
+							Computed: true,
+						},
+						"total_compute_capacity": {
+							Type:     schema.TypeInt,
 							Computed: true,
 						},
 
@@ -695,6 +733,11 @@ func DatabaseAutonomousDatabaseResource() *schema.Resource {
 			"actual_used_data_storage_size_in_tbs": {
 				Type:     schema.TypeFloat,
 				Computed: true,
+			},
+			"additional_attributes": {
+				Type:     schema.TypeMap,
+				Computed: true,
+				Elem:     schema.TypeString,
 			},
 			"allocated_storage_size_in_tbs": {
 				Type:     schema.TypeFloat,
@@ -955,7 +998,19 @@ func DatabaseAutonomousDatabaseResource() *schema.Resource {
 										Type:     schema.TypeString,
 										Computed: true,
 									},
+									"key_ring": {
+										Type:     schema.TypeString,
+										Computed: true,
+									},
 									"kms_key_id": {
+										Type:     schema.TypeString,
+										Computed: true,
+									},
+									"kms_rest_endpoint": {
+										Type:     schema.TypeString,
+										Computed: true,
+									},
+									"location": {
 										Type:     schema.TypeString,
 										Computed: true,
 									},
@@ -964,6 +1019,10 @@ func DatabaseAutonomousDatabaseResource() *schema.Resource {
 										Computed: true,
 									},
 									"okv_uri": {
+										Type:     schema.TypeString,
+										Computed: true,
+									},
+									"project": {
 										Type:     schema.TypeString,
 										Computed: true,
 									},
@@ -1157,6 +1216,10 @@ func DatabaseAutonomousDatabaseResource() *schema.Resource {
 			},
 			"maintenance_target_component": {
 				Type:     schema.TypeString,
+				Computed: true,
+			},
+			"memory_per_compute_unit_in_gbs": {
+				Type:     schema.TypeFloat,
 				Computed: true,
 			},
 			"memory_per_oracle_compute_unit_in_gbs": {
@@ -1387,6 +1450,14 @@ func DatabaseAutonomousDatabaseResource() *schema.Resource {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
+			"time_earliest_available_db_version_upgrade": {
+				Type:     schema.TypeString,
+				Computed: true,
+			},
+			"time_latest_available_db_version_upgrade": {
+				Type:     schema.TypeString,
+				Computed: true,
+			},
 			"time_local_data_guard_enabled": {
 				Type:     schema.TypeString,
 				Computed: true,
@@ -1426,6 +1497,12 @@ func DatabaseAutonomousDatabaseResource() *schema.Resource {
 			"time_reclamation_of_free_autonomous_database": {
 				Type:     schema.TypeString,
 				Computed: true,
+			},
+			"time_scheduled_db_version_upgrade": {
+				Type:             schema.TypeString,
+				Computed:         true,
+				Optional:         true,
+				DiffSuppressFunc: tfresource.TimeDiffSuppressFunction,
 			},
 			"time_undeleted": {
 				Type:     schema.TypeString,
@@ -1953,6 +2030,67 @@ func (s *DatabaseAutonomousDatabaseResourceCrud) Update() error {
 		request.DatabaseEdition = oci_database.AutonomousDatabaseSummaryDatabaseEditionEnum(databaseEdition.(string))
 	}
 
+	if timeScheduledDbVersionUpgrade, ok := s.D.GetOkExists("time_scheduled_db_version_upgrade"); ok && s.D.HasChange("time_scheduled_db_version_upgrade") {
+		if dbVersion, ok := s.D.GetOkExists("db_version"); ok && s.D.HasChange("db_version") {
+			scheduleUgReq := oci_database.UpdateAutonomousDatabaseRequest{}
+			tmpSchTime, err := time.Parse(time.RFC3339, timeScheduledDbVersionUpgrade.(string))
+			if err != nil {
+				return err
+			}
+			tmpVersion := dbVersion.(string)
+			tmpId := s.D.Id()
+			scheduleUgReq.TimeScheduledDbVersionUpgrade = &oci_common.SDKTime{Time: tmpSchTime}
+			scheduleUgReq.DbVersion = &tmpVersion
+			scheduleUgReq.AutonomousDatabaseId = &tmpId
+			scheduleUgReq.RequestMetadata.RetryPolicy = tfresource.GetRetryPolicy(s.DisableNotFoundRetries, "database")
+
+			response, err := s.Client.UpdateAutonomousDatabase(context.Background(), scheduleUgReq)
+			if err != nil {
+				return err
+			}
+
+			workId := response.OpcWorkRequestId
+			if workId != nil {
+				_, err = tfresource.WaitForWorkRequestWithErrorHandling(s.WorkRequestClient, workId, "database", oci_work_requests.WorkRequestResourceActionTypeUpdated, s.D.Timeout(schema.TimeoutUpdate), s.DisableNotFoundRetries)
+				if err != nil {
+					return err
+				}
+			}
+
+			s.Res = &response.AutonomousDatabase
+			return nil
+		}
+	}
+
+	if isScheduleDbVersionUpgradeToEarliest, ok := s.D.GetOkExists("is_schedule_db_version_upgrade_to_earliest"); ok && s.D.HasChange("is_schedule_db_version_upgrade_to_earliest") {
+		if dbVersion, ok := s.D.GetOkExists("db_version"); ok && s.D.HasChange("db_version") {
+			scheduleUgEarliestReq := oci_database.UpdateAutonomousDatabaseRequest{}
+			tmpScheToEarliest := isScheduleDbVersionUpgradeToEarliest.(bool)
+			tmpVersion := dbVersion.(string)
+			tmpId := s.D.Id()
+			scheduleUgEarliestReq.IsScheduleDbVersionUpgradeToEarliest = &tmpScheToEarliest
+			scheduleUgEarliestReq.DbVersion = &tmpVersion
+			scheduleUgEarliestReq.AutonomousDatabaseId = &tmpId
+			scheduleUgEarliestReq.RequestMetadata.RetryPolicy = tfresource.GetRetryPolicy(s.DisableNotFoundRetries, "database")
+
+			response, err := s.Client.UpdateAutonomousDatabase(context.Background(), scheduleUgEarliestReq)
+			if err != nil {
+				return err
+			}
+
+			workId := response.OpcWorkRequestId
+			if workId != nil {
+				_, err = tfresource.WaitForWorkRequestWithErrorHandling(s.WorkRequestClient, workId, "database", oci_work_requests.WorkRequestResourceActionTypeUpdated, s.D.Timeout(schema.TimeoutUpdate), s.DisableNotFoundRetries)
+				if err != nil {
+					return err
+				}
+			}
+
+			s.Res = &response.AutonomousDatabase
+			return nil
+		}
+	}
+
 	if dbVersion, ok := s.D.GetOkExists("db_version"); ok && s.D.HasChange("db_version") {
 		err := s.updateDbVersion(dbVersion.(string))
 		if err != nil {
@@ -1972,7 +2110,7 @@ func (s *DatabaseAutonomousDatabaseResourceCrud) Update() error {
 		request.DefinedTags = convertedDefinedTags
 	}
 
-	if displayName, ok := s.D.GetOkExists("display_name"); ok && s.D.HasChange("display_name") {
+	if displayName, ok := s.D.GetOkExists("display_name"); ok {
 		tmp := displayName.(string)
 		request.DisplayName = &tmp
 	}
@@ -2030,6 +2168,11 @@ func (s *DatabaseAutonomousDatabaseResourceCrud) Update() error {
 	if isDevTier, ok := s.D.GetOkExists("is_dev_tier"); ok && s.D.HasChange("is_dev_tier") {
 		tmp := isDevTier.(bool)
 		request.IsDevTier = &tmp
+	}
+
+	if isDisableDbVersionUpgradeSchedule, ok := s.D.GetOkExists("is_disable_db_version_upgrade_schedule"); ok && s.D.HasChange("is_disable_db_version_upgrade_schedule") {
+		tmp := isDisableDbVersionUpgradeSchedule.(bool)
+		request.IsDisableDbVersionUpgradeSchedule = &tmp
 	}
 
 	if isDisconnectPeer, ok := s.D.GetOkExists("is_disconnect_peer"); ok && s.D.HasChange("is_disconnect_peer") {
@@ -2191,7 +2334,7 @@ func (s *DatabaseAutonomousDatabaseResourceCrud) Update() error {
 		}
 	}
 
-	if secretId, ok := s.D.GetOkExists("secret_id"); ok && s.D.HasChange("secret_version_number") {
+	if secretId, ok := s.D.GetOkExists("secret_id"); ok && s.D.HasChange("secret_id") {
 		tmp := secretId.(string)
 		request.SecretId = &tmp
 		if _, ok := s.D.GetOkExists("freeform_tags"); ok && !s.D.HasChange("freeform_tags") {
@@ -2304,6 +2447,8 @@ func (s *DatabaseAutonomousDatabaseResourceCrud) SetData() error {
 		s.D.Set("actual_used_data_storage_size_in_tbs", *s.Res.ActualUsedDataStorageSizeInTBs)
 	}
 
+	s.D.Set("additional_attributes", s.Res.AdditionalAttributes)
+
 	if s.Res.AllocatedStorageSizeInTBs != nil {
 		s.D.Set("allocated_storage_size_in_tbs", *s.Res.AllocatedStorageSizeInTBs)
 	}
@@ -2353,6 +2498,8 @@ func (s *DatabaseAutonomousDatabaseResourceCrud) SetData() error {
 	}
 
 	s.D.Set("clone_table_space_list", s.Res.CloneTableSpaceList)
+
+	s.D.Set("clone_type", s.Res.CloneType)
 
 	if s.Res.ClusterPlacementGroupId != nil {
 		s.D.Set("cluster_placement_group_id", *s.Res.ClusterPlacementGroupId)
@@ -2589,6 +2736,10 @@ func (s *DatabaseAutonomousDatabaseResourceCrud) SetData() error {
 	//	s.D.Set("max_cpu_core_count", *s.Res.MaxCpuCoreCount)
 	//}
 
+	if s.Res.MemoryPerComputeUnitInGBs != nil {
+		s.D.Set("memory_per_compute_unit_in_gbs", *s.Res.MemoryPerComputeUnitInGBs)
+	}
+
 	if s.Res.MemoryPerOracleComputeUnitInGBs != nil {
 		s.D.Set("memory_per_oracle_compute_unit_in_gbs", *s.Res.MemoryPerOracleComputeUnitInGBs)
 	}
@@ -2729,6 +2880,14 @@ func (s *DatabaseAutonomousDatabaseResourceCrud) SetData() error {
 		s.D.Set("time_disaster_recovery_role_changed", s.Res.TimeDisasterRecoveryRoleChanged.String())
 	}
 
+	if s.Res.TimeEarliestAvailableDbVersionUpgrade != nil {
+		s.D.Set("time_earliest_available_db_version_upgrade", s.Res.TimeEarliestAvailableDbVersionUpgrade.String())
+	}
+
+	if s.Res.TimeLatestAvailableDbVersionUpgrade != nil {
+		s.D.Set("time_latest_available_db_version_upgrade", s.Res.TimeLatestAvailableDbVersionUpgrade.String())
+	}
+
 	if s.Res.TimeLocalDataGuardEnabled != nil {
 		s.D.Set("time_local_data_guard_enabled", s.Res.TimeLocalDataGuardEnabled.String())
 	}
@@ -2773,6 +2932,10 @@ func (s *DatabaseAutonomousDatabaseResourceCrud) SetData() error {
 		s.D.Set("time_reclamation_of_free_autonomous_database", s.Res.TimeReclamationOfFreeAutonomousDatabase.String())
 	}
 
+	if s.Res.TimeScheduledDbVersionUpgrade != nil {
+		s.D.Set("time_scheduled_db_version_upgrade", s.Res.TimeScheduledDbVersionUpgrade.Format(time.RFC3339))
+	}
+
 	if s.Res.TimeUndeleted != nil {
 		s.D.Set("time_undeleted", s.Res.TimeUndeleted.String())
 	}
@@ -2803,6 +2966,7 @@ func (s *DatabaseAutonomousDatabaseResourceCrud) SetData() error {
 	}
 	s.D.Set("whitelisted_ips", schema.NewSet(tfresource.LiteralTypeHashCodeForSets, whitelistedIps))
 
+	s.D.Set("clone_type", s.Res.CloneType)
 	return nil
 }
 
@@ -2941,6 +3105,29 @@ func (s *DatabaseAutonomousDatabaseResourceCrud) mapToAutonomousDatabaseEncrypti
 			details.VaultUri = &tmp
 		}
 		baseObject = details
+	case strings.ToLower("GCP"):
+		details := oci_database.GcpKeyDetails{}
+		if keyName, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "key_name")); ok {
+			tmp := keyName.(string)
+			details.KeyName = &tmp
+		}
+		if keyRing, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "key_ring")); ok {
+			tmp := keyRing.(string)
+			details.KeyRing = &tmp
+		}
+		if kmsRestEndpoint, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "kms_rest_endpoint")); ok {
+			tmp := kmsRestEndpoint.(string)
+			details.KmsRestEndpoint = &tmp
+		}
+		if location, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "location")); ok {
+			tmp := location.(string)
+			details.Location = &tmp
+		}
+		if project, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "project")); ok {
+			tmp := project.(string)
+			details.Project = &tmp
+		}
+		baseObject = details
 	case strings.ToLower("OCI"):
 		details := oci_database.OciKeyDetails{}
 		if kmsKeyId, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "kms_key_id")); ok {
@@ -3014,6 +3201,28 @@ func AutonomousDatabaseEncryptionKeyDetailsToMap(obj *oci_database.AutonomousDat
 
 		if v.VaultUri != nil {
 			result["vault_uri"] = string(*v.VaultUri)
+		}
+	case oci_database.GcpKeyDetails:
+		result["autonomous_database_provider"] = "GCP"
+
+		if v.KeyName != nil {
+			result["key_name"] = string(*v.KeyName)
+		}
+
+		if v.KeyRing != nil {
+			result["key_ring"] = string(*v.KeyRing)
+		}
+
+		if v.KmsRestEndpoint != nil {
+			result["kms_rest_endpoint"] = string(*v.KmsRestEndpoint)
+		}
+
+		if v.Location != nil {
+			result["location"] = string(*v.Location)
+		}
+
+		if v.Project != nil {
+			result["project"] = string(*v.Project)
 		}
 	case oci_database.OciKeyDetails:
 		result["autonomous_database_provider"] = "OCI"
@@ -3145,16 +3354,6 @@ func (s *DatabaseAutonomousDatabaseResourceCrud) mapToCustomerContact(fieldKeyFo
 	}
 
 	return result, nil
-}
-
-func CustomerContactToMap(obj oci_database.CustomerContact) map[string]interface{} {
-	result := map[string]interface{}{}
-
-	if obj.Email != nil {
-		result["email"] = string(*obj.Email)
-	}
-
-	return result
 }
 
 func DatabaseConnectionStringProfileToMap(obj oci_database.DatabaseConnectionStringProfile) map[string]interface{} {
@@ -3322,12 +3521,20 @@ func (s *DatabaseAutonomousDatabaseResourceCrud) mapToResourcePoolSummary(fieldK
 func ResourcePoolSummaryToMap(obj *oci_database.ResourcePoolSummary) map[string]interface{} {
 	result := map[string]interface{}{}
 
+	if obj.AvailableComputeCapacity != nil {
+		result["available_compute_capacity"] = int(*obj.AvailableComputeCapacity)
+	}
+
 	if obj.IsDisabled != nil {
 		result["is_disabled"] = bool(*obj.IsDisabled)
 	}
 
 	if obj.PoolSize != nil {
 		result["pool_size"] = int(*obj.PoolSize)
+	}
+
+	if obj.TotalComputeCapacity != nil {
+		result["total_compute_capacity"] = int(*obj.TotalComputeCapacity)
 	}
 
 	return result
@@ -4017,6 +4224,9 @@ func (s *DatabaseAutonomousDatabaseResourceCrud) populateTopLevelPolymorphicCrea
 		request.CreateAutonomousDatabaseDetails = details
 	case strings.ToLower("CLONE_TO_REFRESHABLE"):
 		details := oci_database.CreateRefreshableAutonomousDatabaseCloneDetails{}
+		if cloneType, ok := s.D.GetOkExists("clone_type"); ok {
+			details.CloneType = oci_database.CreateRefreshableAutonomousDatabaseCloneDetailsCloneTypeEnum(cloneType.(string))
+		}
 		if refreshableMode, ok := s.D.GetOkExists("refreshable_mode"); ok {
 			details.RefreshableMode = oci_database.CreateRefreshableAutonomousDatabaseCloneDetailsRefreshableModeEnum(refreshableMode.(string))
 		}
@@ -6211,9 +6421,8 @@ func (s *DatabaseAutonomousDatabaseResourceCrud) validateSwitchoverDatabase() er
 		newId := strings.ToLower(strings.TrimSpace(newIdRaw.(string)))
 
 		if newId != "" {
-			_, dgRegionTypeExists := s.D.GetOkExists("dataguard_region_type")
 			_, dgRoleExists := s.D.GetOkExists("role")
-			if !dgRegionTypeExists || !dgRoleExists {
+			if !dgRoleExists {
 				return fmt.Errorf("Autonomous Data Guard not found in enabled state")
 			}
 

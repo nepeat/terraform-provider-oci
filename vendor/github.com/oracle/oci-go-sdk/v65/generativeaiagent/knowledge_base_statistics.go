@@ -24,6 +24,9 @@ type KnowledgeBaseStatistics struct {
 
 	// Knowledge Base size in bytes.
 	SizeInBytes *int64 `mandatory:"false" json:"sizeInBytes"`
+
+	// Total number of ingested files in Knowledge Base.
+	TotalIngestedFiles *int64 `mandatory:"false" json:"totalIngestedFiles"`
 }
 
 func (m KnowledgeBaseStatistics) String() string {
@@ -37,7 +40,7 @@ func (m KnowledgeBaseStatistics) ValidateEnumValue() (bool, error) {
 	errMessage := []string{}
 
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

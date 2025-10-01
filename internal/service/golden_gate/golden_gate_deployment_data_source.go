@@ -7,11 +7,12 @@ import (
 	"context"
 	"strconv"
 
-	"github.com/oracle/terraform-provider-oci/internal/client"
-	"github.com/oracle/terraform-provider-oci/internal/tfresource"
-
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	oci_golden_gate "github.com/oracle/oci-go-sdk/v65/goldengate"
+
+	"github.com/oracle/terraform-provider-oci/internal/client"
+	"github.com/oracle/terraform-provider-oci/internal/tfresource"
 )
 
 func GoldenGateDeploymentDataSource() *schema.Resource {
@@ -20,15 +21,15 @@ func GoldenGateDeploymentDataSource() *schema.Resource {
 		Type:     schema.TypeString,
 		Required: true,
 	}
-	return tfresource.GetSingularDataSourceItemSchema(GoldenGateDeploymentResource(), fieldMap, readSingularGoldenGateDeployment)
+	return tfresource.GetSingularDataSourceItemSchemaWithContext(GoldenGateDeploymentResource(), fieldMap, readSingularGoldenGateDeploymentWithContext)
 }
 
-func readSingularGoldenGateDeployment(d *schema.ResourceData, m interface{}) error {
+func readSingularGoldenGateDeploymentWithContext(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	sync := &GoldenGateDeploymentDataSourceCrud{}
 	sync.D = d
 	sync.Client = m.(*client.OracleClients).GoldenGateClient()
 
-	return tfresource.ReadResource(sync)
+	return tfresource.HandleDiagError(m, tfresource.ReadResourceWithContext(ctx, sync))
 }
 
 type GoldenGateDeploymentDataSourceCrud struct {
@@ -41,7 +42,7 @@ func (s *GoldenGateDeploymentDataSourceCrud) VoidState() {
 	s.D.SetId("")
 }
 
-func (s *GoldenGateDeploymentDataSourceCrud) Get() error {
+func (s *GoldenGateDeploymentDataSourceCrud) GetWithContext(ctx context.Context) error {
 	request := oci_golden_gate.GetDeploymentRequest{}
 
 	if deploymentId, ok := s.D.GetOkExists("deployment_id"); ok {
@@ -51,7 +52,7 @@ func (s *GoldenGateDeploymentDataSourceCrud) Get() error {
 
 	request.RequestMetadata.RetryPolicy = tfresource.GetRetryPolicy(false, "golden_gate")
 
-	response, err := s.Client.GetDeployment(context.Background(), request)
+	response, err := s.Client.GetDeployment(ctx, request)
 	if err != nil {
 		return err
 	}
@@ -67,13 +68,18 @@ func (s *GoldenGateDeploymentDataSourceCrud) SetData() error {
 
 	s.D.SetId(*s.Res.Id)
 
+	if s.Res.AvailabilityDomain != nil {
+		s.D.Set("availability_domain", *s.Res.AvailabilityDomain)
+	}
+
 	if s.Res.BackupSchedule != nil {
 		s.D.Set("backup_schedule", []interface{}{BackupScheduleToMap(s.Res.BackupSchedule)})
 	} else {
 		s.D.Set("backup_schedule", nil)
 	}
-	if s.Res.AvailabilityDomain != nil {
-		s.D.Set("availability_domain", *s.Res.AvailabilityDomain)
+
+	if s.Res.ByolCpuCoreCountLimit != nil {
+		s.D.Set("byol_cpu_core_count_limit", *s.Res.ByolCpuCoreCountLimit)
 	}
 
 	s.D.Set("category", s.Res.Category)
@@ -136,6 +142,10 @@ func (s *GoldenGateDeploymentDataSourceCrud) SetData() error {
 
 	if s.Res.IsAutoScalingEnabled != nil {
 		s.D.Set("is_auto_scaling_enabled", *s.Res.IsAutoScalingEnabled)
+	}
+
+	if s.Res.IsByolCpuCoreCountLimitEnabled != nil {
+		s.D.Set("is_byol_cpu_core_count_limit_enabled", *s.Res.IsByolCpuCoreCountLimitEnabled)
 	}
 
 	if s.Res.IsHealthy != nil {

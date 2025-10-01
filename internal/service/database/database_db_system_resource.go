@@ -150,6 +150,12 @@ func DatabaseDbSystemResource() *schema.Resource {
 															// Required
 
 															// Optional
+															"backup_retention_policy_on_terminate": {
+																Type:     schema.TypeString,
+																Optional: true,
+																Computed: true,
+																ForceNew: true,
+															},
 															"dbrs_policy_id": {
 																Type:     schema.TypeString,
 																Optional: true,
@@ -163,6 +169,12 @@ func DatabaseDbSystemResource() *schema.Resource {
 																ForceNew: true,
 															},
 															"is_remote": {
+																Type:     schema.TypeBool,
+																Optional: true,
+																Computed: true,
+																ForceNew: true,
+															},
+															"is_retention_lock_enabled": {
 																Type:     schema.TypeBool,
 																Optional: true,
 																Computed: true,
@@ -453,10 +465,26 @@ func DatabaseDbSystemResource() *schema.Resource {
 				Computed: true,
 				ForceNew: true,
 			},
+			"compute_count": {
+				Type:     schema.TypeInt,
+				Optional: true,
+				Computed: true,
+			},
+			"compute_model": {
+				Type:     schema.TypeString,
+				Optional: true,
+				Computed: true,
+			},
 			"cpu_core_count": {
 				Type:     schema.TypeInt,
 				Optional: true,
 				Computed: true,
+			},
+			"cluster_placement_group_id": {
+				Type:     schema.TypeString,
+				Optional: true,
+				Computed: true,
+				ForceNew: true,
 			},
 			"data_collection_options": {
 				Type:     schema.TypeList,
@@ -755,6 +783,12 @@ func DatabaseDbSystemResource() *schema.Resource {
 				ForceNew: true,
 			},
 			"storage_volume_performance_mode": {
+				Type:     schema.TypeString,
+				Optional: true,
+				Computed: true,
+				ForceNew: true,
+			},
+			"subscription_id": {
 				Type:     schema.TypeString,
 				Optional: true,
 				Computed: true,
@@ -1197,6 +1231,15 @@ func (s *DatabaseDbSystemResourceCrud) Update() error {
 		}
 	}
 
+	if computeCount, ok := s.D.GetOkExists("compute_count"); ok {
+		tmp := computeCount.(int)
+		request.ComputeCount = &tmp
+	}
+
+	if computeModel, ok := s.D.GetOkExists("compute_model"); ok {
+		request.ComputeModel = oci_database.UpdateDbSystemDetailsComputeModelEnum(computeModel.(string))
+	}
+
 	if cpuCoreCount, ok := s.D.GetOkExists("cpu_core_count"); ok && s.D.HasChange("cpu_core_count") {
 		tmp := cpuCoreCount.(int)
 		request.CpuCoreCount = &tmp
@@ -1371,9 +1414,19 @@ func (s *DatabaseDbSystemResourceCrud) SetData() error {
 		s.D.Set("cluster_name", *s.Res.ClusterName)
 	}
 
+	if s.Res.ClusterPlacementGroupId != nil {
+		s.D.Set("cluster_placement_group_id", *s.Res.ClusterPlacementGroupId)
+	}
+
 	if s.Res.CompartmentId != nil {
 		s.D.Set("compartment_id", *s.Res.CompartmentId)
 	}
+
+	if s.Res.ComputeCount != nil {
+		s.D.Set("compute_count", *s.Res.ComputeCount)
+	}
+
+	s.D.Set("compute_model", s.Res.ComputeModel)
 
 	if s.Res.CpuCoreCount != nil {
 		s.D.Set("cpu_core_count", *s.Res.CpuCoreCount)
@@ -1535,6 +1588,10 @@ func (s *DatabaseDbSystemResourceCrud) SetData() error {
 		s.D.Set("time_created", s.Res.TimeCreated.String())
 	}
 
+	if s.Res.SubscriptionId != nil {
+		s.D.Set("subscription_id", *s.Res.SubscriptionId)
+	}
+
 	if s.Res.TimeZone != nil {
 		s.D.Set("time_zone", *s.Res.TimeZone)
 	}
@@ -1557,6 +1614,10 @@ func (s *DatabaseDbSystemResourceCrud) SetData() error {
 func (s *DatabaseDbSystemResourceCrud) mapToBackupDestinationDetails(fieldKeyFormat string) (oci_database.BackupDestinationDetails, error) {
 	result := oci_database.BackupDestinationDetails{}
 
+	if backupRetentionPolicyOnTerminate, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "backup_retention_policy_on_terminate")); ok {
+		result.BackupRetentionPolicyOnTerminate = oci_database.BackupDestinationDetailsBackupRetentionPolicyOnTerminateEnum(backupRetentionPolicyOnTerminate.(string))
+	}
+
 	if dbrsPolicyId, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "dbrs_policy_id")); ok {
 		tmp := dbrsPolicyId.(string)
 		result.DbrsPolicyId = &tmp
@@ -1575,6 +1636,11 @@ func (s *DatabaseDbSystemResourceCrud) mapToBackupDestinationDetails(fieldKeyFor
 	if isRemote, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "is_remote")); ok {
 		tmp := isRemote.(bool)
 		result.IsRemote = &tmp
+	}
+
+	if isRetentionLockEnabled, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "is_retention_lock_enabled")); ok {
+		tmp := isRetentionLockEnabled.(bool)
+		result.IsRetentionLockEnabled = &tmp
 	}
 
 	if remoteRegion, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "remote_region")); ok {
@@ -1851,6 +1917,18 @@ func (s *DatabaseDbSystemResourceCrud) mapToCreateDatabaseFromBackupDetails(fiel
 		result.DbUniqueName = &tmp
 	}
 
+	if definedTags, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "defined_tags")); ok {
+		tmp, err := tfresource.MapToDefinedTags(definedTags.(map[string]interface{}))
+		if err != nil {
+			return result, fmt.Errorf("unable to convert defined_tags, encountered error: %v", err)
+		}
+		result.DefinedTags = tmp
+	}
+
+	if freeformTags, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "freeform_tags")); ok {
+		result.FreeformTags = tfresource.ObjectMapToStringMap(freeformTags.(map[string]interface{}))
+	}
+
 	if pluggableDatabases, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "pluggable_databases")); ok {
 		interfaces := pluggableDatabases.([]interface{})
 		tmp := make([]string, len(interfaces))
@@ -1894,6 +1972,12 @@ func CreateDatabaseFromBackupDetailsToMap(obj *oci_database.CreateDatabaseFromBa
 	if obj.DbUniqueName != nil {
 		result["db_unique_name"] = string(*obj.DbUniqueName)
 	}
+
+	if obj.DefinedTags != nil {
+		result["defined_tags"] = tfresource.DefinedTagsToMap(obj.DefinedTags)
+	}
+
+	result["freeform_tags"] = obj.FreeformTags
 
 	result["pluggable_databases"] = obj.PluggableDatabases
 
@@ -2558,6 +2642,13 @@ func (s *DatabaseDbSystemResourceCrud) populateTopLevelPolymorphicLaunchDbSystem
 			tmp := compartmentId.(string)
 			details.CompartmentId = &tmp
 		}
+		if computeCount, ok := s.D.GetOkExists("compute_count"); ok {
+			tmp := computeCount.(int)
+			details.ComputeCount = &tmp
+		}
+		if computeModel, ok := s.D.GetOkExists("compute_model"); ok {
+			details.ComputeModel = oci_database.LaunchDbSystemBaseComputeModelEnum(computeModel.(string))
+		}
 		if cpuCoreCount, ok := s.D.GetOkExists("cpu_core_count"); ok {
 			tmp := cpuCoreCount.(int)
 			details.CpuCoreCount = &tmp
@@ -2746,6 +2837,13 @@ func (s *DatabaseDbSystemResourceCrud) populateTopLevelPolymorphicLaunchDbSystem
 			tmp := compartmentId.(string)
 			details.CompartmentId = &tmp
 		}
+		if computeCount, ok := s.D.GetOkExists("compute_count"); ok {
+			tmp := computeCount.(int)
+			details.ComputeCount = &tmp
+		}
+		if computeModel, ok := s.D.GetOkExists("compute_model"); ok {
+			details.ComputeModel = oci_database.LaunchDbSystemBaseComputeModelEnum(computeModel.(string))
+		}
 		if cpuCoreCount, ok := s.D.GetOkExists("cpu_core_count"); ok {
 			tmp := cpuCoreCount.(int)
 			details.CpuCoreCount = &tmp
@@ -2932,6 +3030,13 @@ func (s *DatabaseDbSystemResourceCrud) populateTopLevelPolymorphicLaunchDbSystem
 			tmp := compartmentId.(string)
 			details.CompartmentId = &tmp
 		}
+		if computeCount, ok := s.D.GetOkExists("compute_count"); ok {
+			tmp := computeCount.(int)
+			details.ComputeCount = &tmp
+		}
+		if computeModel, ok := s.D.GetOkExists("compute_model"); ok {
+			details.ComputeModel = oci_database.LaunchDbSystemBaseComputeModelEnum(computeModel.(string))
+		}
 		if cpuCoreCount, ok := s.D.GetOkExists("cpu_core_count"); ok {
 			tmp := cpuCoreCount.(int)
 			details.CpuCoreCount = &tmp
@@ -3116,9 +3221,20 @@ func (s *DatabaseDbSystemResourceCrud) populateTopLevelPolymorphicLaunchDbSystem
 			tmp := clusterName.(string)
 			details.ClusterName = &tmp
 		}
+		if clusterPlacementGroupId, ok := s.D.GetOkExists("cluster_placement_group_id"); ok {
+			tmp := clusterPlacementGroupId.(string)
+			details.ClusterPlacementGroupId = &tmp
+		}
 		if compartmentId, ok := s.D.GetOkExists("compartment_id"); ok {
 			tmp := compartmentId.(string)
 			details.CompartmentId = &tmp
+		}
+		if computeCount, ok := s.D.GetOkExists("compute_count"); ok {
+			tmp := computeCount.(int)
+			details.ComputeCount = &tmp
+		}
+		if computeModel, ok := s.D.GetOkExists("compute_model"); ok {
+			details.ComputeModel = oci_database.LaunchDbSystemBaseComputeModelEnum(computeModel.(string))
 		}
 		if cpuCoreCount, ok := s.D.GetOkExists("cpu_core_count"); ok {
 			tmp := cpuCoreCount.(int)
@@ -3262,6 +3378,10 @@ func (s *DatabaseDbSystemResourceCrud) populateTopLevelPolymorphicLaunchDbSystem
 		if subnetId, ok := s.D.GetOkExists("subnet_id"); ok {
 			tmp := subnetId.(string)
 			details.SubnetId = &tmp
+		}
+		if subscriptionId, ok := s.D.GetOkExists("subscription_id"); ok {
+			tmp := subscriptionId.(string)
+			details.SubscriptionId = &tmp
 		}
 		if timeZone, ok := s.D.GetOkExists("time_zone"); ok {
 			tmp := timeZone.(string)

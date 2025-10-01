@@ -18,7 +18,7 @@ import (
 // DeleteProtectedBranchDetails Information to delete a protected branch
 type DeleteProtectedBranchDetails struct {
 
-	// Name of a protected branch.
+	// The branchName can either be exact branch name or branch pattern.
 	BranchName *string `mandatory:"true" json:"branchName"`
 }
 
@@ -33,7 +33,7 @@ func (m DeleteProtectedBranchDetails) ValidateEnumValue() (bool, error) {
 	errMessage := []string{}
 
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

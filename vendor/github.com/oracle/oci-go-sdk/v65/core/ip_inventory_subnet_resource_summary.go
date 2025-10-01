@@ -51,6 +51,9 @@ type IpInventorySubnetResourceSummary struct {
 	// Name of the created resource.
 	AssignedResourceName *string `mandatory:"false" json:"assignedResourceName"`
 
+	// Primary flag for IP Resource
+	IsPrimary *bool `mandatory:"false" json:"isPrimary"`
+
 	// Type of the resource.
 	AssignedResourceType IpInventorySubnetResourceSummaryAssignedResourceTypeEnum `mandatory:"false" json:"assignedResourceType,omitempty"`
 
@@ -84,7 +87,7 @@ func (m IpInventorySubnetResourceSummary) ValidateEnumValue() (bool, error) {
 		errMessage = append(errMessage, fmt.Sprintf("unsupported enum value for AssignedResourceType: %s. Supported values are: %s.", m.AssignedResourceType, strings.Join(GetIpInventorySubnetResourceSummaryAssignedResourceTypeEnumStringValues(), ",")))
 	}
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

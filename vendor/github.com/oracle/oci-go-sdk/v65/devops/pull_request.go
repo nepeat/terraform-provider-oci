@@ -77,6 +77,9 @@ type PullRequest struct {
 	// List of Reviewers.
 	Reviewers []Reviewer `mandatory:"false" json:"reviewers"`
 
+	// The commit ID when the Pull Request was merged.
+	MergedCommitId *string `mandatory:"false" json:"mergedCommitId"`
+
 	MergeChecks *MergeCheckCollection `mandatory:"false" json:"mergeChecks"`
 
 	MergedBy *PrincipalDetails `mandatory:"false" json:"mergedBy"`
@@ -102,7 +105,7 @@ func (m PullRequest) ValidateEnumValue() (bool, error) {
 	}
 
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

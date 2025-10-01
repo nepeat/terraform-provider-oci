@@ -16,17 +16,20 @@ import (
 	"strings"
 )
 
-// CreateAutonomousContainerDatabaseFromBackupDetails Details to create an Oracle Autonomous Container Database by cloning from a backup of an existing Autonomous Container Database.
+// CreateAutonomousContainerDatabaseFromBackupDetails Details to create an Autonomous Container Database (ACD) by cloning a backup of an existing ACD.
 type CreateAutonomousContainerDatabaseFromBackupDetails struct {
 
 	// The display name for the Autonomous Container Database.
 	DisplayName *string `mandatory:"true" json:"displayName"`
 
-	// The OCID (https://docs.oracle.com/iaas/Content/General/Concepts/identifiers.htm) of the source Autonomous Container Database Backup that you will clone to create a new Autonomous Container Database.
+	// The OCID (https://docs.oracle.com/iaas/Content/General/Concepts/identifiers.htm) of the source ACD backup that you will clone to create a new ACD.
 	AutonomousContainerDatabaseBackupId *string `mandatory:"true" json:"autonomousContainerDatabaseBackupId"`
 
 	// Customer Contacts. Setting this to an empty list removes all customer contacts.
 	CustomerContacts []CustomerContact `mandatory:"false" json:"customerContacts"`
+
+	// The OKV End Point Group name for the Autonomous Container Database.
+	OkvEndPointGroupName *string `mandatory:"false" json:"okvEndPointGroupName"`
 
 	// **Deprecated.** The `DB_UNIQUE_NAME` value is set by Oracle Cloud Infrastructure.  Do not specify a value for this parameter. Specifying a value for this field will cause Terraform operations to fail.
 	DbUniqueName *string `mandatory:"false" json:"dbUniqueName"`
@@ -141,6 +144,11 @@ type CreateAutonomousContainerDatabaseFromBackupDetails struct {
 // GetCustomerContacts returns CustomerContacts
 func (m CreateAutonomousContainerDatabaseFromBackupDetails) GetCustomerContacts() []CustomerContact {
 	return m.CustomerContacts
+}
+
+// GetOkvEndPointGroupName returns OkvEndPointGroupName
+func (m CreateAutonomousContainerDatabaseFromBackupDetails) GetOkvEndPointGroupName() *string {
+	return m.OkvEndPointGroupName
 }
 
 // GetDisplayName returns DisplayName
@@ -352,7 +360,7 @@ func (m CreateAutonomousContainerDatabaseFromBackupDetails) ValidateEnumValue() 
 		errMessage = append(errMessage, fmt.Sprintf("unsupported enum value for NetServicesArchitecture: %s. Supported values are: %s.", m.NetServicesArchitecture, strings.Join(GetCreateAutonomousContainerDatabaseBaseNetServicesArchitectureEnumStringValues(), ",")))
 	}
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

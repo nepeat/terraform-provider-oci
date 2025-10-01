@@ -16,7 +16,7 @@ import (
 )
 
 // FindingAnalyticsSummary The summary of information about the analytics data of findings or top findings.
-// It includes details such as metric name, findinKey,
+// It includes details such as metric name, findingKey,
 // title (topFindingCategory for top finding), severity (topFindingStatus for top finding) and targetId.
 type FindingAnalyticsSummary struct {
 
@@ -43,7 +43,7 @@ func (m FindingAnalyticsSummary) ValidateEnumValue() (bool, error) {
 	}
 
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

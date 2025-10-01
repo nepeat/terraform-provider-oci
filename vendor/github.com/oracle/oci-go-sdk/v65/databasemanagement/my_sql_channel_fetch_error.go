@@ -17,11 +17,11 @@ import (
 	"strings"
 )
 
-// MySqlChannelFetchError MySQL server replication Channel name and error from its fetch operation.
+// MySqlChannelFetchError MySQL server replication channel name and error from its fetch operation.
 type MySqlChannelFetchError struct {
 	FetchError *MySqlFetchError `mandatory:"true" json:"fetchError"`
 
-	// The name of the replication channel
+	// The name of the replication channel.
 	ChannelName *string `mandatory:"false" json:"channelName"`
 }
 
@@ -36,7 +36,7 @@ func (m MySqlChannelFetchError) ValidateEnumValue() (bool, error) {
 	errMessage := []string{}
 
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

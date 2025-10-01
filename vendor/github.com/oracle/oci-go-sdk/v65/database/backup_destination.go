@@ -33,6 +33,12 @@ type BackupDestination struct {
 	// List of databases associated with the backup destination.
 	AssociatedDatabases []AssociatedDatabaseDetails `mandatory:"false" json:"associatedDatabases"`
 
+	// List of long term backups of Autonomous Databases associated with this backup destination.The maximum associated number of long term backup listed here would be 1024.
+	AssociatedLongTermBackups []AssociatedLongTermBackup `mandatory:"false" json:"associatedLongTermBackups"`
+
+	// Indicates the number of long term backups of Autonomous Databases associated with this backup destination.
+	AssociatedLongTermBackupCount *int `mandatory:"false" json:"associatedLongTermBackupCount"`
+
 	// For a RECOVERY_APPLIANCE backup destination, the connection string for connecting to the Recovery Appliance.
 	ConnectionString *string `mandatory:"false" json:"connectionString"`
 
@@ -104,7 +110,7 @@ func (m BackupDestination) ValidateEnumValue() (bool, error) {
 		errMessage = append(errMessage, fmt.Sprintf("unsupported enum value for LifecycleState: %s. Supported values are: %s.", m.LifecycleState, strings.Join(GetBackupDestinationLifecycleStateEnumStringValues(), ",")))
 	}
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

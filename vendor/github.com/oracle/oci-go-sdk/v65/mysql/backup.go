@@ -61,6 +61,8 @@ type Backup struct {
 	// state for 7 days before permanently deleting it.
 	SoftDelete SoftDeleteEnum `mandatory:"false" json:"softDelete,omitempty"`
 
+	BackupValidationDetails *BackupValidationDetails `mandatory:"false" json:"backupValidationDetails"`
+
 	DbSystemSnapshot *DbSystemSnapshot `mandatory:"false" json:"dbSystemSnapshot"`
 
 	// The size of the backup in base-2 (IEC) gibibytes. (GiB).
@@ -125,7 +127,7 @@ func (m Backup) ValidateEnumValue() (bool, error) {
 		errMessage = append(errMessage, fmt.Sprintf("unsupported enum value for SoftDelete: %s. Supported values are: %s.", m.SoftDelete, strings.Join(GetSoftDeleteEnumStringValues(), ",")))
 	}
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

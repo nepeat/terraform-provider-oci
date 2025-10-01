@@ -18,7 +18,7 @@ import (
 // Click https://docs.oracle.com/en-us/iaas/tools/go-sdk-examples/latest/dbmulticloud/UpdateOracleDbAzureVault.go.html to see an example of how to use UpdateOracleDbAzureVaultRequest.
 type UpdateOracleDbAzureVaultRequest struct {
 
-	// The ID of the Oracle DB Azure Vault Resource.
+	// The OCID (https://docs.oracle.com/iaas/Content/General/Concepts/identifiers.htm) of the Oracle DB Azure Vault resource.
 	OracleDbAzureVaultId *string `mandatory:"true" contributesTo:"path" name:"oracleDbAzureVaultId"`
 
 	// Details for to update OracleDbAzureVault.
@@ -71,7 +71,7 @@ func (request UpdateOracleDbAzureVaultRequest) RetryPolicy() *common.RetryPolicy
 func (request UpdateOracleDbAzureVaultRequest) ValidateEnumValue() (bool, error) {
 	errMessage := []string{}
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

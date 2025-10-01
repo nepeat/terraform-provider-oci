@@ -104,7 +104,7 @@ type JavaMessageServiceConnection struct {
 	// e.g.: 'admin2'
 	JndiSecurityPrincipal *string `mandatory:"false" json:"jndiSecurityPrincipal"`
 
-	// Connectin URL of the Java Message Service, specifying the protocol, host, and port.
+	// Connection URL of the Java Message Service, specifying the protocol, host, and port.
 	// e.g.: 'mq://myjms.host.domain:7676'
 	ConnectionUrl *string `mandatory:"false" json:"connectionUrl"`
 
@@ -298,7 +298,7 @@ func (m JavaMessageServiceConnection) ValidateEnumValue() (bool, error) {
 		errMessage = append(errMessage, fmt.Sprintf("unsupported enum value for RoutingMethod: %s. Supported values are: %s.", m.RoutingMethod, strings.Join(GetRoutingMethodEnumStringValues(), ",")))
 	}
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

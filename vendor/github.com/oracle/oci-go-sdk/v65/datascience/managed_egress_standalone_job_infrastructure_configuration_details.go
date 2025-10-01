@@ -16,7 +16,7 @@ import (
 	"strings"
 )
 
-// ManagedEgressStandaloneJobInfrastructureConfigurationDetails The standalone job infrastructure configuration with network egress settings preconfigured.
+// ManagedEgressStandaloneJobInfrastructureConfigurationDetails This type should only be used at the top level infrastructure configuration field for configuring single-node jobs.
 type ManagedEgressStandaloneJobInfrastructureConfigurationDetails struct {
 
 	// The shape used to launch the job run instances.
@@ -39,7 +39,7 @@ func (m ManagedEgressStandaloneJobInfrastructureConfigurationDetails) ValidateEn
 	errMessage := []string{}
 
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

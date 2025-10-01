@@ -45,9 +45,11 @@ resource "oci_database_db_home" "test_db_home" {
 			backup_destination_details {
 
 				#Optional
+				backup_retention_policy_on_terminate = var.db_home_database_db_backup_config_backup_destination_details_backup_retention_policy_on_terminate
 				dbrs_policy_id = oci_identity_policy.test_policy.id
 				id = var.db_home_database_db_backup_config_backup_destination_details_id
 				is_remote = var.db_home_database_db_backup_config_backup_destination_details_is_remote
+				is_retention_lock_enabled = var.db_home_database_db_backup_config_backup_destination_details_is_retention_lock_enabled
 				remote_region = var.db_home_database_db_backup_config_backup_destination_details_remote_region
 				type = var.db_home_database_db_backup_config_backup_destination_details_type
 			}
@@ -80,6 +82,11 @@ resource "oci_database_db_home" "test_db_home" {
 			#Optional
 			azure_encryption_key_id = oci_kms_key.test_key.id
 			hsm_password = var.db_home_database_source_encryption_key_location_details_hsm_password
+		}
+		storage_size_details {
+			#Required
+			data_storage_size_in_gb = var.db_home_database_storage_size_details_data_storage_size_in_gb
+			reco_storage_size_in_gbs = var.db_home_database_storage_size_details_reco_storage_size_in_gbs
 		}
 		tde_wallet_password = var.db_home_database_tde_wallet_password
 		time_stamp_for_point_in_time_recovery = var.db_home_database_time_stamp_for_point_in_time_recovery
@@ -124,12 +131,12 @@ The following arguments are supported:
 		* `auto_full_backup_window` - (Applicable when source=NONE | VM_CLUSTER_NEW) Time window selected for initiating full backup for the database system. There are twelve available two-hour time windows. If no option is selected, the value is null and a start time between 12:00 AM to 7:00 AM in the region of the database is automatically chosen. For example, if the user selects SLOT_TWO from the enum list, the automatic backup job will start in between 2:00 AM (inclusive) to 4:00 AM (exclusive).  Example: `SLOT_TWO` 
 		* `backup_deletion_policy` - (Applicable when source=NONE | VM_CLUSTER_NEW) This defines when the backups will be deleted. - IMMEDIATE option keep the backup for predefined time i.e 72 hours and then delete permanently... - RETAIN will keep the backups as per the policy defined for database backups.
 		* `backup_destination_details` - (Applicable when source=NONE | VM_CLUSTER_NEW) Backup destination details.
+			* `backup_retention_policy_on_terminate` - (Applicable when source=NONE | VM_CLUSTER_NEW) Defines the automatic and manual backup retention policy for the Autonomous Database termination.  The retention policy set on the Autonomous Container Database is not applicable for cross region remote backups and backups hosted on recovery Appliance backup destination. Options are 'RETAIN_PER_RETENTION_WINDOW' or 'RETAIN_FOR_72_HOURS'.The default value is 'RETAIN_FOR_72_HOURS'. 
 			* `dbrs_policy_id` - (Applicable when source=NONE | VM_CLUSTER_NEW) The [OCID](https://docs.cloud.oracle.com/iaas/Content/General/Concepts/identifiers.htm) of the DBRS policy used for backup.
 			* `id` - (Applicable when source=NONE | VM_CLUSTER_NEW) The [OCID](https://docs.cloud.oracle.com/iaas/Content/General/Concepts/identifiers.htm) of the backup destination.
-			* `is_remote` - (Applicable when source=NONE | VM_CLUSTER_NEW) Indicates whether the backup destination is cross-region or local region.
-			* `remote_region` - (Applicable when source=NONE | VM_CLUSTER_NEW) The name of the remote region where the remote automatic incremental backups will be stored.
-
-				For information about valid region names, see [Regions and Availability Domains](https://docs.cloud.oracle.com/iaas/Content/General/Concepts/regions.htm). 
+			* `is_remote` - (Applicable when source=NONE | VM_CLUSTER_NEW) Indicates whether the backup destination is cross-region or local.
+			* `is_retention_lock_enabled` - (Applicable when source=NONE | VM_CLUSTER_NEW) Indicates if backup retention is locked for all the database backups in the Autonomous Container Database (ACD). The retention window cannot be decreased if the backup retention lock is enabled. Once applied on the Autonomous Container Database, the retention lock cannot be removed, or the retention period cannot be decreased after a 14-day period. If the backup is a Long Term Backup and retention lock is enabled, the backup cannot be deleted and must expire. The retention lock set on the Autonomous Container Database is not applicable for cross region remote backups and backups hosted on recovery Appliance backup destination. 
+			* `remote_region` - (Applicable when source=NONE | VM_CLUSTER_NEW) The name of the remote region where the remote automatic incremental backups will be stored.           For information about valid region names, see [Regions and Availability Domains](https://docs.cloud.oracle.com/iaas/Content/General/Concepts/regions.htm). 
 			* `type` - (Applicable when source=NONE | VM_CLUSTER_NEW) Type of the database backup destination. Supported values: `NFS`.
 		* `recovery_window_in_days` - (Applicable when source=NONE | VM_CLUSTER_NEW) (Updatable) Number of days between the current and the earliest point of recoverability covered by automatic backups. This value applies to automatic backups only. After a new automatic backup has been created, Oracle removes old automatic backups that are created before the window. When the value is updated, it is applied to all existing automatic backups. 
 		* `run_immediate_full_backup` - (Applicable when source=NONE | VM_CLUSTER_NEW) If set to true, configures automatic full backups in the local region (the region of the DB system) for the first backup run immediately.
@@ -137,13 +144,13 @@ The following arguments are supported:
 	* `db_workload` - (Applicable when source=NONE | VM_CLUSTER_NEW) **Deprecated.** The dbWorkload field has been deprecated for Exadata Database Service on Dedicated Infrastructure, Exadata Database Service on Cloud@Customer, and Base Database Service. Support for this attribute will end in November 2023. You may choose to update your custom scripts to exclude the dbWorkload attribute. After November 2023 if you pass a value to the dbWorkload attribute, it will be ignored.
 
 		The database workload type. 
-	* `defined_tags` - (Applicable when source=NONE | VM_CLUSTER_NEW) (Updatable) Defined tags for this resource. Each key is predefined and scoped to a namespace. For more information, see [Resource Tags](https://docs.cloud.oracle.com/iaas/Content/General/Concepts/resourcetags.htm). 
+	* `defined_tags` - (Applicable when source=DB_BACKUP | NONE | VM_CLUSTER_BACKUP | VM_CLUSTER_NEW) (Updatable) Defined tags for this resource. Each key is predefined and scoped to a namespace. For more information, see [Resource Tags](https://docs.cloud.oracle.com/iaas/Content/General/Concepts/resourcetags.htm). 
 	* `encryption_key_location_details` - (Applicable when source=NONE | VM_CLUSTER_NEW) Types of providers supported for managing database encryption keys
 		* `azure_encryption_key_id` - (Required when provider_type=AZURE) Provide the key OCID of a registered Azure key.
 		* `hsm_password` - (Required when provider_type=EXTERNAL) Provide the HSM password as you would in RDBMS for External HSM.
-		* `provider_type` - (Required) Use 'EXTERNAL' for creating a new database or migrating a database key to an External HSM. Use 'AZURE' for creating a new database or migrating a database key to Azure. 
-	* `enable_database_delete` - (Optional) Defaults to false. If omitted or set to false the provider will not delete databases removed from the Db Home configuration. 
-	* `freeform_tags` - (Applicable when source=NONE | VM_CLUSTER_NEW) (Updatable) Free-form tags for this resource. Each tag is a simple key-value pair with no predefined name, type, or namespace. For more information, see [Resource Tags](https://docs.cloud.oracle.com/iaas/Content/General/Concepts/resourcetags.htm).  Example: `{"Department": "Finance"}` 
+		* `provider_type` - (Required) Use 'EXTERNAL' for creating a new database or migrating a database key to an External HSM. Use 'AZURE' for creating a new database or migrating a database key to Azure.
+	* `freeform_tags` - (Applicable when source=DB_BACKUP | NONE | VM_CLUSTER_BACKUP | VM_CLUSTER_NEW) (Updatable) Free-form tags for this resource. Each tag is a simple key-value pair with no predefined name, type, or namespace. For more information, see [Resource Tags](https://docs.cloud.oracle.com/iaas/Content/General/Concepts/resourcetags.htm).  Example: `{"Department": "Finance"}`
+	* `enable_database_delete` - (Optional) Defaults to false. If omitted or set to false the provider will not delete databases removed from the Db Home configuration.
 	* `key_store_id` - (Applicable when source=NONE | VM_CLUSTER_NEW) The [OCID](https://docs.cloud.oracle.com/iaas/Content/General/Concepts/identifiers.htm) of the key store of Oracle Vault.
 	* `kms_key_id` - (Applicable when source=NONE | VM_CLUSTER_NEW) The OCID of the key container that is used as the master encryption key in database transparent data encryption (TDE) operations.
 	* `kms_key_version_id` - (Applicable when source=NONE | VM_CLUSTER_NEW) The OCID of the key container version that is used in database transparent data encryption (TDE) operations KMS Key can have multiple key versions. If none is specified, the current key version (latest) of the Key Id is used for the operation. Autonomous Database Serverless does not use key versions, hence is not applicable for Autonomous Database Serverless instances. 
@@ -155,6 +162,9 @@ The following arguments are supported:
 		* `azure_encryption_key_id` - (Required when provider_type=AZURE) Provide the key OCID of a registered Azure key.
 		* `hsm_password` - (Required when provider_type=EXTERNAL) Provide the HSM password as you would in RDBMS for External HSM.
 		* `provider_type` - (Required) Use 'EXTERNAL' for creating a new database or migrating a database key to an External HSM. Use 'AZURE' for creating a new database or migrating a database key to Azure. 
+	* `storage_size_details` - (Applicable when source=DB_BACKUP | NONE | VM_CLUSTER_BACKUP | VM_CLUSTER_NEW) The database storage size details. This database option is supported for the Exadata VM cluster on Exascale Infrastructure. 
+		* `data_storage_size_in_gb` - (Required when source=DB_BACKUP | NONE | VM_CLUSTER_BACKUP | VM_CLUSTER_NEW) The DATA storage size, in gigabytes, that is applicable for the database. 
+		* `reco_storage_size_in_gbs` - (Required when source=DB_BACKUP | NONE | VM_CLUSTER_BACKUP | VM_CLUSTER_NEW) The RECO storage size, in gigabytes, that is applicable for the database. 
 	* `tde_wallet_password` - (Applicable when source=NONE | VM_CLUSTER_NEW) The optional password to open the TDE wallet. The password must be at least nine characters and contain at least two uppercase, two lowercase, two numeric, and two special characters. The special characters must be _, \#, or -.
 	* `time_stamp_for_point_in_time_recovery` - (Applicable when source=DATABASE) The point in time of the original database from which the new database is created. If not specifed, the latest backup is used to create the database.
 	* `vault_id` - (Applicable when source=NONE | VM_CLUSTER_NEW) The [OCID](https://docs.cloud.oracle.com/iaas/Content/General/Concepts/identifiers.htm) of the Oracle Cloud Infrastructure [vault](https://docs.cloud.oracle.com/iaas/Content/KeyManagement/Concepts/keyoverview.htm#concepts). This parameter and `secretId` are required for Customer Managed Keys.

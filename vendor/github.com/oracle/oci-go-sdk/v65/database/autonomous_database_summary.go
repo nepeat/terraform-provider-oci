@@ -132,8 +132,11 @@ type AutonomousDatabaseSummary struct {
 	// An array of CPU values that an Autonomous Database can be scaled to.
 	ProvisionableCpus []float32 `mandatory:"false" json:"provisionableCpus"`
 
-	// The amount of memory (in GBs) enabled per ECPU or OCPU.
+	// The amount of memory (in GBs rounded off to nearest integer value) enabled per ECPU or OCPU. This is deprecated. Please refer to memoryPerComputeUnitInGBs for accurate value.
 	MemoryPerOracleComputeUnitInGBs *int `mandatory:"false" json:"memoryPerOracleComputeUnitInGBs"`
+
+	// The amount of memory (in GBs) to be enabled per OCPU or ECPU.
+	MemoryPerComputeUnitInGBs *float32 `mandatory:"false" json:"memoryPerComputeUnitInGBs"`
 
 	// The quantity of data in the database, in gigabytes.
 	// For Autonomous Transaction Processing databases using ECPUs on Serverless Infrastructure, this value is always populated. In all the other cases, this value will be null and `dataStorageSizeInTBs` will be populated instead.
@@ -156,6 +159,15 @@ type AutonomousDatabaseSummary struct {
 
 	// The date and time the Autonomous Database was most recently undeleted.
 	TimeUndeleted *common.SDKTime `mandatory:"false" json:"timeUndeleted"`
+
+	// The earliest(min) date and time the Autonomous Database can be scheduled to upgrade to 23ai.
+	TimeEarliestAvailableDbVersionUpgrade *common.SDKTime `mandatory:"false" json:"timeEarliestAvailableDbVersionUpgrade"`
+
+	// The max date and time the Autonomous Database can be scheduled to upgrade to 23ai.
+	TimeLatestAvailableDbVersionUpgrade *common.SDKTime `mandatory:"false" json:"timeLatestAvailableDbVersionUpgrade"`
+
+	// The date and time the Autonomous Database scheduled to upgrade to 23ai.
+	TimeScheduledDbVersionUpgrade *common.SDKTime `mandatory:"false" json:"timeScheduledDbVersionUpgrade"`
 
 	// The date and time the Autonomous Database was created.
 	TimeCreated *common.SDKTime `mandatory:"false" json:"timeCreated"`
@@ -476,6 +488,13 @@ type AutonomousDatabaseSummary struct {
 
 	// A list of the source Autonomous Database's table space number(s) used to create this partial clone from the backup.
 	CloneTableSpaceList []int `mandatory:"false" json:"cloneTableSpaceList"`
+
+	// The Autonomous Database clone type.
+	CloneType AutonomousDatabaseSummaryCloneTypeEnum `mandatory:"false" json:"cloneType,omitempty"`
+
+	// Additional attributes for this resource. Each attribute is a simple key-value pair with no predefined name, type, or namespace.
+	// Example: `{ "gcpAccountName": "gcpName" }`
+	AdditionalAttributes map[string]string `mandatory:"false" json:"additionalAttributes"`
 }
 
 func (m AutonomousDatabaseSummary) String() string {
@@ -545,8 +564,11 @@ func (m AutonomousDatabaseSummary) ValidateEnumValue() (bool, error) {
 	if _, ok := GetMappingAutonomousDatabaseSummaryNetServicesArchitectureEnum(string(m.NetServicesArchitecture)); !ok && m.NetServicesArchitecture != "" {
 		errMessage = append(errMessage, fmt.Sprintf("unsupported enum value for NetServicesArchitecture: %s. Supported values are: %s.", m.NetServicesArchitecture, strings.Join(GetAutonomousDatabaseSummaryNetServicesArchitectureEnumStringValues(), ",")))
 	}
+	if _, ok := GetMappingAutonomousDatabaseSummaryCloneTypeEnum(string(m.CloneType)); !ok && m.CloneType != "" {
+		errMessage = append(errMessage, fmt.Sprintf("unsupported enum value for CloneType: %s. Supported values are: %s.", m.CloneType, strings.Join(GetAutonomousDatabaseSummaryCloneTypeEnumStringValues(), ",")))
+	}
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }
@@ -583,6 +605,7 @@ func (m *AutonomousDatabaseSummary) UnmarshalJSON(data []byte) (e error) {
 		OcpuCount                               *float32                                                       `json:"ocpuCount"`
 		ProvisionableCpus                       []float32                                                      `json:"provisionableCpus"`
 		MemoryPerOracleComputeUnitInGBs         *int                                                           `json:"memoryPerOracleComputeUnitInGBs"`
+		MemoryPerComputeUnitInGBs               *float32                                                       `json:"memoryPerComputeUnitInGBs"`
 		DataStorageSizeInGBs                    *int                                                           `json:"dataStorageSizeInGBs"`
 		UsedDataStorageSizeInGBs                *int                                                           `json:"usedDataStorageSizeInGBs"`
 		InfrastructureType                      AutonomousDatabaseSummaryInfrastructureTypeEnum                `json:"infrastructureType"`
@@ -590,6 +613,9 @@ func (m *AutonomousDatabaseSummary) UnmarshalJSON(data []byte) (e error) {
 		AutonomousContainerDatabaseId           *string                                                        `json:"autonomousContainerDatabaseId"`
 		IsBackupRetentionLocked                 *bool                                                          `json:"isBackupRetentionLocked"`
 		TimeUndeleted                           *common.SDKTime                                                `json:"timeUndeleted"`
+		TimeEarliestAvailableDbVersionUpgrade   *common.SDKTime                                                `json:"timeEarliestAvailableDbVersionUpgrade"`
+		TimeLatestAvailableDbVersionUpgrade     *common.SDKTime                                                `json:"timeLatestAvailableDbVersionUpgrade"`
+		TimeScheduledDbVersionUpgrade           *common.SDKTime                                                `json:"timeScheduledDbVersionUpgrade"`
 		TimeCreated                             *common.SDKTime                                                `json:"timeCreated"`
 		DisplayName                             *string                                                        `json:"displayName"`
 		ServiceConsoleUrl                       *string                                                        `json:"serviceConsoleUrl"`
@@ -675,6 +701,8 @@ func (m *AutonomousDatabaseSummary) UnmarshalJSON(data []byte) (e error) {
 		AvailabilityDomain                      *string                                                        `json:"availabilityDomain"`
 		ClusterPlacementGroupId                 *string                                                        `json:"clusterPlacementGroupId"`
 		CloneTableSpaceList                     []int                                                          `json:"cloneTableSpaceList"`
+		CloneType                               AutonomousDatabaseSummaryCloneTypeEnum                         `json:"cloneType"`
+		AdditionalAttributes                    map[string]string                                              `json:"additionalAttributes"`
 		Id                                      *string                                                        `json:"id"`
 		CompartmentId                           *string                                                        `json:"compartmentId"`
 		LifecycleState                          AutonomousDatabaseSummaryLifecycleStateEnum                    `json:"lifecycleState"`
@@ -753,6 +781,8 @@ func (m *AutonomousDatabaseSummary) UnmarshalJSON(data []byte) (e error) {
 	copy(m.ProvisionableCpus, model.ProvisionableCpus)
 	m.MemoryPerOracleComputeUnitInGBs = model.MemoryPerOracleComputeUnitInGBs
 
+	m.MemoryPerComputeUnitInGBs = model.MemoryPerComputeUnitInGBs
+
 	m.DataStorageSizeInGBs = model.DataStorageSizeInGBs
 
 	m.UsedDataStorageSizeInGBs = model.UsedDataStorageSizeInGBs
@@ -766,6 +796,12 @@ func (m *AutonomousDatabaseSummary) UnmarshalJSON(data []byte) (e error) {
 	m.IsBackupRetentionLocked = model.IsBackupRetentionLocked
 
 	m.TimeUndeleted = model.TimeUndeleted
+
+	m.TimeEarliestAvailableDbVersionUpgrade = model.TimeEarliestAvailableDbVersionUpgrade
+
+	m.TimeLatestAvailableDbVersionUpgrade = model.TimeLatestAvailableDbVersionUpgrade
+
+	m.TimeScheduledDbVersionUpgrade = model.TimeScheduledDbVersionUpgrade
 
 	m.TimeCreated = model.TimeCreated
 
@@ -937,6 +973,10 @@ func (m *AutonomousDatabaseSummary) UnmarshalJSON(data []byte) (e error) {
 
 	m.CloneTableSpaceList = make([]int, len(model.CloneTableSpaceList))
 	copy(m.CloneTableSpaceList, model.CloneTableSpaceList)
+	m.CloneType = model.CloneType
+
+	m.AdditionalAttributes = model.AdditionalAttributes
+
 	m.Id = model.Id
 
 	m.CompartmentId = model.CompartmentId
@@ -1843,5 +1883,51 @@ func GetAutonomousDatabaseSummaryNetServicesArchitectureEnumStringValues() []str
 // GetMappingAutonomousDatabaseSummaryNetServicesArchitectureEnum performs case Insensitive comparison on enum value and return the desired enum
 func GetMappingAutonomousDatabaseSummaryNetServicesArchitectureEnum(val string) (AutonomousDatabaseSummaryNetServicesArchitectureEnum, bool) {
 	enum, ok := mappingAutonomousDatabaseSummaryNetServicesArchitectureEnumLowerCase[strings.ToLower(val)]
+	return enum, ok
+}
+
+// AutonomousDatabaseSummaryCloneTypeEnum Enum with underlying type: string
+type AutonomousDatabaseSummaryCloneTypeEnum string
+
+// Set of constants representing the allowable values for AutonomousDatabaseSummaryCloneTypeEnum
+const (
+	AutonomousDatabaseSummaryCloneTypeFull     AutonomousDatabaseSummaryCloneTypeEnum = "FULL"
+	AutonomousDatabaseSummaryCloneTypeMetadata AutonomousDatabaseSummaryCloneTypeEnum = "METADATA"
+	AutonomousDatabaseSummaryCloneTypePartial  AutonomousDatabaseSummaryCloneTypeEnum = "PARTIAL"
+)
+
+var mappingAutonomousDatabaseSummaryCloneTypeEnum = map[string]AutonomousDatabaseSummaryCloneTypeEnum{
+	"FULL":     AutonomousDatabaseSummaryCloneTypeFull,
+	"METADATA": AutonomousDatabaseSummaryCloneTypeMetadata,
+	"PARTIAL":  AutonomousDatabaseSummaryCloneTypePartial,
+}
+
+var mappingAutonomousDatabaseSummaryCloneTypeEnumLowerCase = map[string]AutonomousDatabaseSummaryCloneTypeEnum{
+	"full":     AutonomousDatabaseSummaryCloneTypeFull,
+	"metadata": AutonomousDatabaseSummaryCloneTypeMetadata,
+	"partial":  AutonomousDatabaseSummaryCloneTypePartial,
+}
+
+// GetAutonomousDatabaseSummaryCloneTypeEnumValues Enumerates the set of values for AutonomousDatabaseSummaryCloneTypeEnum
+func GetAutonomousDatabaseSummaryCloneTypeEnumValues() []AutonomousDatabaseSummaryCloneTypeEnum {
+	values := make([]AutonomousDatabaseSummaryCloneTypeEnum, 0)
+	for _, v := range mappingAutonomousDatabaseSummaryCloneTypeEnum {
+		values = append(values, v)
+	}
+	return values
+}
+
+// GetAutonomousDatabaseSummaryCloneTypeEnumStringValues Enumerates the set of values in String for AutonomousDatabaseSummaryCloneTypeEnum
+func GetAutonomousDatabaseSummaryCloneTypeEnumStringValues() []string {
+	return []string{
+		"FULL",
+		"METADATA",
+		"PARTIAL",
+	}
+}
+
+// GetMappingAutonomousDatabaseSummaryCloneTypeEnum performs case Insensitive comparison on enum value and return the desired enum
+func GetMappingAutonomousDatabaseSummaryCloneTypeEnum(val string) (AutonomousDatabaseSummaryCloneTypeEnum, bool) {
+	enum, ok := mappingAutonomousDatabaseSummaryCloneTypeEnumLowerCase[strings.ToLower(val)]
 	return enum, ok
 }

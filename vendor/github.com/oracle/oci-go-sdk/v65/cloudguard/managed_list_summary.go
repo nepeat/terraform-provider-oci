@@ -43,6 +43,9 @@ type ManagedListSummary struct {
 	// OCID of the source managed list
 	SourceManagedListId *string `mandatory:"false" json:"sourceManagedListId"`
 
+	// Managed list type group
+	Group *string `mandatory:"false" json:"group"`
+
 	// Is this list editable?
 	IsEditable *bool `mandatory:"false" json:"isEditable"`
 
@@ -94,7 +97,7 @@ func (m ManagedListSummary) ValidateEnumValue() (bool, error) {
 		errMessage = append(errMessage, fmt.Sprintf("unsupported enum value for LifecycleState: %s. Supported values are: %s.", m.LifecycleState, strings.Join(GetLifecycleStateEnumStringValues(), ",")))
 	}
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

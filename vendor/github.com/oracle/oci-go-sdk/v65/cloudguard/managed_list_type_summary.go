@@ -25,6 +25,9 @@ type ManagedListTypeSummary struct {
 	// Managed list type description
 	Description *string `mandatory:"false" json:"description"`
 
+	// Managed list type group
+	Group *string `mandatory:"false" json:"group"`
+
 	// The current lifecycle state of the resource
 	LifecycleState LifecycleStateEnum `mandatory:"false" json:"lifecycleState,omitempty"`
 
@@ -46,7 +49,7 @@ func (m ManagedListTypeSummary) ValidateEnumValue() (bool, error) {
 		errMessage = append(errMessage, fmt.Sprintf("unsupported enum value for LifecycleState: %s. Supported values are: %s.", m.LifecycleState, strings.Join(GetLifecycleStateEnumStringValues(), ",")))
 	}
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

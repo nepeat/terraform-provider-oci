@@ -72,8 +72,16 @@ func (m *createconfigdetails) UnmarshalPolymorphicJSON(data []byte) (interface{}
 		mm := CreateMetricGroupDetails{}
 		err = json.Unmarshal(data, &mm)
 		return mm, err
+	case "AGENT":
+		mm := CreateAgentConfigDetails{}
+		err = json.Unmarshal(data, &mm)
+		return mm, err
 	case "OPTIONS":
 		mm := CreateOptionsDetails{}
+		err = json.Unmarshal(data, &mm)
+		return mm, err
+	case "MACS_APM_EXTENSION":
+		mm := CreateMacsApmExtensionDetails{}
 		err = json.Unmarshal(data, &mm)
 		return mm, err
 	case "APDEX":
@@ -107,7 +115,7 @@ func (m createconfigdetails) ValidateEnumValue() (bool, error) {
 	errMessage := []string{}
 
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

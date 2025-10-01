@@ -17,7 +17,7 @@ import (
 	"strings"
 )
 
-// MySqlApplyErrorWorker If the replica is multi-threaded, error from worker threads. Otherwise error from the applier thread.
+// MySqlApplyErrorWorker If the replica is multi-threaded, error from worker threads. Otherwise, error from the applier thread.
 type MySqlApplyErrorWorker struct {
 
 	// The error number of the most recent error that caused the worker thread to stop.
@@ -41,7 +41,7 @@ func (m MySqlApplyErrorWorker) ValidateEnumValue() (bool, error) {
 	errMessage := []string{}
 
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

@@ -20,6 +20,9 @@ type VideoTrackedObjectProperties struct {
 
 	// The axle count value of a tracked vehicle.
 	AxleCount *int `mandatory:"false" json:"axleCount"`
+
+	// Object IDs of the trailers associated with the tracked vehicle.
+	TrailerIds []int `mandatory:"false" json:"trailerIds"`
 }
 
 func (m VideoTrackedObjectProperties) String() string {
@@ -33,7 +36,7 @@ func (m VideoTrackedObjectProperties) ValidateEnumValue() (bool, error) {
 	errMessage := []string{}
 
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

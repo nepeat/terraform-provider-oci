@@ -23,7 +23,7 @@ type ManagedMySqlDatabaseOutboundReplicationCollection struct {
 	// The list of ManagedMySqlDatabaseOutboundReplicationSummary records.
 	Items []ManagedMySqlDatabaseOutboundReplicationSummary `mandatory:"true" json:"items"`
 
-	// The number of outbound replications from this server.
+	// The number of outbound replications from the MySQL server.
 	OutboundReplicationsCount *int `mandatory:"false" json:"outboundReplicationsCount"`
 }
 
@@ -38,7 +38,7 @@ func (m ManagedMySqlDatabaseOutboundReplicationCollection) ValidateEnumValue() (
 	errMessage := []string{}
 
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

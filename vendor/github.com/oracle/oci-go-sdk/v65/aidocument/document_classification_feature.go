@@ -22,8 +22,11 @@ type DocumentClassificationFeature struct {
 	// The maximum number of results to return.
 	MaxResults *int `mandatory:"false" json:"maxResults"`
 
-	// The custom model ID.
+	// Unique identifier custom model OCID that should be used for inference.
 	ModelId *string `mandatory:"false" json:"modelId"`
+
+	// The custom model tenancy ID when modelId represents aliasName.
+	TenancyId *string `mandatory:"false" json:"tenancyId"`
 }
 
 func (m DocumentClassificationFeature) String() string {
@@ -37,7 +40,7 @@ func (m DocumentClassificationFeature) ValidateEnumValue() (bool, error) {
 	errMessage := []string{}
 
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

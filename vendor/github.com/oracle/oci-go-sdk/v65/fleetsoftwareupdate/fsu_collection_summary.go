@@ -20,16 +20,16 @@ import (
 // FsuCollectionSummary Exadata Fleet Update Collection Resource.
 type FsuCollectionSummary interface {
 
-	// OCID identifier for the Exadata Fleet Update Collection.
+	// The OCID (https://docs.oracle.com/iaas/Content/General/Concepts/identifiers.htm) of the Exadata Fleet Update Collection.
 	GetId() *string
 
-	// Exadata Fleet Update Collection resource display name.
+	// The user-friendly name for the Exadata Fleet Update Collection.
 	GetDisplayName() *string
 
 	// Exadata service type for the target resource members.
 	GetServiceType() CollectionServiceTypesEnum
 
-	// Compartment Identifier
+	// The OCID (https://docs.oracle.com/iaas/Content/General/Concepts/identifiers.htm) of the Compartment.
 	GetCompartmentId() *string
 
 	// The time the Exadata Fleet Update Collection was created. An RFC3339 formatted datetime string.
@@ -128,8 +128,16 @@ func (m *fsucollectionsummary) UnmarshalPolymorphicJSON(data []byte) (interface{
 		mm := GiFsuCollectionSummary{}
 		err = json.Unmarshal(data, &mm)
 		return mm, err
+	case "EXADB_STACK":
+		mm := ExadbStackFsuCollectionSummary{}
+		err = json.Unmarshal(data, &mm)
+		return mm, err
 	case "DB":
 		mm := DbFsuCollectionSummary{}
+		err = json.Unmarshal(data, &mm)
+		return mm, err
+	case "GUEST_OS":
+		mm := GuestOsFsuCollectionSummary{}
 		err = json.Unmarshal(data, &mm)
 		return mm, err
 	default:
@@ -225,7 +233,7 @@ func (m fsucollectionsummary) ValidateEnumValue() (bool, error) {
 	}
 
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

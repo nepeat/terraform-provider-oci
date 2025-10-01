@@ -17,7 +17,7 @@ import (
 	"strings"
 )
 
-// RemoveFsuCollectionTargetsDetails Remove targets from a Exadata Fleet Update Collection.
+// RemoveFsuCollectionTargetsDetails Remove targets from an Exadata Fleet Update Collection.
 type RemoveFsuCollectionTargetsDetails interface {
 }
 
@@ -72,7 +72,7 @@ func (m removefsucollectiontargetsdetails) ValidateEnumValue() (bool, error) {
 	errMessage := []string{}
 
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

@@ -28,6 +28,7 @@ type QueryParameterValidationRequestPolicy struct {
 	// `DISABLED` type turns the validation off.
 	ValidationMode QueryParameterValidationRequestPolicyValidationModeEnum `mandatory:"false" json:"validationMode,omitempty"`
 
+	// The List of Query Parameters
 	Parameters []QueryParameterValidationItem `mandatory:"false" json:"parameters"`
 }
 
@@ -45,7 +46,7 @@ func (m QueryParameterValidationRequestPolicy) ValidateEnumValue() (bool, error)
 		errMessage = append(errMessage, fmt.Sprintf("unsupported enum value for ValidationMode: %s. Supported values are: %s.", m.ValidationMode, strings.Join(GetQueryParameterValidationRequestPolicyValidationModeEnumStringValues(), ",")))
 	}
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

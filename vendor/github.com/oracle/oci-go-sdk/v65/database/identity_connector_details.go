@@ -39,7 +39,7 @@ func (m IdentityConnectorDetails) ValidateEnumValue() (bool, error) {
 		errMessage = append(errMessage, fmt.Sprintf("unsupported enum value for CloudProvider: %s. Supported values are: %s.", m.CloudProvider, strings.Join(GetIdentityConnectorDetailsCloudProviderEnumStringValues(), ",")))
 	}
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }
@@ -50,14 +50,17 @@ type IdentityConnectorDetailsCloudProviderEnum string
 // Set of constants representing the allowable values for IdentityConnectorDetailsCloudProviderEnum
 const (
 	IdentityConnectorDetailsCloudProviderAzure IdentityConnectorDetailsCloudProviderEnum = "AZURE"
+	IdentityConnectorDetailsCloudProviderGcp   IdentityConnectorDetailsCloudProviderEnum = "GCP"
 )
 
 var mappingIdentityConnectorDetailsCloudProviderEnum = map[string]IdentityConnectorDetailsCloudProviderEnum{
 	"AZURE": IdentityConnectorDetailsCloudProviderAzure,
+	"GCP":   IdentityConnectorDetailsCloudProviderGcp,
 }
 
 var mappingIdentityConnectorDetailsCloudProviderEnumLowerCase = map[string]IdentityConnectorDetailsCloudProviderEnum{
 	"azure": IdentityConnectorDetailsCloudProviderAzure,
+	"gcp":   IdentityConnectorDetailsCloudProviderGcp,
 }
 
 // GetIdentityConnectorDetailsCloudProviderEnumValues Enumerates the set of values for IdentityConnectorDetailsCloudProviderEnum
@@ -73,6 +76,7 @@ func GetIdentityConnectorDetailsCloudProviderEnumValues() []IdentityConnectorDet
 func GetIdentityConnectorDetailsCloudProviderEnumStringValues() []string {
 	return []string{
 		"AZURE",
+		"GCP",
 	}
 }
 

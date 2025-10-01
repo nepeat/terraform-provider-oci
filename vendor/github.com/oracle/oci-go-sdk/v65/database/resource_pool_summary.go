@@ -21,6 +21,12 @@ type ResourcePoolSummary struct {
 	// Resource pool size.
 	PoolSize *int `mandatory:"false" json:"poolSize"`
 
+	// Resource Pool total capacity, it's currently 4x of pool size
+	TotalComputeCapacity *int `mandatory:"false" json:"totalComputeCapacity"`
+
+	// Available capacity left for new elastic pool members provision
+	AvailableComputeCapacity *int `mandatory:"false" json:"availableComputeCapacity"`
+
 	// Indicates if the resource pool should be deleted for the Autonomous Database.
 	IsDisabled *bool `mandatory:"false" json:"isDisabled"`
 }
@@ -36,7 +42,7 @@ func (m ResourcePoolSummary) ValidateEnumValue() (bool, error) {
 	errMessage := []string{}
 
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

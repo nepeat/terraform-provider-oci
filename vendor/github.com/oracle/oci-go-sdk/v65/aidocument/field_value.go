@@ -29,15 +29,23 @@ type FieldValue interface {
 
 	// The detected text of a field.
 	GetText() *string
+
+	// The normalized value.
+	GetNormalizedValue() *string
+
+	// The normalized value confidence score between 0 and 1.
+	GetNormalizedConfidence() *float32
 }
 
 type fieldvalue struct {
-	JsonData        []byte
-	Text            *string          `mandatory:"false" json:"text"`
-	Confidence      *float32         `mandatory:"true" json:"confidence"`
-	BoundingPolygon *BoundingPolygon `mandatory:"true" json:"boundingPolygon"`
-	WordIndexes     []int            `mandatory:"true" json:"wordIndexes"`
-	ValueType       string           `json:"valueType"`
+	JsonData             []byte
+	Text                 *string          `mandatory:"false" json:"text"`
+	NormalizedValue      *string          `mandatory:"false" json:"normalizedValue"`
+	NormalizedConfidence *float32         `mandatory:"false" json:"normalizedConfidence"`
+	Confidence           *float32         `mandatory:"true" json:"confidence"`
+	BoundingPolygon      *BoundingPolygon `mandatory:"true" json:"boundingPolygon"`
+	WordIndexes          []int            `mandatory:"true" json:"wordIndexes"`
+	ValueType            string           `json:"valueType"`
 }
 
 // UnmarshalJSON unmarshals json
@@ -55,6 +63,8 @@ func (m *fieldvalue) UnmarshalJSON(data []byte) error {
 	m.BoundingPolygon = s.Model.BoundingPolygon
 	m.WordIndexes = s.Model.WordIndexes
 	m.Text = s.Model.Text
+	m.NormalizedValue = s.Model.NormalizedValue
+	m.NormalizedConfidence = s.Model.NormalizedConfidence
 	m.ValueType = s.Model.ValueType
 
 	return err
@@ -108,6 +118,16 @@ func (m fieldvalue) GetText() *string {
 	return m.Text
 }
 
+// GetNormalizedValue returns NormalizedValue
+func (m fieldvalue) GetNormalizedValue() *string {
+	return m.NormalizedValue
+}
+
+// GetNormalizedConfidence returns NormalizedConfidence
+func (m fieldvalue) GetNormalizedConfidence() *float32 {
+	return m.NormalizedConfidence
+}
+
 // GetConfidence returns Confidence
 func (m fieldvalue) GetConfidence() *float32 {
 	return m.Confidence
@@ -134,7 +154,7 @@ func (m fieldvalue) ValidateEnumValue() (bool, error) {
 	errMessage := []string{}
 
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

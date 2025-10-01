@@ -50,6 +50,10 @@ func (m *entrydetails) UnmarshalPolymorphicJSON(data []byte) (interface{}, error
 
 	var err error
 	switch m.EntryType {
+	case "AUDIT_POLICY":
+		mm := AuditPolicyEntryDetails{}
+		err = json.Unmarshal(data, &mm)
+		return mm, err
 	case "FIREWALL_POLICY":
 		mm := FirewallPolicyEntryDetails{}
 		err = json.Unmarshal(data, &mm)
@@ -71,7 +75,7 @@ func (m entrydetails) ValidateEnumValue() (bool, error) {
 	errMessage := []string{}
 
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }
@@ -82,14 +86,17 @@ type EntryDetailsEntryTypeEnum string
 // Set of constants representing the allowable values for EntryDetailsEntryTypeEnum
 const (
 	EntryDetailsEntryTypeFirewallPolicy EntryDetailsEntryTypeEnum = "FIREWALL_POLICY"
+	EntryDetailsEntryTypeAuditPolicy    EntryDetailsEntryTypeEnum = "AUDIT_POLICY"
 )
 
 var mappingEntryDetailsEntryTypeEnum = map[string]EntryDetailsEntryTypeEnum{
 	"FIREWALL_POLICY": EntryDetailsEntryTypeFirewallPolicy,
+	"AUDIT_POLICY":    EntryDetailsEntryTypeAuditPolicy,
 }
 
 var mappingEntryDetailsEntryTypeEnumLowerCase = map[string]EntryDetailsEntryTypeEnum{
 	"firewall_policy": EntryDetailsEntryTypeFirewallPolicy,
+	"audit_policy":    EntryDetailsEntryTypeAuditPolicy,
 }
 
 // GetEntryDetailsEntryTypeEnumValues Enumerates the set of values for EntryDetailsEntryTypeEnum
@@ -105,6 +112,7 @@ func GetEntryDetailsEntryTypeEnumValues() []EntryDetailsEntryTypeEnum {
 func GetEntryDetailsEntryTypeEnumStringValues() []string {
 	return []string{
 		"FIREWALL_POLICY",
+		"AUDIT_POLICY",
 	}
 }
 

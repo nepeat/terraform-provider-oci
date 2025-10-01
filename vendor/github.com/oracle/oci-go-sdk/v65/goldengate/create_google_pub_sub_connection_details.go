@@ -25,11 +25,6 @@ type CreateGooglePubSubConnectionDetails struct {
 	// The OCID (https://docs.oracle.com/iaas/Content/General/Concepts/identifiers.htm) of the compartment being referenced.
 	CompartmentId *string `mandatory:"true" json:"compartmentId"`
 
-	// The base64 encoded content of the service account key file containing
-	// the credentials required to use Google PubSub.
-	// Deprecated: This field is deprecated and replaced by "serviceAccountKeyFileSecretId". This field will be removed after February 15 2026.
-	ServiceAccountKeyFile *string `mandatory:"true" json:"serviceAccountKeyFile"`
-
 	// Metadata about this specific object.
 	Description *string `mandatory:"false" json:"description"`
 
@@ -62,6 +57,11 @@ type CreateGooglePubSubConnectionDetails struct {
 
 	// Indicates that sensitive attributes are provided via Secrets.
 	DoesUseSecretIds *bool `mandatory:"false" json:"doesUseSecretIds"`
+
+	// The base64 encoded content of the service account key file containing
+	// the credentials required to use Google PubSub.
+	// Deprecated: This field is deprecated and replaced by "serviceAccountKeyFileSecretId". This field will be removed after February 15 2026.
+	ServiceAccountKeyFile *string `mandatory:"false" json:"serviceAccountKeyFile"`
 
 	// The OCID (https://docs.oracle.com/iaas/Content/General/Concepts/identifiers.htm) of the Secret where the content of the service account key file is stored,
 	// which contains the credentials required to use Google PubSub.
@@ -155,7 +155,7 @@ func (m CreateGooglePubSubConnectionDetails) ValidateEnumValue() (bool, error) {
 		errMessage = append(errMessage, fmt.Sprintf("unsupported enum value for TechnologyType: %s. Supported values are: %s.", m.TechnologyType, strings.Join(GetGooglePubSubConnectionTechnologyTypeEnumStringValues(), ",")))
 	}
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

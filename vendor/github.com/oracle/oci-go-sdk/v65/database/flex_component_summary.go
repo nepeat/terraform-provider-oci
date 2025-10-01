@@ -16,6 +16,7 @@ import (
 )
 
 // FlexComponentSummary The Flex Components for a DB system. The Flex Component determines resources to allocate to the DB system -  CPU cores, memory and storage for Flex shapes.
+// For Exadata flexible shapes, detailed specifications can be found in https://docs.oracle.com/en/engineered-systems/exadata-cloud-service/ecscm/exa-service-desc.html#GUID-9E090174-5C57-4EB1-9243-B470F9F10D6B
 // To use any of the API operations, you must be authorized in an IAM policy. If you're not authorized, talk to an administrator.
 // If you're an administrator who needs to write policies to give users access,
 // see Getting Started with Policies (https://docs.oracle.com/iaas/Content/Identity/Concepts/policygetstarted.htm).
@@ -69,7 +70,7 @@ func (m FlexComponentSummary) ValidateEnumValue() (bool, error) {
 		errMessage = append(errMessage, fmt.Sprintf("unsupported enum value for HardwareType: %s. Supported values are: %s.", m.HardwareType, strings.Join(GetFlexComponentSummaryHardwareTypeEnumStringValues(), ",")))
 	}
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

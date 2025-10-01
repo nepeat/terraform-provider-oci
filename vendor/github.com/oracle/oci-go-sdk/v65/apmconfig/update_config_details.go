@@ -67,6 +67,14 @@ func (m *updateconfigdetails) UnmarshalPolymorphicJSON(data []byte) (interface{}
 		mm := UpdateMetricGroupDetails{}
 		err = json.Unmarshal(data, &mm)
 		return mm, err
+	case "AGENT":
+		mm := UpdateAgentConfigDetails{}
+		err = json.Unmarshal(data, &mm)
+		return mm, err
+	case "MACS_APM_EXTENSION":
+		mm := UpdateMacsApmExtensionDetails{}
+		err = json.Unmarshal(data, &mm)
+		return mm, err
 	case "APDEX":
 		mm := UpdateApdexRulesDetails{}
 		err = json.Unmarshal(data, &mm)
@@ -106,7 +114,7 @@ func (m updateconfigdetails) ValidateEnumValue() (bool, error) {
 	errMessage := []string{}
 
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

@@ -623,6 +623,24 @@ var exportDatabaseAutonomousContainerDatabaseAddStandbyHints = &tf_export.Terraf
 	},
 }
 
+var exportDatabasePluggableDatabaseSnapshotHints = &tf_export.TerraformResourceHints{
+	ResourceClass:        "oci_database_pluggable_database_snapshot",
+	DatasourceClass:      "oci_database_pluggable_database_snapshots",
+	DatasourceItemsAttr:  "pluggable_database_snapshots",
+	ResourceAbbreviation: "pluggable_database_snapshot",
+	DiscoverableLifecycleStates: []string{
+		string(oci_database.PluggableDatabaseSnapshotLifecycleStateAvailable),
+	},
+}
+
+var exportDatabaseCloudExadataInfrastructureConfigureExascaleManagementHints = &tf_export.TerraformResourceHints{
+	ResourceClass:        "oci_database_cloud_exadata_infrastructure_configure_exascale_management",
+	ResourceAbbreviation: "cloud_exadata_infrastructure_configure_exascale_management",
+	DiscoverableLifecycleStates: []string{
+		string(oci_database.CloudExadataInfrastructureLifecycleStateAvailable),
+	},
+}
+
 var databaseResourceGraph = tf_export.TerraformResourceGraph{
 	"oci_identity_compartment": {
 		{TerraformResourceHints: exportDatabaseAutonomousContainerDatabaseHints},
@@ -656,6 +674,7 @@ var databaseResourceGraph = tf_export.TerraformResourceGraph{
 		{TerraformResourceHints: exportDatabaseSchedulingPolicyHints},
 		{TerraformResourceHints: exportDatabaseExecutionActionHints},
 		{TerraformResourceHints: exportDatabaseScheduledActionHints},
+		{TerraformResourceHints: exportDatabasePluggableDatabaseSnapshotHints},
 	},
 	"oci_database_autonomous_container_database": {
 		{

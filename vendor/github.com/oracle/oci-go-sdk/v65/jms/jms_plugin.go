@@ -21,7 +21,8 @@ type JmsPlugin struct {
 	// The OCID (https://docs.oracle.com/iaas/Content/General/Concepts/identifiers.htm) to identify this JmsPlugin.
 	Id *string `mandatory:"true" json:"id"`
 
-	// The OCID (https://docs.oracle.com/iaas/Content/General/Concepts/identifiers.htm) of the Management Agent (OMA) or the Oracle Cloud Agent (OCA) instance where the JMS plugin is deployed.
+	// The OCID (https://docs.oracle.com/iaas/Content/General/Concepts/identifiers.htm) of the Management Agent (OMA), the Oracle Cloud Agent (OCA), or the Oracle Container Management Agent (OCMA)
+	// instance where the JMS plugin is deployed.
 	AgentId *string `mandatory:"true" json:"agentId"`
 
 	// The agent type.
@@ -39,7 +40,7 @@ type JmsPlugin struct {
 	// The OCID (https://docs.oracle.com/iaas/Content/General/Concepts/identifiers.htm) of the fleet.
 	FleetId *string `mandatory:"false" json:"fleetId"`
 
-	// The OMA/OCA agent's compartment OCID (https://docs.oracle.com/iaas/Content/General/Concepts/identifiers.htm).
+	// The OMA/OCA/OCMA agent's compartment OCID (https://docs.oracle.com/iaas/Content/General/Concepts/identifiers.htm).
 	CompartmentId *string `mandatory:"false" json:"compartmentId"`
 
 	// The hostname of the agent.
@@ -101,7 +102,7 @@ func (m JmsPlugin) ValidateEnumValue() (bool, error) {
 		errMessage = append(errMessage, fmt.Sprintf("unsupported enum value for OsFamily: %s. Supported values are: %s.", m.OsFamily, strings.Join(GetOsFamilyEnumStringValues(), ",")))
 	}
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

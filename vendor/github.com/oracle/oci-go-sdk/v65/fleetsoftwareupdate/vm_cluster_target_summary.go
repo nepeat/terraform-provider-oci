@@ -34,6 +34,9 @@ type VmClusterTargetSummary struct {
 
 	// OCID of the Grid Infrastructure software image.
 	SoftwareImageId *string `mandatory:"false" json:"softwareImageId"`
+
+	// Exadata Image (Guest OS) version.
+	SystemVersion *string `mandatory:"false" json:"systemVersion"`
 }
 
 // GetId returns Id
@@ -57,7 +60,7 @@ func (m VmClusterTargetSummary) ValidateEnumValue() (bool, error) {
 	errMessage := []string{}
 
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

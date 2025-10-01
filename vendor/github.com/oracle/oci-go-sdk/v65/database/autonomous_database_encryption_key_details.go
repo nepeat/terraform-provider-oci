@@ -66,6 +66,10 @@ func (m *autonomousdatabaseencryptionkeydetails) UnmarshalPolymorphicJSON(data [
 		mm := OciKeyDetails{}
 		err = json.Unmarshal(data, &mm)
 		return mm, err
+	case "GCP":
+		mm := GcpKeyDetails{}
+		err = json.Unmarshal(data, &mm)
+		return mm, err
 	case "ORACLE_MANAGED":
 		mm := OracleManagedKeyDetails{}
 		err = json.Unmarshal(data, &mm)
@@ -87,7 +91,7 @@ func (m autonomousdatabaseencryptionkeydetails) ValidateEnumValue() (bool, error
 	errMessage := []string{}
 
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

@@ -25,6 +25,9 @@ type FindingAnalyticsDimensions struct {
 	// The category of the top finding.
 	TopFindingCategory *string `mandatory:"false" json:"topFindingCategory"`
 
+	// The category of the top finding.
+	Category *string `mandatory:"false" json:"category"`
+
 	// The short title of the finding.
 	Title *string `mandatory:"false" json:"title"`
 
@@ -37,8 +40,14 @@ type FindingAnalyticsDimensions struct {
 	// The severity (risk level) of the finding.
 	Severity FindingAnalyticsDimensionsSeverityEnum `mandatory:"false" json:"severity,omitempty"`
 
+	// The explanation of the issue in this finding. It explains the reason for the rule and, if a risk is reported, it may also explain the recommended actions for remediation.
+	Remarks *string `mandatory:"false" json:"remarks"`
+
 	// The OCID of the target database.
 	TargetId *string `mandatory:"false" json:"targetId"`
+
+	// Provides information on whether the finding is related to a CIS Oracle Database Benchmark recommendation, STIG rule, or related to a GDPR Article/Recital.
+	References *References `mandatory:"false" json:"references"`
 }
 
 func (m FindingAnalyticsDimensions) String() string {
@@ -58,7 +67,7 @@ func (m FindingAnalyticsDimensions) ValidateEnumValue() (bool, error) {
 		errMessage = append(errMessage, fmt.Sprintf("unsupported enum value for Severity: %s. Supported values are: %s.", m.Severity, strings.Join(GetFindingAnalyticsDimensionsSeverityEnumStringValues(), ",")))
 	}
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

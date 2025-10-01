@@ -27,6 +27,8 @@ type PipelineStepOverrideDetails struct {
 	StepContainerConfigurationDetails PipelineContainerConfigurationDetails `mandatory:"false" json:"stepContainerConfigurationDetails"`
 
 	StepDataflowConfigurationDetails *PipelineDataflowConfigurationDetails `mandatory:"false" json:"stepDataflowConfigurationDetails"`
+
+	StepInfrastructureConfigurationDetails *PipelineInfrastructureConfigurationDetails `mandatory:"false" json:"stepInfrastructureConfigurationDetails"`
 }
 
 func (m PipelineStepOverrideDetails) String() string {
@@ -40,7 +42,7 @@ func (m PipelineStepOverrideDetails) ValidateEnumValue() (bool, error) {
 	errMessage := []string{}
 
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }
@@ -48,10 +50,11 @@ func (m PipelineStepOverrideDetails) ValidateEnumValue() (bool, error) {
 // UnmarshalJSON unmarshals from json
 func (m *PipelineStepOverrideDetails) UnmarshalJSON(data []byte) (e error) {
 	model := struct {
-		StepContainerConfigurationDetails pipelinecontainerconfigurationdetails `json:"stepContainerConfigurationDetails"`
-		StepDataflowConfigurationDetails  *PipelineDataflowConfigurationDetails `json:"stepDataflowConfigurationDetails"`
-		StepName                          *string                               `json:"stepName"`
-		StepConfigurationDetails          *PipelineStepConfigurationDetails     `json:"stepConfigurationDetails"`
+		StepContainerConfigurationDetails      pipelinecontainerconfigurationdetails       `json:"stepContainerConfigurationDetails"`
+		StepDataflowConfigurationDetails       *PipelineDataflowConfigurationDetails       `json:"stepDataflowConfigurationDetails"`
+		StepInfrastructureConfigurationDetails *PipelineInfrastructureConfigurationDetails `json:"stepInfrastructureConfigurationDetails"`
+		StepName                               *string                                     `json:"stepName"`
+		StepConfigurationDetails               *PipelineStepConfigurationDetails           `json:"stepConfigurationDetails"`
 	}{}
 
 	e = json.Unmarshal(data, &model)
@@ -70,6 +73,8 @@ func (m *PipelineStepOverrideDetails) UnmarshalJSON(data []byte) (e error) {
 	}
 
 	m.StepDataflowConfigurationDetails = model.StepDataflowConfigurationDetails
+
+	m.StepInfrastructureConfigurationDetails = model.StepInfrastructureConfigurationDetails
 
 	m.StepName = model.StepName
 

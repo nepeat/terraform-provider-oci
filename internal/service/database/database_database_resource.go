@@ -140,6 +140,11 @@ func DatabaseDatabaseResource() *schema.Resource {
 												// Required
 
 												// Optional
+												"backup_retention_policy_on_terminate": {
+													Type:     schema.TypeString,
+													Optional: true,
+													Computed: true,
+												},
 												"dbrs_policy_id": {
 													Type:     schema.TypeString,
 													Optional: true,
@@ -151,6 +156,12 @@ func DatabaseDatabaseResource() *schema.Resource {
 													Computed: true,
 												},
 												"is_remote": {
+													Type:     schema.TypeBool,
+													Optional: true,
+													Computed: true,
+													ForceNew: true,
+												},
+												"is_retention_lock_enabled": {
 													Type:     schema.TypeBool,
 													Optional: true,
 													Computed: true,
@@ -170,6 +181,9 @@ func DatabaseDatabaseResource() *schema.Resource {
 														string(oci_database.BackupBackupDestinationTypeAwsS3),
 														string(oci_database.BackupBackupDestinationTypeDbrs),
 														string(oci_database.BackupBackupDestinationTypeObjectStore),
+														string(oci_database.BackupDestinationDetailsTypeNfs),
+														string(oci_database.BackupDestinationDetailsTypeRecoveryAppliance),
+														string(oci_database.BackupDestinationDetailsTypeLocal),
 													}, true),
 												},
 												"vpc_user": {
@@ -355,6 +369,34 @@ func DatabaseDatabaseResource() *schema.Resource {
 							Optional:         true,
 							Sensitive:        true,
 							DiffSuppressFunc: sourceDbDetailsDiffSuppress,
+						},
+						"storage_size_details": {
+							Type:     schema.TypeList,
+							Optional: true,
+							Computed: true,
+							MaxItems: 1,
+							MinItems: 1,
+							Elem: &schema.Resource{
+								Schema: map[string]*schema.Schema{
+									// Required
+									"data_storage_size_in_gb": {
+										Type:     schema.TypeInt,
+										Required: true,
+									},
+									"reco_storage_size_in_gbs": {
+										Type:     schema.TypeInt,
+										Required: true,
+									},
+
+									// Optional
+
+									// Computed
+									"redo_log_storage_size_in_gbs": {
+										Type:     schema.TypeInt,
+										Computed: true,
+									},
+								},
+							},
 						},
 						"tde_wallet_password": {
 							Type:      schema.TypeString,
@@ -593,6 +635,10 @@ func DatabaseDatabaseResource() *schema.Resource {
 									// Optional
 
 									// Computed
+									"backup_retention_policy_on_terminate": {
+										Type:     schema.TypeString,
+										Computed: true,
+									},
 									"dbrs_policy_id": {
 										Type:     schema.TypeString,
 										Computed: true,
@@ -602,6 +648,10 @@ func DatabaseDatabaseResource() *schema.Resource {
 										Computed: true,
 									},
 									"is_remote": {
+										Type:     schema.TypeBool,
+										Computed: true,
+									},
+									"is_retention_lock_enabled": {
 										Type:     schema.TypeBool,
 										Computed: true,
 									},
@@ -709,6 +759,31 @@ func DatabaseDatabaseResource() *schema.Resource {
 			"state": {
 				Type:     schema.TypeString,
 				Computed: true,
+			},
+			"storage_size_details": {
+				Type:     schema.TypeList,
+				Computed: true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						// Required
+
+						// Optional
+
+						// Computed
+						"data_storage_size_in_gb": {
+							Type:     schema.TypeInt,
+							Computed: true,
+						},
+						"reco_storage_size_in_gbs": {
+							Type:     schema.TypeInt,
+							Computed: true,
+						},
+						"redo_log_storage_size_in_gbs": {
+							Type:     schema.TypeInt,
+							Computed: true,
+						},
+					},
+				},
 			},
 			"system_tags": {
 				Type:     schema.TypeMap,
@@ -1001,6 +1076,12 @@ func (s *DatabaseDatabaseResourceCrud) SetData() error {
 
 	s.D.Set("state", s.Res.LifecycleState)
 
+	if s.Res.StorageSizeDetails != nil {
+		s.D.Set("storage_size_details", []interface{}{DatabaseStorageSizeResponseDetailsToMap(s.Res.StorageSizeDetails)})
+	} else {
+		s.D.Set("storage_size_details", nil)
+	}
+
 	s.D.Set("system_tags", tfresource.SystemTagsToMap(s.Res.SystemTags))
 
 	if s.Res.TimeCreated != nil {
@@ -1080,6 +1161,10 @@ func (s *DatabaseDatabaseResourceCrud) ChangeKeyStoreType() error {
 func (s *DatabaseDatabaseResourceCrud) mapToBackupDestinationDetails(fieldKeyFormat string) (oci_database.BackupDestinationDetails, error) {
 	result := oci_database.BackupDestinationDetails{}
 
+	if backupRetentionPolicyOnTerminate, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "backup_retention_policy_on_terminate")); ok {
+		result.BackupRetentionPolicyOnTerminate = oci_database.BackupDestinationDetailsBackupRetentionPolicyOnTerminateEnum(backupRetentionPolicyOnTerminate.(string))
+	}
+
 	if dbrsPolicyId, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "dbrs_policy_id")); ok {
 		tmp := dbrsPolicyId.(string)
 		result.DbrsPolicyId = &tmp
@@ -1098,6 +1183,11 @@ func (s *DatabaseDatabaseResourceCrud) mapToBackupDestinationDetails(fieldKeyFor
 	if isRemote, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "is_remote")); ok {
 		tmp := isRemote.(bool)
 		result.IsRemote = &tmp
+	}
+
+	if isRetentionLockEnabled, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "is_retention_lock_enabled")); ok {
+		tmp := isRetentionLockEnabled.(bool)
+		result.IsRetentionLockEnabled = &tmp
 	}
 
 	if remoteRegion, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "remote_region")); ok {
@@ -1124,29 +1214,38 @@ func (s *DatabaseDatabaseResourceCrud) mapToBackupDestinationDetails(fieldKeyFor
 
 func (s *DatabaseDatabaseResourceCrud) mapToUpdateBackupDestinationDetails(fieldKeyFormat string) (oci_database.BackupDestinationDetails, error) {
 	result := oci_database.BackupDestinationDetails{}
-
-	if dbrsPolicyId, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "dbrs_policy_id")); ok && s.D.HasChange(fmt.Sprintf(fieldKeyFormat, "dbrs_policy_id")) {
-		tmp := dbrsPolicyId.(string)
-		result.DbrsPolicyId = &tmp
+	fields := map[string]func(string){
+		"dbrs_policy_id": func(val string) { tmp := val; result.DbrsPolicyId = &tmp },
+		"id":             func(val string) { tmp := val; result.Id = &tmp },
+		"type":           func(val string) { result.Type = oci_database.BackupDestinationDetailsTypeEnum(val) },
+		"vpc_password":   func(val string) { tmp := val; result.VpcPassword = &tmp },
+		"vpc_user":       func(val string) { tmp := val; result.VpcUser = &tmp },
 	}
 
-	if id, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "id")); ok && s.D.HasChange(fmt.Sprintf(fieldKeyFormat, "id")) {
-		tmp := id.(string)
-		result.Id = &tmp
+	for fieldName, setter := range fields {
+		key := fmt.Sprintf(fieldKeyFormat, fieldName)
+		if val, ok := s.D.GetOkExists(key); ok {
+			if s.D.HasChange(key) {
+				setter(val.(string))
+			} else {
+				_, oldVal := s.D.GetChange(key)
+				oldValStr := oldVal.(string)
+				if oldValStr != "" {
+					setter(oldValStr)
+				}
+			}
+		}
 	}
 
-	if type_, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "type")); ok && s.D.HasChange(fmt.Sprintf(fieldKeyFormat, "type")) {
-		result.Type = oci_database.BackupDestinationDetailsTypeEnum(type_.(string))
+	// handle bool field
+	if isRetentionLockEnabled, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "is_retention_lock_enabled")); ok {
+		tmp := isRetentionLockEnabled.(bool)
+		result.IsRetentionLockEnabled = &tmp
 	}
 
-	if vpcPassword, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "vpc_password")); ok && s.D.HasChange(fmt.Sprintf(fieldKeyFormat, "vpc_password")) {
-		tmp := vpcPassword.(string)
-		result.VpcPassword = &tmp
-	}
-
-	if vpcUser, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "vpc_user")); ok && s.D.HasChange(fmt.Sprintf(fieldKeyFormat, "vpc_user")) {
-		tmp := vpcUser.(string)
-		result.VpcUser = &tmp
+	// handle enum field
+	if backupRetentionPolicyOnTerminate, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "backup_retention_policy_on_terminate")); ok {
+		result.BackupRetentionPolicyOnTerminate = oci_database.BackupDestinationDetailsBackupRetentionPolicyOnTerminateEnum(backupRetentionPolicyOnTerminate.(string))
 	}
 
 	return result, nil
@@ -1191,6 +1290,8 @@ func (s *DatabaseDatabaseResourceCrud) DatabaseBackupConfigToMap(obj *oci_databa
 func (s *DatabaseDatabaseResourceCrud) BackupDestinationDetailsToMap(obj oci_database.BackupDestinationDetails) map[string]interface{} {
 	result := map[string]interface{}{}
 
+	result["backup_retention_policy_on_terminate"] = string(obj.BackupRetentionPolicyOnTerminate)
+
 	if obj.DbrsPolicyId != nil {
 		result["dbrs_policy_id"] = string(*obj.DbrsPolicyId)
 	}
@@ -1205,6 +1306,10 @@ func (s *DatabaseDatabaseResourceCrud) BackupDestinationDetailsToMap(obj oci_dat
 
 	if obj.IsRemote != nil {
 		result["is_remote"] = bool(*obj.IsRemote)
+	}
+
+	if obj.IsRetentionLockEnabled != nil {
+		result["is_retention_lock_enabled"] = bool(*obj.IsRetentionLockEnabled)
 	}
 
 	if obj.RemoteRegion != nil {
@@ -1227,6 +1332,8 @@ func (s *DatabaseDatabaseResourceCrud) BackupDestinationDetailsToMap(obj oci_dat
 func BackupDestinationDetailsToMap(obj oci_database.BackupDestinationDetails) map[string]interface{} {
 	result := map[string]interface{}{}
 
+	result["backup_retention_policy_on_terminate"] = string(obj.BackupRetentionPolicyOnTerminate)
+
 	if obj.DbrsPolicyId != nil {
 		result["dbrs_policy_id"] = string(*obj.DbrsPolicyId)
 	}
@@ -1241,6 +1348,10 @@ func BackupDestinationDetailsToMap(obj oci_database.BackupDestinationDetails) ma
 
 	if obj.IsRemote != nil {
 		result["is_remote"] = bool(*obj.IsRemote)
+	}
+
+	if obj.IsRetentionLockEnabled != nil {
+		result["is_retention_lock_enabled"] = bool(*obj.IsRetentionLockEnabled)
 	}
 
 	if obj.RemoteRegion != nil {
@@ -1366,6 +1477,17 @@ func (s *DatabaseDatabaseResourceCrud) mapToCreateDatabaseDetails(fieldKeyFormat
 		result.SidPrefix = &tmp
 	}
 
+	if storageSizeDetails, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "storage_size_details")); ok {
+		if tmpList := storageSizeDetails.([]interface{}); len(tmpList) > 0 {
+			fieldKeyFormatNextLevel := fmt.Sprintf("%s.%d.%%s", fmt.Sprintf(fieldKeyFormat, "storage_size_details"), 0)
+			tmp, err := s.mapToDatabaseStorageSizeDetails(fieldKeyFormatNextLevel)
+			if err != nil {
+				return result, fmt.Errorf("unable to convert storage_size_details, encountered error: %v", err)
+			}
+			result.StorageSizeDetails = &tmp
+		}
+	}
+
 	if tdeWalletPassword, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "tde_wallet_password")); ok {
 		tmp := tdeWalletPassword.(string)
 		result.TdeWalletPassword = &tmp
@@ -1407,6 +1529,18 @@ func (s *DatabaseDatabaseResourceCrud) mapToCreateDatabaseFromBackupDetails(fiel
 		result.DbUniqueName = &tmp
 	}
 
+	if definedTags, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "defined_tags")); ok {
+		tmp, err := tfresource.MapToDefinedTags(definedTags.(map[string]interface{}))
+		if err != nil {
+			return result, fmt.Errorf("unable to convert defined_tags, encountered error: %v", err)
+		}
+		result.DefinedTags = tmp
+	}
+
+	if freeformTags, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "freeform_tags")); ok {
+		result.FreeformTags = tfresource.ObjectMapToStringMap(freeformTags.(map[string]interface{}))
+	}
+
 	if pluggableDatabases, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "pluggable_databases")); ok {
 		interfaces := pluggableDatabases.([]interface{})
 		tmp := make([]string, len(interfaces))
@@ -1436,6 +1570,17 @@ func (s *DatabaseDatabaseResourceCrud) mapToCreateDatabaseFromBackupDetails(fiel
 		}
 	}
 
+	if storageSizeDetails, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "storage_size_details")); ok {
+		if tmpList := storageSizeDetails.([]interface{}); len(tmpList) > 0 {
+			fieldKeyFormatNextLevel := fmt.Sprintf("%s.%d.%%s", fmt.Sprintf(fieldKeyFormat, "storage_size_details"), 0)
+			tmp, err := s.mapToDatabaseStorageSizeDetails(fieldKeyFormatNextLevel)
+			if err != nil {
+				return result, fmt.Errorf("unable to convert storage_size_details, encountered error: %v", err)
+			}
+			result.StorageSizeDetails = &tmp
+		}
+	}
+
 	return result, nil
 }
 
@@ -1450,6 +1595,18 @@ func (s *DatabaseDatabaseResourceCrud) mapToCreateStandbyDetails(fieldKeyFormat 
 	if dbUniqueName, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "db_unique_name")); ok {
 		tmp := dbUniqueName.(string)
 		result.DbUniqueName = &tmp
+	}
+
+	if definedTags, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "defined_tags")); ok {
+		tmp, err := tfresource.MapToDefinedTags(definedTags.(map[string]interface{}))
+		if err != nil {
+			return result, fmt.Errorf("unable to convert defined_tags, encountered error: %v", err)
+		}
+		result.DefinedTags = tmp
+	}
+
+	if freeformTags, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "freeform_tags")); ok {
+		result.FreeformTags = tfresource.ObjectMapToStringMap(freeformTags.(map[string]interface{}))
 	}
 
 	if isActiveDataGuardEnabled, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "is_active_data_guard_enabled")); ok {
@@ -1488,6 +1645,17 @@ func (s *DatabaseDatabaseResourceCrud) mapToCreateStandbyDetails(fieldKeyFormat 
 				return result, fmt.Errorf("unable to convert source_encryption_key_location_details, encountered error: %v", err)
 			}
 			result.SourceEncryptionKeyLocationDetails = tmp
+		}
+	}
+
+	if storageSizeDetails, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "storage_size_details")); ok {
+		if tmpList := storageSizeDetails.([]interface{}); len(tmpList) > 0 {
+			fieldKeyFormatNextLevel := fmt.Sprintf("%s.%d.%%s", fmt.Sprintf(fieldKeyFormat, "storage_size_details"), 0)
+			tmp, err := s.mapToDatabaseStorageSizeDetails(fieldKeyFormatNextLevel)
+			if err != nil {
+				return result, fmt.Errorf("unable to convert storage_size_details, encountered error: %v", err)
+			}
+			result.StorageSizeDetails = &tmp
 		}
 	}
 
@@ -1996,6 +2164,17 @@ func (s *DatabaseDatabaseResourceCrud) mapToUpdateDatabaseDetails(fieldKeyFormat
 		result.NewAdminPassword = &tmp
 	}
 
+	if storageSizeDetails, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "storage_size_details")); ok && s.D.HasChange(fmt.Sprintf(fieldKeyFormat, "storage_size_details")) {
+		if tmpList := storageSizeDetails.([]interface{}); len(tmpList) > 0 {
+			fieldKeyFormatNextLevel := fmt.Sprintf("%s.%d.%%s", fmt.Sprintf(fieldKeyFormat, "storage_size_details"), 0)
+			tmp, err := s.mapToDatabaseStorageSizeDetails(fieldKeyFormatNextLevel)
+			if err != nil {
+				return result, err
+			}
+			result.StorageSizeDetails = &tmp
+		}
+	}
+
 	if tdeWalletPassword, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "tde_wallet_password")); ok && s.D.HasChange(fmt.Sprintf(fieldKeyFormat, "tde_wallet_password")) {
 		tmp := tdeWalletPassword.(string)
 		result.NewTdeWalletPassword = &tmp
@@ -2066,6 +2245,12 @@ func (s *DatabaseDatabaseResourceCrud) DatabaseToMap(obj *oci_database.Database)
 
 	if obj.SidPrefix != nil {
 		result["sid_prefix"] = string(*obj.SidPrefix)
+	}
+
+	if obj.StorageSizeDetails != nil {
+		result["storage_size_details"] = []interface{}{DatabaseStorageSizeResponseDetailsToMap(obj.StorageSizeDetails)}
+	} else {
+		result["storage_size_details"] = nil
 	}
 
 	if hsmPassword, ok := s.D.GetOkExists("database.0.encryption_key_location_details.0.hsm_password"); ok && hsmPassword != nil {
@@ -2486,6 +2671,11 @@ func adgDiffSuppress(k string, old, new string, d *schema.ResourceData) bool {
 		item, ok := member.(map[string]interface{})
 		if ok {
 			if databaseId, exists := item["database_id"]; exists && databaseId.(string) == d.Id() {
+				// To suppress diff on the primary database for the field "is_active_data_guard_enabled" because during
+				//role change with the standby (failover/switchover), there is a diff in the primary db if the standby db is created with ADG value as true.
+				if dgRoleValue, exists := item["role"]; exists && dgRoleValue.(string) == "PRIMARY" {
+					return true
+				}
 				if fieldValue, exists := item["is_active_data_guard_enabled"]; exists {
 					return compareBooleanField(fieldValue, new)
 				}
@@ -2507,4 +2697,38 @@ func compareBooleanField(fieldValue interface{}, new string) bool {
 		return false
 	}
 	return boolValue == newBool
+}
+
+func (s *DatabaseDatabaseResourceCrud) mapToDatabaseStorageSizeDetails(fieldKeyFormat string) (oci_database.DatabaseStorageSizeDetails, error) {
+	result := oci_database.DatabaseStorageSizeDetails{}
+
+	if dataStorageSizeInGB, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "data_storage_size_in_gb")); ok {
+		tmp := dataStorageSizeInGB.(int)
+		result.DataStorageSizeInGBs = &tmp
+	}
+
+	if recoStorageSizeInGBs, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "reco_storage_size_in_gbs")); ok {
+		tmp := recoStorageSizeInGBs.(int)
+		result.RecoStorageSizeInGBs = &tmp
+	}
+
+	return result, nil
+}
+
+func DatabaseStorageSizeResponseDetailsToMap(obj *oci_database.DatabaseStorageSizeResponseDetails) map[string]interface{} {
+	result := map[string]interface{}{}
+
+	if obj.DataStorageSizeInGBs != nil {
+		result["data_storage_size_in_gb"] = int(*obj.DataStorageSizeInGBs)
+	}
+
+	if obj.RecoStorageSizeInGBs != nil {
+		result["reco_storage_size_in_gbs"] = int(*obj.RecoStorageSizeInGBs)
+	}
+
+	if obj.RedoLogStorageSizeInGBs != nil {
+		result["redo_log_storage_size_in_gbs"] = int(*obj.RedoLogStorageSizeInGBs)
+	}
+
+	return result
 }

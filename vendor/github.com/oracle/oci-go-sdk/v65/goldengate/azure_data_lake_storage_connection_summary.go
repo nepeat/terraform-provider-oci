@@ -111,6 +111,13 @@ type AzureDataLakeStorageConnectionSummary struct {
 	// Note: When provided, 'clientSecret' field must not be provided.
 	ClientSecretSecretId *string `mandatory:"false" json:"clientSecretSecretId"`
 
+	// The endpoint used for authentication with Microsoft Entra ID (formerly Azure Active Directory).
+	// Default value: https://login.microsoftonline.com
+	// When connecting to a non-public Azure Cloud, the endpoint must be provided, eg:
+	// * Azure China: https://login.chinacloudapi.cn/
+	// * Azure US Government: https://login.microsoftonline.us/
+	AzureAuthorityHost *string `mandatory:"false" json:"azureAuthorityHost"`
+
 	// Possible lifecycle states for connection.
 	LifecycleState ConnectionLifecycleStateEnum `mandatory:"true" json:"lifecycleState"`
 
@@ -245,7 +252,7 @@ func (m AzureDataLakeStorageConnectionSummary) ValidateEnumValue() (bool, error)
 		errMessage = append(errMessage, fmt.Sprintf("unsupported enum value for AuthenticationType: %s. Supported values are: %s.", m.AuthenticationType, strings.Join(GetAzureDataLakeStorageConnectionAuthenticationTypeEnumStringValues(), ",")))
 	}
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

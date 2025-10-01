@@ -40,6 +40,9 @@ type ManagedList struct {
 	// List of items in the managed list
 	ListItems []string `mandatory:"false" json:"listItems"`
 
+	// Managed list type group
+	Group *string `mandatory:"false" json:"group"`
+
 	// Provider of the managed list feed
 	FeedProvider FeedProviderTypeEnum `mandatory:"false" json:"feedProvider,omitempty"`
 
@@ -94,7 +97,7 @@ func (m ManagedList) ValidateEnumValue() (bool, error) {
 		errMessage = append(errMessage, fmt.Sprintf("unsupported enum value for LifecycleState: %s. Supported values are: %s.", m.LifecycleState, strings.Join(GetLifecycleStateEnumStringValues(), ",")))
 	}
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

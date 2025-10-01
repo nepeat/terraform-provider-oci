@@ -117,6 +117,35 @@ func DatabaseKeyStoreResource() *schema.Resource {
 							Type:     schema.TypeString,
 							Computed: true,
 						},
+						"db_unique_name": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"id": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+					},
+				},
+			},
+			"associated_long_term_backup_count": {
+				Type:     schema.TypeInt,
+				Computed: true,
+			},
+			"associated_long_term_backups": {
+				Type:     schema.TypeList,
+				Computed: true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						// Required
+
+						// Optional
+
+						// Computed
+						"display_name": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
 						"id": {
 							Type:     schema.TypeString,
 							Computed: true,
@@ -362,6 +391,16 @@ func (s *DatabaseKeyStoreResourceCrud) SetData() error {
 	}
 	s.D.Set("associated_databases", associatedDatabases)
 
+	if s.Res.AssociatedLongTermBackupCount != nil {
+		s.D.Set("associated_long_term_backup_count", *s.Res.AssociatedLongTermBackupCount)
+	}
+
+	associatedLongTermBackups := []interface{}{}
+	for _, item := range s.Res.AssociatedLongTermBackups {
+		associatedLongTermBackups = append(associatedLongTermBackups, AssociatedLongTermBackupToMap(item))
+	}
+	s.D.Set("associated_long_term_backups", associatedLongTermBackups)
+
 	if s.Res.CompartmentId != nil {
 		s.D.Set("compartment_id", *s.Res.CompartmentId)
 	}
@@ -428,6 +467,10 @@ func KeyStoreAssociatedDatabaseDetailsToMap(obj oci_database.KeyStoreAssociatedD
 
 	if obj.DbName != nil {
 		result["db_name"] = string(*obj.DbName)
+	}
+
+	if obj.DbUniqueName != nil {
+		result["db_unique_name"] = string(*obj.DbUniqueName)
 	}
 
 	if obj.Id != nil {

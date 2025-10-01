@@ -36,6 +36,9 @@ type CreateEndpointDetails struct {
 	// An optional description of the endpoint.
 	Description *string `mandatory:"false" json:"description"`
 
+	// The OCID of the Generative AI private endpoint to which this endpoint is attached to.
+	GenerativeAiPrivateEndpointId *string `mandatory:"false" json:"generativeAiPrivateEndpointId"`
+
 	ContentModerationConfig *ContentModerationConfig `mandatory:"false" json:"contentModerationConfig"`
 
 	// Free-form tags for this resource. Each tag is a simple key-value pair with no predefined name, type, or namespace.
@@ -60,7 +63,7 @@ func (m CreateEndpointDetails) ValidateEnumValue() (bool, error) {
 	errMessage := []string{}
 
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

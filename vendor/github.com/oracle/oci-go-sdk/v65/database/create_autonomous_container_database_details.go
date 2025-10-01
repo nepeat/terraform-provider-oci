@@ -16,7 +16,7 @@ import (
 	"strings"
 )
 
-// CreateAutonomousContainerDatabaseDetails Details to create an Oracle Autonomous Container Database.
+// CreateAutonomousContainerDatabaseDetails Details to create an Autonomous Container Database (ACD).
 type CreateAutonomousContainerDatabaseDetails struct {
 
 	// The display name for the Autonomous Container Database.
@@ -24,6 +24,9 @@ type CreateAutonomousContainerDatabaseDetails struct {
 
 	// Customer Contacts. Setting this to an empty list removes all customer contacts.
 	CustomerContacts []CustomerContact `mandatory:"false" json:"customerContacts"`
+
+	// The OKV End Point Group name for the Autonomous Container Database.
+	OkvEndPointGroupName *string `mandatory:"false" json:"okvEndPointGroupName"`
 
 	// **Deprecated.** The `DB_UNIQUE_NAME` value is set by Oracle Cloud Infrastructure.  Do not specify a value for this parameter. Specifying a value for this field will cause Terraform operations to fail.
 	DbUniqueName *string `mandatory:"false" json:"dbUniqueName"`
@@ -138,6 +141,11 @@ type CreateAutonomousContainerDatabaseDetails struct {
 // GetCustomerContacts returns CustomerContacts
 func (m CreateAutonomousContainerDatabaseDetails) GetCustomerContacts() []CustomerContact {
 	return m.CustomerContacts
+}
+
+// GetOkvEndPointGroupName returns OkvEndPointGroupName
+func (m CreateAutonomousContainerDatabaseDetails) GetOkvEndPointGroupName() *string {
+	return m.OkvEndPointGroupName
 }
 
 // GetDisplayName returns DisplayName
@@ -349,7 +357,7 @@ func (m CreateAutonomousContainerDatabaseDetails) ValidateEnumValue() (bool, err
 		errMessage = append(errMessage, fmt.Sprintf("unsupported enum value for NetServicesArchitecture: %s. Supported values are: %s.", m.NetServicesArchitecture, strings.Join(GetCreateAutonomousContainerDatabaseBaseNetServicesArchitectureEnumStringValues(), ",")))
 	}
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

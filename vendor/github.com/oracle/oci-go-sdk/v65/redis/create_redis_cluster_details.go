@@ -36,6 +36,9 @@ type CreateRedisClusterDetails struct {
 	// The OCID (https://docs.oracle.com/iaas/Content/General/Concepts/identifiers.htm#Oracle) of the cluster's subnet.
 	SubnetId *string `mandatory:"true" json:"subnetId"`
 
+	// The ID of the corresponding OCI Cache Config Set for the cluster.
+	OciCacheConfigSetId *string `mandatory:"false" json:"ociCacheConfigSetId"`
+
 	// Specifies whether the cluster is sharded or non-sharded.
 	ClusterMode RedisClusterClusterModeEnum `mandatory:"false" json:"clusterMode,omitempty"`
 
@@ -73,7 +76,7 @@ func (m CreateRedisClusterDetails) ValidateEnumValue() (bool, error) {
 		errMessage = append(errMessage, fmt.Sprintf("unsupported enum value for ClusterMode: %s. Supported values are: %s.", m.ClusterMode, strings.Join(GetRedisClusterClusterModeEnumStringValues(), ",")))
 	}
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

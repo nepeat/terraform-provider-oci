@@ -17,10 +17,10 @@ import (
 	"strings"
 )
 
-// MySqlReplicationApplierFilter Filter configured for a replication channel
+// MySqlReplicationApplierFilter Filter configured for a replication channel.
 type MySqlReplicationApplierFilter struct {
 
-	// Type of replication filter that has been configured for the replication channel.
+	// The type of replication filter that has been configured for the replication channel.
 	FilterName *string `mandatory:"true" json:"filterName"`
 
 	// The rules configured for the replication filter type.
@@ -38,7 +38,7 @@ func (m MySqlReplicationApplierFilter) ValidateEnumValue() (bool, error) {
 	errMessage := []string{}
 
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

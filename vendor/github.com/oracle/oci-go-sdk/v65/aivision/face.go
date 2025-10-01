@@ -28,6 +28,9 @@ type Face struct {
 
 	// A point of interest within a face.
 	Landmarks []Landmark `mandatory:"false" json:"landmarks"`
+
+	// The facial feature vectors of detected faces
+	Embeddings []float32 `mandatory:"false" json:"embeddings"`
 }
 
 func (m Face) String() string {
@@ -41,7 +44,7 @@ func (m Face) ValidateEnumValue() (bool, error) {
 	errMessage := []string{}
 
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

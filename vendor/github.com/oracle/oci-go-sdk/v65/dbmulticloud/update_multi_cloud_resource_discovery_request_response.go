@@ -18,7 +18,7 @@ import (
 // Click https://docs.oracle.com/en-us/iaas/tools/go-sdk-examples/latest/dbmulticloud/UpdateMultiCloudResourceDiscovery.go.html to see an example of how to use UpdateMultiCloudResourceDiscoveryRequest.
 type UpdateMultiCloudResourceDiscoveryRequest struct {
 
-	// The OCID (https://docs.oracle.com/iaas/Content/General/Concepts/identifiers.htm) of the Multi Cloud Discovery Resource.
+	// The OCID (https://docs.oracle.com/iaas/Content/General/Concepts/identifiers.htm) of the Multicloud Discovery Resource.
 	MultiCloudResourceDiscoveryId *string `mandatory:"true" contributesTo:"path" name:"multiCloudResourceDiscoveryId"`
 
 	// Details for to update MultiCloudResourceDiscovery.
@@ -71,7 +71,7 @@ func (request UpdateMultiCloudResourceDiscoveryRequest) RetryPolicy() *common.Re
 func (request UpdateMultiCloudResourceDiscoveryRequest) ValidateEnumValue() (bool, error) {
 	errMessage := []string{}
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

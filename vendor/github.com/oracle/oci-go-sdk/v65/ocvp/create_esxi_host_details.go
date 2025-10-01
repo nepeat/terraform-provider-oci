@@ -23,7 +23,7 @@ type CreateEsxiHostDetails struct {
 	ClusterId *string `mandatory:"true" json:"clusterId"`
 
 	// A descriptive name for the ESXi host. It's changeable.
-	// Esxi Host name requirements are 1-16 character length limit, Must start with a letter,
+	// Esxi Host name requirements are 1-25 character length limit, Must start with a letter,
 	// Must be English letters, numbers, - only, No repeating hyphens, Must be unique within the Cluster.
 	// If this attribute is not specified, the Cluster's `instanceDisplayNamePrefix` attribute is used
 	// to name and incrementally number the ESXi host. For example, if you're creating the fourth
@@ -93,7 +93,7 @@ func (m CreateEsxiHostDetails) ValidateEnumValue() (bool, error) {
 		errMessage = append(errMessage, fmt.Sprintf("unsupported enum value for NextCommitment: %s. Supported values are: %s.", m.NextCommitment, strings.Join(GetCommitmentEnumStringValues(), ",")))
 	}
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

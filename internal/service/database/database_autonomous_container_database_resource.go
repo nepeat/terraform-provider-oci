@@ -88,6 +88,11 @@ func DatabaseAutonomousContainerDatabaseResource() *schema.Resource {
 									},
 
 									// Optional
+									"backup_retention_policy_on_terminate": {
+										Type:     schema.TypeString,
+										Optional: true,
+										Computed: true,
+									},
 									"id": {
 										Type:     schema.TypeString,
 										Optional: true,
@@ -99,6 +104,11 @@ func DatabaseAutonomousContainerDatabaseResource() *schema.Resource {
 										Computed: true,
 									},
 									"is_remote": {
+										Type:     schema.TypeBool,
+										Optional: true,
+										Computed: true,
+									},
+									"is_retention_lock_enabled": {
 										Type:     schema.TypeBool,
 										Optional: true,
 										Computed: true,
@@ -162,6 +172,25 @@ func DatabaseAutonomousContainerDatabaseResource() *schema.Resource {
 				Type:     schema.TypeString,
 				Optional: true,
 				Computed: true,
+			},
+			"customer_contacts": {
+				Type:     schema.TypeList,
+				Optional: true,
+				Computed: true,
+				Elem: &schema.Resource{
+					Schema: map[string]*schema.Schema{
+						// Required
+
+						// Optional
+						"email": {
+							Type:     schema.TypeString,
+							Optional: true,
+							Computed: true,
+						},
+
+						// Computed
+					},
+				},
 			},
 			"database_software_image_id": {
 				Type:     schema.TypeString,
@@ -354,6 +383,11 @@ func DatabaseAutonomousContainerDatabaseResource() *schema.Resource {
 				Computed: true,
 				ForceNew: true,
 			},
+			"okv_end_point_group_name": {
+				Type:     schema.TypeString,
+				Optional: true,
+				Computed: true,
+			},
 			"peer_autonomous_container_database_backup_config": {
 				Type:     schema.TypeList,
 				Optional: true,
@@ -381,6 +415,18 @@ func DatabaseAutonomousContainerDatabaseResource() *schema.Resource {
 									},
 
 									// Optional
+									"backup_retention_policy_on_terminate": {
+										Type:     schema.TypeString,
+										Optional: true,
+										Computed: true,
+										ForceNew: true,
+									},
+									"is_retention_lock_enabled": {
+										Type:     schema.TypeBool,
+										Optional: true,
+										Computed: true,
+										ForceNew: true,
+									},
 									"id": {
 										Type:     schema.TypeString,
 										Optional: true,
@@ -549,6 +595,14 @@ func DatabaseAutonomousContainerDatabaseResource() *schema.Resource {
 							Elem: &schema.Schema{
 								Type: schema.TypeString,
 							},
+						},
+						"backup_retention_policy_on_terminate": {
+							Type:     schema.TypeString,
+							Computed: true,
+						},
+						"is_retention_lock_enabled": {
+							Type:     schema.TypeBool,
+							Computed: true,
 						},
 						"dbrs_policy_id": {
 							Type:     schema.TypeString,
@@ -951,6 +1005,10 @@ func DatabaseAutonomousContainerDatabaseResource() *schema.Resource {
 					},
 				},
 			},
+			"memory_per_compute_unit_in_gbs": {
+				Type:     schema.TypeFloat,
+				Computed: true,
+			},
 			"memory_per_oracle_compute_unit_in_gbs": {
 				Type:     schema.TypeInt,
 				Computed: true,
@@ -1325,6 +1383,23 @@ func (s *DatabaseAutonomousContainerDatabaseResourceCrud) Update() error {
 		}
 	}
 
+	if customerContacts, ok := s.D.GetOkExists("customer_contacts"); ok && s.D.HasChange("customer_contacts") {
+		interfaces := customerContacts.([]interface{})
+		tmp := make([]oci_database.CustomerContact, len(interfaces))
+		for i := range interfaces {
+			stateDataIndex := i
+			fieldKeyFormat := fmt.Sprintf("%s.%d.%%s", "customer_contacts", stateDataIndex)
+			converted, err := s.mapToCustomerContact(fieldKeyFormat)
+			if err != nil {
+				return err
+			}
+			tmp[i] = converted
+		}
+		if len(tmp) != 0 || s.D.HasChange("customer_contacts") {
+			request.CustomerContacts = tmp
+		}
+	}
+
 	if definedTags, ok := s.D.GetOkExists("defined_tags"); ok && s.D.HasChange("defined_tags") {
 		convertedDefinedTags, err := tfresource.MapToDefinedTags(definedTags.(map[string]interface{}))
 		if err != nil {
@@ -1365,6 +1440,11 @@ func (s *DatabaseAutonomousContainerDatabaseResourceCrud) Update() error {
 	if standbyMaintenanceBufferInDays, ok := s.D.GetOkExists("standby_maintenance_buffer_in_days"); ok && s.D.HasChange("standby_maintenance_buffer_in_days") {
 		tmp := standbyMaintenanceBufferInDays.(int)
 		request.StandbyMaintenanceBufferInDays = &tmp
+	}
+
+	if okvEndPointGroupName, ok := s.D.GetOkExists("okv_end_point_group_name"); ok && s.D.HasChange("okv_end_point_group_name") {
+		tmp := okvEndPointGroupName.(string)
+		request.OkvEndPointGroupName = &tmp
 	}
 
 	if versionPreference, ok := s.D.GetOkExists("version_preference"); ok && s.D.HasChange("version_preference") {
@@ -1462,6 +1542,12 @@ func (s *DatabaseAutonomousContainerDatabaseResourceCrud) SetData() error {
 	}
 	s.D.Set("dataguard_group_members", dataguardGroupMembers)
 
+	customerContacts := []interface{}{}
+	for _, item := range s.Res.CustomerContacts {
+		customerContacts = append(customerContacts, ACDCustomerContactToMap(item))
+	}
+	s.D.Set("customer_contacts", customerContacts)
+
 	if s.Res.DbName != nil {
 		s.D.Set("db_name", *s.Res.DbName)
 	}
@@ -1550,6 +1636,10 @@ func (s *DatabaseAutonomousContainerDatabaseResourceCrud) SetData() error {
 		s.D.Set("maintenance_window", nil)
 	}
 
+	if s.Res.MemoryPerComputeUnitInGBs != nil {
+		s.D.Set("memory_per_compute_unit_in_gbs", *s.Res.MemoryPerComputeUnitInGBs)
+	}
+
 	if s.Res.MemoryPerOracleComputeUnitInGBs != nil {
 		s.D.Set("memory_per_oracle_compute_unit_in_gbs", *s.Res.MemoryPerOracleComputeUnitInGBs)
 	}
@@ -1558,6 +1648,10 @@ func (s *DatabaseAutonomousContainerDatabaseResourceCrud) SetData() error {
 
 	if s.Res.NextMaintenanceRunId != nil {
 		s.D.Set("next_maintenance_run_id", *s.Res.NextMaintenanceRunId)
+	}
+
+	if s.Res.OkvEndPointGroupName != nil {
+		s.D.Set("okv_end_point_group_name", *s.Res.OkvEndPointGroupName)
 	}
 
 	if s.Res.PatchId != nil {
@@ -1826,7 +1920,10 @@ func BackupDestinationConfigurationSummaryToMap(obj oci_database.BackupDestinati
 	for i, attachTime := range obj.BackupDestinationAttachHistory {
 		stringHistory[i] = attachTime.String()
 	}
+
 	result["backup_destination_attach_history"] = stringHistory
+
+	result["backup_retention_policy_on_terminate"] = string(obj.BackupRetentionPolicyOnTerminate)
 
 	if obj.DbrsPolicyId != nil {
 		result["dbrs_policy_id"] = string(*obj.DbrsPolicyId)
@@ -1834,6 +1931,10 @@ func BackupDestinationConfigurationSummaryToMap(obj oci_database.BackupDestinati
 
 	if obj.Id != nil {
 		result["id"] = string(*obj.Id)
+	}
+
+	if obj.IsRetentionLockEnabled != nil {
+		result["is_retention_lock_enabled"] = bool(*obj.IsRetentionLockEnabled)
 	}
 
 	if obj.InternetProxy != nil {
@@ -1958,6 +2059,10 @@ func (s *DatabaseAutonomousContainerDatabaseResourceCrud) AutonomousDatabaseKeyH
 func (s *DatabaseAutonomousContainerDatabaseResourceCrud) mapToBackupDestinationDetails(fieldKeyFormat string) (oci_database.BackupDestinationDetails, error) {
 	result := oci_database.BackupDestinationDetails{}
 
+	if backupRetentionPolicyOnTerminate, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "backup_retention_policy_on_terminate")); ok {
+		result.BackupRetentionPolicyOnTerminate = oci_database.BackupDestinationDetailsBackupRetentionPolicyOnTerminateEnum(backupRetentionPolicyOnTerminate.(string))
+	}
+
 	if id, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "id")); ok {
 		tmp := id.(string)
 		result.Id = &tmp
@@ -1971,6 +2076,11 @@ func (s *DatabaseAutonomousContainerDatabaseResourceCrud) mapToBackupDestination
 	if isRemote, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "is_remote")); ok {
 		tmp := isRemote.(bool)
 		result.IsRemote = &tmp
+	}
+
+	if isRetentionLockEnabled, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "is_retention_lock_enabled")); ok {
+		tmp := isRetentionLockEnabled.(bool)
+		result.IsRetentionLockEnabled = &tmp
 	}
 
 	if remoteRegion, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "remote_region")); ok {
@@ -1998,6 +2108,8 @@ func (s *DatabaseAutonomousContainerDatabaseResourceCrud) mapToBackupDestination
 func AutonomousContainerDatabaseBackupDestinationDetailsToMap(obj oci_database.BackupDestinationDetails, s *DatabaseAutonomousContainerDatabaseResourceCrud, dataSource bool, fieldKeyFormat string) map[string]interface{} {
 	result := map[string]interface{}{}
 
+	result["backup_retention_policy_on_terminate"] = string(obj.BackupRetentionPolicyOnTerminate)
+
 	if obj.Id != nil {
 		result["id"] = string(*obj.Id)
 	}
@@ -2008,6 +2120,10 @@ func AutonomousContainerDatabaseBackupDestinationDetailsToMap(obj oci_database.B
 
 	if obj.IsRemote != nil {
 		result["is_remote"] = bool(*obj.IsRemote)
+	}
+
+	if obj.IsRetentionLockEnabled != nil {
+		result["is_retention_lock_enabled"] = bool(*obj.IsRetentionLockEnabled)
 	}
 
 	if obj.RemoteRegion != nil {
@@ -2027,6 +2143,27 @@ func AutonomousContainerDatabaseBackupDestinationDetailsToMap(obj oci_database.B
 	if vpcPassword, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "vpc_password")); ok {
 		tmp := vpcPassword.(string)
 		result["vpc_password"] = &tmp
+	}
+
+	return result
+}
+
+func (s *DatabaseAutonomousContainerDatabaseResourceCrud) mapToCustomerContact(fieldKeyFormat string) (oci_database.CustomerContact, error) {
+	result := oci_database.CustomerContact{}
+
+	if email, ok := s.D.GetOkExists(fmt.Sprintf(fieldKeyFormat, "email")); ok {
+		tmp := email.(string)
+		result.Email = &tmp
+	}
+
+	return result, nil
+}
+
+func ACDCustomerContactToMap(obj oci_database.CustomerContact) map[string]interface{} {
+	result := map[string]interface{}{}
+
+	if obj.Email != nil {
+		result["email"] = string(*obj.Email)
 	}
 
 	return result
@@ -2286,6 +2423,22 @@ func (s *DatabaseAutonomousContainerDatabaseResourceCrud) populateTopLevelPolymo
 				details.BackupConfig = &tmp
 			}
 		}
+		if customerContacts, ok := s.D.GetOkExists("customer_contacts"); ok && s.D.HasChange("customer_contacts") {
+			interfaces := customerContacts.([]interface{})
+			tmp := make([]oci_database.CustomerContact, len(interfaces))
+			for i := range interfaces {
+				stateDataIndex := i
+				fieldKeyFormat := fmt.Sprintf("%s.%d.%%s", "customer_contacts", stateDataIndex)
+				converted, err := s.mapToCustomerContact(fieldKeyFormat)
+				if err != nil {
+					return err
+				}
+				tmp[i] = converted
+			}
+			if len(tmp) != 0 || s.D.HasChange("customer_contacts") {
+				details.CustomerContacts = tmp
+			}
+		}
 		if cloudAutonomousVmClusterId, ok := s.D.GetOkExists("cloud_autonomous_vm_cluster_id"); ok {
 			tmp := cloudAutonomousVmClusterId.(string)
 			details.CloudAutonomousVmClusterId = &tmp
@@ -2368,6 +2521,10 @@ func (s *DatabaseAutonomousContainerDatabaseResourceCrud) populateTopLevelPolymo
 		if netServicesArchitecture, ok := s.D.GetOkExists("net_services_architecture"); ok {
 			details.NetServicesArchitecture = oci_database.CreateAutonomousContainerDatabaseBaseNetServicesArchitectureEnum(netServicesArchitecture.(string))
 		}
+		if okvEndPointGroupName, ok := s.D.GetOkExists("okv_end_point_group_name"); ok {
+			tmp := okvEndPointGroupName.(string)
+			details.OkvEndPointGroupName = &tmp
+		}
 		if patchModel, ok := s.D.GetOkExists("patch_model"); ok {
 			details.PatchModel = oci_database.CreateAutonomousContainerDatabaseBasePatchModelEnum(patchModel.(string))
 		}
@@ -2436,6 +2593,22 @@ func (s *DatabaseAutonomousContainerDatabaseResourceCrud) populateTopLevelPolymo
 		if autonomousVmClusterId, ok := s.D.GetOkExists("autonomous_vm_cluster_id"); ok {
 			tmp := autonomousVmClusterId.(string)
 			details.AutonomousVmClusterId = &tmp
+		}
+		if customerContacts, ok := s.D.GetOkExists("customer_contacts"); ok && s.D.HasChange("customer_contacts") {
+			interfaces := customerContacts.([]interface{})
+			tmp := make([]oci_database.CustomerContact, len(interfaces))
+			for i := range interfaces {
+				stateDataIndex := i
+				fieldKeyFormat := fmt.Sprintf("%s.%d.%%s", "customer_contacts", stateDataIndex)
+				converted, err := s.mapToCustomerContact(fieldKeyFormat)
+				if err != nil {
+					return err
+				}
+				tmp[i] = converted
+			}
+			if len(tmp) != 0 || s.D.HasChange("customer_contacts") {
+				details.CustomerContacts = tmp
+			}
 		}
 		if backupConfig, ok := s.D.GetOkExists("backup_config"); ok {
 			if tmpList := backupConfig.([]interface{}); len(tmpList) > 0 {
@@ -2528,6 +2701,10 @@ func (s *DatabaseAutonomousContainerDatabaseResourceCrud) populateTopLevelPolymo
 		}
 		if netServicesArchitecture, ok := s.D.GetOkExists("net_services_architecture"); ok {
 			details.NetServicesArchitecture = oci_database.CreateAutonomousContainerDatabaseBaseNetServicesArchitectureEnum(netServicesArchitecture.(string))
+		}
+		if okvEndPointGroupName, ok := s.D.GetOkExists("okv_end_point_group_name"); ok {
+			tmp := okvEndPointGroupName.(string)
+			details.OkvEndPointGroupName = &tmp
 		}
 		if patchModel, ok := s.D.GetOkExists("patch_model"); ok {
 			details.PatchModel = oci_database.CreateAutonomousContainerDatabaseBasePatchModelEnum(patchModel.(string))

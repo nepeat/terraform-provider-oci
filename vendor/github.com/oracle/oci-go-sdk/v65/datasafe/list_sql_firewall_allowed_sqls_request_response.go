@@ -42,7 +42,7 @@ type ListSqlFirewallAllowedSqlsRequest struct {
 	// at RFC3339 (https://tools.ietf.org/html/draft-ietf-scim-api-12). In SCIM filtering expressions,
 	// text, date, and time values must be enclosed in quotation marks, with date and time values using ISO-8601 format.
 	// (Numeric and boolean values should not be quoted.)
-	// **Example:** query=(currentUser eq 'SCOTT') and (topLevel eq 'YES')
+	// **Example:** query=(currentUser eq "SCOTT") and (topLevel eq "YES")
 	ScimQuery *string `mandatory:"false" contributesTo:"query" name:"scimQuery"`
 
 	// The sort order to use, either ascending (ASC) or descending (DESC).
@@ -100,7 +100,7 @@ func (request ListSqlFirewallAllowedSqlsRequest) ValidateEnumValue() (bool, erro
 		errMessage = append(errMessage, fmt.Sprintf("unsupported enum value for SortBy: %s. Supported values are: %s.", request.SortBy, strings.Join(GetListSqlFirewallAllowedSqlsSortByEnumStringValues(), ",")))
 	}
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

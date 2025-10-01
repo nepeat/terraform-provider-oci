@@ -70,7 +70,7 @@ func (request GetConditionMetadataTypeRequest) ValidateEnumValue() (bool, error)
 		errMessage = append(errMessage, fmt.Sprintf("unsupported enum value for ConditionMetadataTypeId: %s. Supported values are: %s.", request.ConditionMetadataTypeId, strings.Join(GetGetConditionMetadataTypeConditionMetadataTypeIdEnumStringValues(), ",")))
 	}
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }
@@ -111,6 +111,7 @@ const (
 	GetConditionMetadataTypeConditionMetadataTypeIdCloudguardcondition       GetConditionMetadataTypeConditionMetadataTypeIdEnum = "CloudGuardCondition"
 	GetConditionMetadataTypeConditionMetadataTypeIdInstancesecuritycondition GetConditionMetadataTypeConditionMetadataTypeIdEnum = "InstanceSecurityCondition"
 	GetConditionMetadataTypeConditionMetadataTypeIdThreatcondition           GetConditionMetadataTypeConditionMetadataTypeIdEnum = "ThreatCondition"
+	GetConditionMetadataTypeConditionMetadataTypeIdContainercondition        GetConditionMetadataTypeConditionMetadataTypeIdEnum = "ContainerCondition"
 )
 
 var mappingGetConditionMetadataTypeConditionMetadataTypeIdEnum = map[string]GetConditionMetadataTypeConditionMetadataTypeIdEnum{
@@ -119,6 +120,7 @@ var mappingGetConditionMetadataTypeConditionMetadataTypeIdEnum = map[string]GetC
 	"CloudGuardCondition":       GetConditionMetadataTypeConditionMetadataTypeIdCloudguardcondition,
 	"InstanceSecurityCondition": GetConditionMetadataTypeConditionMetadataTypeIdInstancesecuritycondition,
 	"ThreatCondition":           GetConditionMetadataTypeConditionMetadataTypeIdThreatcondition,
+	"ContainerCondition":        GetConditionMetadataTypeConditionMetadataTypeIdContainercondition,
 }
 
 var mappingGetConditionMetadataTypeConditionMetadataTypeIdEnumLowerCase = map[string]GetConditionMetadataTypeConditionMetadataTypeIdEnum{
@@ -127,6 +129,7 @@ var mappingGetConditionMetadataTypeConditionMetadataTypeIdEnumLowerCase = map[st
 	"cloudguardcondition":       GetConditionMetadataTypeConditionMetadataTypeIdCloudguardcondition,
 	"instancesecuritycondition": GetConditionMetadataTypeConditionMetadataTypeIdInstancesecuritycondition,
 	"threatcondition":           GetConditionMetadataTypeConditionMetadataTypeIdThreatcondition,
+	"containercondition":        GetConditionMetadataTypeConditionMetadataTypeIdContainercondition,
 }
 
 // GetGetConditionMetadataTypeConditionMetadataTypeIdEnumValues Enumerates the set of values for GetConditionMetadataTypeConditionMetadataTypeIdEnum
@@ -146,6 +149,7 @@ func GetGetConditionMetadataTypeConditionMetadataTypeIdEnumStringValues() []stri
 		"CloudGuardCondition",
 		"InstanceSecurityCondition",
 		"ThreatCondition",
+		"ContainerCondition",
 	}
 }
 

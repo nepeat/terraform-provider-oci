@@ -60,6 +60,10 @@ func (m *enabledatabaseinsightdetails) UnmarshalPolymorphicJSON(data []byte) (in
 		mm := EnableMdsMySqlDatabaseInsightDetails{}
 		err = json.Unmarshal(data, &mm)
 		return mm, err
+	case "MACS_MANAGED_AUTONOMOUS_DATABASE":
+		mm := EnableMacsManagedAutonomousDatabaseInsightDetails{}
+		err = json.Unmarshal(data, &mm)
+		return mm, err
 	case "EXTERNAL_MYSQL_DATABASE_SYSTEM":
 		mm := EnableExternalMysqlDatabaseInsightDetails{}
 		err = json.Unmarshal(data, &mm)
@@ -93,7 +97,7 @@ func (m enabledatabaseinsightdetails) ValidateEnumValue() (bool, error) {
 	errMessage := []string{}
 
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

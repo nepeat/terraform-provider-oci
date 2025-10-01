@@ -36,7 +36,7 @@ func (m UnregisterCloudVmClusterPkcsDetails) ValidateEnumValue() (bool, error) {
 	}
 
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }
@@ -48,16 +48,19 @@ type UnregisterCloudVmClusterPkcsDetailsTdeKeyStoreTypeEnum string
 const (
 	UnregisterCloudVmClusterPkcsDetailsTdeKeyStoreTypeAzure UnregisterCloudVmClusterPkcsDetailsTdeKeyStoreTypeEnum = "AZURE"
 	UnregisterCloudVmClusterPkcsDetailsTdeKeyStoreTypeOci   UnregisterCloudVmClusterPkcsDetailsTdeKeyStoreTypeEnum = "OCI"
+	UnregisterCloudVmClusterPkcsDetailsTdeKeyStoreTypeGcp   UnregisterCloudVmClusterPkcsDetailsTdeKeyStoreTypeEnum = "GCP"
 )
 
 var mappingUnregisterCloudVmClusterPkcsDetailsTdeKeyStoreTypeEnum = map[string]UnregisterCloudVmClusterPkcsDetailsTdeKeyStoreTypeEnum{
 	"AZURE": UnregisterCloudVmClusterPkcsDetailsTdeKeyStoreTypeAzure,
 	"OCI":   UnregisterCloudVmClusterPkcsDetailsTdeKeyStoreTypeOci,
+	"GCP":   UnregisterCloudVmClusterPkcsDetailsTdeKeyStoreTypeGcp,
 }
 
 var mappingUnregisterCloudVmClusterPkcsDetailsTdeKeyStoreTypeEnumLowerCase = map[string]UnregisterCloudVmClusterPkcsDetailsTdeKeyStoreTypeEnum{
 	"azure": UnregisterCloudVmClusterPkcsDetailsTdeKeyStoreTypeAzure,
 	"oci":   UnregisterCloudVmClusterPkcsDetailsTdeKeyStoreTypeOci,
+	"gcp":   UnregisterCloudVmClusterPkcsDetailsTdeKeyStoreTypeGcp,
 }
 
 // GetUnregisterCloudVmClusterPkcsDetailsTdeKeyStoreTypeEnumValues Enumerates the set of values for UnregisterCloudVmClusterPkcsDetailsTdeKeyStoreTypeEnum
@@ -74,6 +77,7 @@ func GetUnregisterCloudVmClusterPkcsDetailsTdeKeyStoreTypeEnumStringValues() []s
 	return []string{
 		"AZURE",
 		"OCI",
+		"GCP",
 	}
 }
 

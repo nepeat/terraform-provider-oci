@@ -24,6 +24,9 @@ type UpdateModelDetails struct {
 	// An optional description of the model.
 	Description *string `mandatory:"false" json:"description"`
 
+	// Number of replicas required for this model.
+	InferenceUnits *int `mandatory:"false" json:"inferenceUnits"`
+
 	// A simple key-value pair that is applied without any predefined name, type, or scope. It exists for cross-compatibility only.
 	// For example: `{"bar-key": "value"}`
 	FreeformTags map[string]string `mandatory:"false" json:"freeformTags"`
@@ -44,7 +47,7 @@ func (m UpdateModelDetails) ValidateEnumValue() (bool, error) {
 	errMessage := []string{}
 
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

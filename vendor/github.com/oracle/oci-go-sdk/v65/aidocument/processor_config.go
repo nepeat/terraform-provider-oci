@@ -50,6 +50,10 @@ func (m *processorconfig) UnmarshalPolymorphicJSON(data []byte) (interface{}, er
 
 	var err error
 	switch m.ProcessorType {
+	case "INVOICE":
+		mm := InvoiceProcessorConfig{}
+		err = json.Unmarshal(data, &mm)
+		return mm, err
 	case "GENERAL":
 		mm := GeneralProcessorConfig{}
 		err = json.Unmarshal(data, &mm)
@@ -71,7 +75,7 @@ func (m processorconfig) ValidateEnumValue() (bool, error) {
 	errMessage := []string{}
 
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

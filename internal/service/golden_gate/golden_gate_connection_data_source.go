@@ -7,6 +7,8 @@ import (
 	"context"
 	"log"
 
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	oci_golden_gate "github.com/oracle/oci-go-sdk/v65/goldengate"
 
@@ -20,15 +22,15 @@ func GoldenGateConnectionDataSource() *schema.Resource {
 		Type:     schema.TypeString,
 		Required: true,
 	}
-	return tfresource.GetSingularDataSourceItemSchema(GoldenGateConnectionResource(), fieldMap, readSingularGoldenGateConnection)
+	return tfresource.GetSingularDataSourceItemSchemaWithContext(GoldenGateConnectionResource(), fieldMap, readSingularGoldenGateConnectionWithContext)
 }
 
-func readSingularGoldenGateConnection(d *schema.ResourceData, m interface{}) error {
+func readSingularGoldenGateConnectionWithContext(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	sync := &GoldenGateConnectionDataSourceCrud{}
 	sync.D = d
 	sync.Client = m.(*client.OracleClients).GoldenGateClient()
 
-	return tfresource.ReadResource(sync)
+	return tfresource.HandleDiagError(m, tfresource.ReadResourceWithContext(ctx, sync))
 }
 
 type GoldenGateConnectionDataSourceCrud struct {
@@ -41,7 +43,7 @@ func (s *GoldenGateConnectionDataSourceCrud) VoidState() {
 	s.D.SetId("")
 }
 
-func (s *GoldenGateConnectionDataSourceCrud) Get() error {
+func (s *GoldenGateConnectionDataSourceCrud) GetWithContext(ctx context.Context) error {
 	request := oci_golden_gate.GetConnectionRequest{}
 
 	if connectionId, ok := s.D.GetOkExists("connection_id"); ok {
@@ -51,7 +53,7 @@ func (s *GoldenGateConnectionDataSourceCrud) Get() error {
 
 	request.RequestMetadata.RetryPolicy = tfresource.GetRetryPolicy(false, "golden_gate")
 
-	response, err := s.Client.GetConnection(context.Background(), request)
+	response, err := s.Client.GetConnection(ctx, request)
 	if err != nil {
 		return err
 	}
@@ -72,6 +74,14 @@ func (s *GoldenGateConnectionDataSourceCrud) SetData() error {
 
 		if v.AccessKeyId != nil {
 			s.D.Set("access_key_id", *v.AccessKeyId)
+		}
+
+		if v.Endpoint != nil {
+			s.D.Set("endpoint", *v.Endpoint)
+		}
+
+		if v.Region != nil {
+			s.D.Set("region", *v.Region)
 		}
 
 		if v.SecretAccessKeySecretId != nil {
@@ -343,6 +353,10 @@ func (s *GoldenGateConnectionDataSourceCrud) SetData() error {
 		}
 
 		s.D.Set("authentication_type", v.AuthenticationType)
+
+		if v.AzureAuthorityHost != nil {
+			s.D.Set("azure_authority_host", *v.AzureAuthorityHost)
+		}
 
 		if v.AzureTenantId != nil {
 			s.D.Set("azure_tenant_id", *v.AzureTenantId)
@@ -2272,6 +2286,10 @@ func (s *GoldenGateConnectionDataSourceCrud) SetData() error {
 			s.D.Set("private_key_passphrase_secret_id", *v.PrivateKeyPassphraseSecretId)
 		}
 
+		if v.PublicKeyFingerprint != nil {
+			s.D.Set("public_key_fingerprint", *v.PublicKeyFingerprint)
+		}
+
 		if v.Region != nil {
 			s.D.Set("region", *v.Region)
 		}
@@ -2886,7 +2904,7 @@ func (s *GoldenGateConnectionDataSourceCrud) SetData() error {
 		for _, item := range v.NsgIds {
 			nsgIds = append(nsgIds, item)
 		}
-		s.D.Set("nsg_ids", schema.NewSet(tfresource.LiteralTypeHashCodeForSets, nsgIds))
+		s.D.Set("nsg_ids", nsgIds)
 
 		s.D.Set("routing_method", v.RoutingMethod)
 

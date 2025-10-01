@@ -23,7 +23,7 @@ import (
 // Specify a Database Software Image of type GRID_IMAGE for a GI Collection.
 type ImageIdFsuTargetDetails struct {
 
-	// Target database software image OCID.
+	// The OCID (https://docs.oracle.com/iaas/Content/General/Concepts/identifiers.htm) of the goal database software image.
 	SoftwareImageId *string `mandatory:"true" json:"softwareImageId"`
 
 	// Prefix name used for new DB home resources created as part of the Stage Action.
@@ -64,7 +64,7 @@ func (m ImageIdFsuTargetDetails) ValidateEnumValue() (bool, error) {
 		errMessage = append(errMessage, fmt.Sprintf("unsupported enum value for HomePolicy: %s. Supported values are: %s.", m.HomePolicy, strings.Join(GetFsuGoalVersionDetailsHomePolicyEnumStringValues(), ",")))
 	}
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

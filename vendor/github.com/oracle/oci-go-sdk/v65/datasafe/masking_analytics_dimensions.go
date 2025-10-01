@@ -23,6 +23,9 @@ type MaskingAnalyticsDimensions struct {
 
 	// The OCID of the masking policy.
 	PolicyId *string `mandatory:"false" json:"policyId"`
+
+	// The OCID of the sensitive type masked.
+	SensitiveTypeId *string `mandatory:"false" json:"sensitiveTypeId"`
 }
 
 func (m MaskingAnalyticsDimensions) String() string {
@@ -36,7 +39,7 @@ func (m MaskingAnalyticsDimensions) ValidateEnumValue() (bool, error) {
 	errMessage := []string{}
 
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }

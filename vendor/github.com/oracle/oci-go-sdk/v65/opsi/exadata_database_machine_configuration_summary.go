@@ -62,6 +62,12 @@ type ExadataDatabaseMachineConfigurationSummary struct {
 	// Array of objects containing VM cluster information.
 	VmclusterDetails []VmClusterSummary `mandatory:"false" json:"vmclusterDetails"`
 
+	// The OCID (https://docs.oracle.com/iaas/Content/General/Concepts/identifiers.htm) of the database.
+	ParentId *string `mandatory:"false" json:"parentId"`
+
+	// The region the resource resides in.
+	Region *string `mandatory:"false" json:"region"`
+
 	// Operations Insights internal representation of the the Exadata system type.
 	ExadataType ExadataTypeEnum `mandatory:"true" json:"exadataType"`
 
@@ -131,7 +137,7 @@ func (m ExadataDatabaseMachineConfigurationSummary) ValidateEnumValue() (bool, e
 		errMessage = append(errMessage, fmt.Sprintf("unsupported enum value for ExadataRackType: %s. Supported values are: %s.", m.ExadataRackType, strings.Join(GetExadataRackTypeEnumStringValues(), ",")))
 	}
 	if len(errMessage) > 0 {
-		return true, fmt.Errorf(strings.Join(errMessage, "\n"))
+		return true, fmt.Errorf("%s", strings.Join(errMessage, "\n"))
 	}
 	return false, nil
 }
